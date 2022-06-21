@@ -20,6 +20,10 @@ function convertStringToBoolean(str: string): boolean {
     return str === 'true';
 }
 
+function isAdmin(status: string): boolean {
+    return status === 'administrator' || status === 'creator';
+}
+
 async function getSilentStatus(chatID: number): Promise<string> {
     const dbSilentStatus = await client.hGet(`chats_config:${chatID}`, 'isSilent') || 'true';
     return dbSilentStatus;
@@ -31,6 +35,12 @@ async function setNewSilentStatus(chatID: number, status: string): Promise<boole
 }
 
 bot.command("silent", async (ctx) => {
+    const authorData = await ctx.getAuthor();
+    if (!isAdmin(authorData.status)) {
+        await ctx.deleteMessage();
+        return;
+    }
+
     const chatID = ctx.update.message?.chat.id!;
     const dbData = await getSilentStatus(chatID);
 
