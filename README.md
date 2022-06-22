@@ -2,9 +2,18 @@
 
 Simple TypeScript bot for auto-deleting Telegram premium stickers based on grammY library
 
-> This README will show how to use this bot only on Heroku. For other uses, just use Google.
+## Setup
 
-## Heroku Setup
+### Local
+
+To use the bot locally, you need a bot token and an installed Redis CLI on your computer.
+1. Open the `bot.ts` file and enter the bot token or add `BOT_KEY` to the system environment
+2. Edit `bot.ts` and change `const client: ... = createClient({ url: ... });` to `const client: ... = createClient();` to use a local Redis instance
+3. Install all dependencies via `npm install`.
+4. Run `npm start`.
+5. Bot is ready to go!
+
+### Heroku
 
 1. Create a new bot and get a bot token
 2. Create a new Redis database and get: Username, Password, Host and Port _(How to create a Redis database, create a user and get the necessary data to connect will not be written here)_
@@ -18,16 +27,11 @@ Simple TypeScript bot for auto-deleting Telegram premium stickers based on gramm
 5. Try sending a Premium sticker or sending the `/silent` command to check if the bot is working
 6. Bot is ready to go!
 
-> If something doesn't work, check the application logs in Heroku and try googling the problem. If nothing helps, open an Issue with a detailed description of the problem
+> If something is not working, check the application logs in Heroku or in the system console and try to google the problem. If nothing helps, open the problem with a detailed description of the problem
 
-## Bot configuration
+## Locale Configuration
 
-The only thing that is still customizable in the bot, are the lines in the response. In this bot, the lines are customized for a character from the same anime.
-
-To change the lines for yourself, go into `bot.ts` and change these variables:
-
-- `silentMessages` object contains messages for the `/silent` command. `silentEnabled` is sent if the silent command is enabled and `silentDisabled` otherwise
-- `messageText` variable in the `bot.on("message:sticker"...`) listener is sent when the Premium sticker has been removed and silent mode is disabled. It also contains a mention of the user, which can be removed if not needed
+All locale strings are moved to the `locale.ts` file. Also, at runtime, users can change the locale for their group via related commands (administrators can see them via the `help` command)
 
 ## License
 
