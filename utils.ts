@@ -45,11 +45,11 @@ export function convertStringToBoolean(str: string): boolean {
     return str === 'true';
 }
 
-export function createMessageMentionLocaleKeyboard(localeString: string, chatID: string | number): InlineKeyboard {
+export function createMessageMentionLocaleKeyboard(chatID: string | number): InlineKeyboard {
     const timestamp = Math.floor(Date.now() / 1000);
     return new InlineKeyboard()
-        .text(keyboardLocale["buttonYes"], `${timestamp}|${localeString}|${chatID}|mention_yes`)
-        .text(keyboardLocale["buttonNo"], `${timestamp}|${localeString}|${chatID}|mention_no`);
+        .text(keyboardLocale["buttonYes"], `${timestamp}|${chatID}|yes`)
+        .text(keyboardLocale["buttonNo"], `${timestamp}|${chatID}|no`);
 }
 
 export function getStickerMessageMentionLocale(text: string, isMention: string | null, userMention: string | null | undefined = null) {
@@ -64,11 +64,10 @@ export function getWhiteListKeyboardLocale(inviteUser: string, chatData: string,
     return whiteListLocale["newGroupInfo"].replace(/xxx/i, inviteUser).replace(/yyy/i, chatData);
 }
 
-export function getWhiteListKeyboardResponseLocale(chatInfo: string, inviteUser: string, isWhitelisted: boolean, isIgnored: boolean): string {
-    if (inviteUser === "null") inviteUser = otherLocale["unknownUser"];
-    if (isIgnored) return ignoreListLocale["keyboardAdded"].replace(/xxx/i, chatInfo).replace(/yyy/i, inviteUser);
-    if (isWhitelisted) return whiteListLocale["keyboardAdded"].replace(/xxx/i, chatInfo).replace(/yyy/i, inviteUser);
-    return whiteListLocale["keyboardRemoved"].replace(/xxx/i, chatInfo).replace(/yyy/i, inviteUser);
+export function getWhiteListKeyboardResponseLocale(isWhitelisted: boolean, isIgnored: boolean): string {
+    if (isIgnored) return ignoreListLocale["keyboardAdded"];
+    if (isWhitelisted) return whiteListLocale["keyboardAdded"];
+    return whiteListLocale["keyboardRemoved"];
 }
 
 export function getUserMention(user: User): string {
@@ -138,9 +137,9 @@ export async function sendWhiteListKeyboard(bot: Bot, ctx: Context, chatID: stri
     }
 
     const keyboard = new InlineKeyboard()
-        .text(keyboardLocale["buttonYes"], `${chatName}|${chatID}|${userMention}|accept`)
-        .text(keyboardLocale["buttonNo"], `${chatName}|${chatID}|${userMention}|deny`).row()
-        .text(keyboardLocale["buttonIgnore"], `${chatName}|${chatID}|${userMention}|ignore`);
+        .text(keyboardLocale["buttonYes"], `${chatID}|accept`)
+        .text(keyboardLocale["buttonNo"], `${chatID}|deny`).row()
+        .text(keyboardLocale["buttonIgnore"], `${chatID}|ignore`);
 
     await bot.api.sendMessage(Number(creatorID), getWhiteListKeyboardLocale(userMention, `${chatName} (${chatID})`, isLeft), {
         reply_markup: keyboard,

@@ -137,7 +137,11 @@ group.command("messagelocale", async (ctx) => {
     if (isStringEmpty(newLocaleString)) return await ctx.reply(otherLocale["stringIsEmpty"]);
 
     const chatID = ctx.update.message?.chat.id!;
-    const keyboard = createMessageMentionLocaleKeyboard(newLocaleString, chatID);
+    await setHashData(client, chatID, [
+        "stickerMessageLocale",
+        newLocaleString,
+    ]);
+    const keyboard = createMessageMentionLocaleKeyboard(chatID);
 
     await ctx.reply(stickerMessagesLocale["mentionQuestion"], {
         reply_markup: keyboard,
@@ -159,23 +163,20 @@ group.on("callback_query:data", async (ctx) => {
     const data = ctx.update.callback_query.data;
     const splitData = data.split("|");
 
-    if (splitData.length !== 4) return;
+    if (splitData.length !== 3) return;
 
     await ctx.deleteMessage();
 
-    const [oldTimestamp, stickerMessageLocale, chatID, mentionMode] = splitData;
+    const [oldTimestamp, chatID, mentionMode] = splitData;
     const newTimestamp = Math.floor(Date.now() / 1000);
-    const timeoutSeconds = 30;
+    const timeoutSeconds = 60;
 
     if (isTimeoutExceeded(Number(oldTimestamp), newTimestamp, timeoutSeconds)) return await ctx.reply(
         keyboardLocale["timeoutError"]
     );
-
-    const mentionModeBoolean = mentionMode === "mention_yes";
+    const mentionModeBoolean = mentionMode === "yes";
 
     await setHashData(client, chatID, [
-        "stickerMessageLocale",
-        stickerMessageLocale,
         "stickerMessageMention",
         String(mentionModeBoolean),
     ]);
@@ -348,11 +349,13 @@ pm.on("callback_query:data", async (ctx) => {
     const data = ctx.update.callback_query.data;
     const splitData = data.split("|");
 
-    if (splitData.length !== 4) return;
+    if (splitData.length !== 2) return;
 
-    await ctx.deleteMessage();
+    const originalMessage = await ctx.editMessageReplyMarkup({
+        reply_markup: undefined
+    });
 
-    const [chatName, chatID, userMention, listMode] = splitData;
+    const [chatID, listMode] = splitData;
 
     const whiteListAccept = listMode === "accept";
     const ignoreListIgnore = listMode === "ignore";
@@ -367,7 +370,10 @@ pm.on("callback_query:data", async (ctx) => {
         whiteListIDs = await addIDToLists(client, chatID, whiteListIDsListName, whiteListIDs);
     };
 
-    await ctx.reply(getWhiteListKeyboardResponseLocale(`${chatName} (${chatID})`, userMention, whiteListAccept, ignoreListIgnore));
+    await ctx.reply(getWhiteListKeyboardResponseLocale(whiteListAccept, ignoreListIgnore), {
+        // @ts-ignore
+        reply_to_message_id: originalMessage.message_id
+    });
 });
 
 bot.catch((err) => {
