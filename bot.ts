@@ -198,11 +198,6 @@ group.on("my_chat_member", async (ctx) => {
         const isIgnoredLocally = isInList(ignoreListIDs, chatID);
         return await sendWhiteListKeyboard(bot, ctx, chatID, chatName, creatorID, isLeft, isIgnoredLocally);
     };
-    if (botStatus === "left" || botStatus === "kicked") {
-        if (!isWhitelistedLocally) return;
-        whiteListIDs = await removeIDFromLists(client, chatID, whiteListIDsListName, whiteListIDs)
-        return await deleteHashKey(client, chatID);
-    };
 });
 
 group.on("message:text", async (ctx) => {
@@ -239,6 +234,12 @@ group.on("message:sticker", async (ctx) => {
     ctx.reply(await generateStickerLocaleMessage(
         client, ctx, chatID
     ));
+});
+
+pm.command("help", async (ctx) => {
+    const userID = ctx.update.message?.from.id!;
+    if (!isBotCreator(userID, creatorID)) return await ctx.reply(otherLocale["noPMHint"]);
+    await ctx.reply(helpLocale["creatorMessage"]);
 });
 
 pm.command("addwhitelist", async (ctx) => {
@@ -280,14 +281,21 @@ pm.command("removewhitelist", async (ctx) => {
 pm.command("getwhitelist", async (ctx) => {
     if (whiteListIDs.length === 0) return await ctx.reply(whiteListLocale["listEmpty"]);
 
-    const chats = await getChatsByIDs(bot, whiteListIDs);
+    const [chats, ids] = await getChatsByIDs(bot, whiteListIDs);
+
     const chatList = chats.map((chat) => {
         const chatID = chat.id;
         // @ts-ignore
         const chatName = chat.title;
         return `${chatName} (${chatID})`;
     });
-    await ctx.reply(`${whiteListLocale["groupsInfo"]}${chatList.join("\n")}`);
+
+    const messageData: string[] = [];
+    if (chats.length > 0) messageData.push(`${whiteListLocale["groupsInfo"]}${chatList.join("\n")}`);
+
+    if (ids.length > 0) messageData.push(`${whiteListLocale["groupsInfoIds"]}${ids.join("\n")}`);
+
+    await ctx.reply(messageData.join("\n\n"));
 });
 
 pm.command("addignorelist", async (ctx) => {

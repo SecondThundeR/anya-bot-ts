@@ -90,12 +90,17 @@ export async function getAuthorStatus(ctx: Context): Promise<string> {
     return authorData.status;
 }
 
-export async function getChatsByIDs(bot: Bot, chatsIDs: string[]): Promise<ChatFromGetChat[]> {
-    const chats = await Promise.all(chatsIDs.map(async (id) => {
-        const chat = await bot.api.getChat(id);
-        return chat;
+export async function getChatsByIDs(bot: Bot, chatsIDs: string[]): Promise<[ChatFromGetChat[], string[]]> {
+    let chatsInfo: ChatFromGetChat[] = [];
+    let idsInfo: string[] = [];
+    await Promise.all(chatsIDs.map(async (id) => {
+        await bot.api.getChat(id).then(chat => {
+            chatsInfo.push(chat);
+        }).catch(_ => {
+            idsInfo.push(id);
+        });
     }));
-    return chats;
+    return [chatsInfo, idsInfo];
 }
 
 export async function generateStickerLocaleMessage(client: RedisClientType, ctx: Context, chatID: number | string) {
