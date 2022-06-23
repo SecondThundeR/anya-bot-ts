@@ -1,37 +1,96 @@
 # anti-premium-stickers-bot
 
-Simple TypeScript bot for auto-deleting Telegram premium stickers based on grammY library
+TypeScript bot for auto-deleting of Telegram premium stickers with some interesting features based on the grammY library
+
+> This bot was created as an additional tool to fight against premium Telegram stickers, the animations of which make any device shudder
+
+## Features
+
+- **Removes premium stickers**
+- Handy white/ignore lists configuration from DM
+- Locale configuration via commands
+- and more... _(maybe)_
 
 ## Setup
 
-### Local
+## Local
 
-To use the bot locally, you need a bot token and an installed Redis CLI on your computer.
-1. Open the `bot.ts` file and enter the bot token or add `BOT_KEY` to the system environment
-2. Edit `bot.ts` and change `const client: ... = createClient({ url: ... });` to `const client: ... = createClient();` to use a local Redis instance
-3. Install all dependencies via `npm install`.
-4. Run `npm start`.
-5. Bot is ready to go!
+1. Create a new bot and get a bot token
+2. Install `redis-cli` and `node.js`
+3. Create environment variables in your system:
+    - `BOT_KEY` - bot token
+    - `CREATOR_ID` - your ID for working with the bot whitelist/ignored list from the DM
+4. Clone this repository
+5. Open and edit in `bot.ts` call for `createClient` from:
+
+    ```ts
+    const client: RedisClientType = createClient({
+        url: `redis://${redisUser}:${redisPass}@${redisURL}:${redisPort}`,
+    });
+    ```
+
+    to
+
+    ```ts
+    const client: RedisClientType = createClient();
+    ```
+
+    This function call will use your local Redis DB
+
+6. Run `npm i` and `npm start`
+7. Wait for `Starting bot` log message
+8. Bot is ready to go!
 
 ### Heroku
 
 1. Create a new bot and get a bot token
-2. Create a new Redis database and get: Username, Password, Host and Port _(How to create a Redis database, create a user and get the necessary data to connect will not be written here)_
+2. Create a new Redis database and get: Username, Password, Host and Port
+
+    > How to create a Redis database, create a user and get the necessary data to connect will not be written here
 3. Create a new pipeline in Heroku, the application in it and set neccessary config vars in the settings:
-    - BOT_KEY - bot token
-    - REDIS_USER - name of Redis DB user
-    - REDIS_PASS - password of Redis DB user
-    - REDIS_URL - endpoint of Redis DB
-    - REDIS_PORT - port of Redis DB endpoint
+    - `BOT_KEY` - bot token
+    - `CREATOR_ID` - your ID for working with the bot whitelist/ignored list from the DM
+    - `REDIS_USER` - name of Redis DB user
+    - `REDIS_PASS` - password of Redis DB user
+    - `REDIS_URL` - endpoint of Redis DB
+    - `REDIS_PORT` - port of Redis DB endpoint
 4. Push sources on Heroku _(or set up auto-deployment)_ and wait for build
-5. Try sending a Premium sticker or sending the `/silent` command to check if the bot is working
+5. Wait for `Starting bot` log message
 6. Bot is ready to go!
 
-> If something is not working, check the application logs in Heroku or in the system console and try to google the problem. If nothing helps, open the problem with a detailed description of the problem
+> If something doesn't work, check the application logs in Heroku or locally and try googling the problem. If nothing helps, open an Issue with a detailed description of the problem
 
-## Locale Configuration
+## Bot commands
 
-All locale strings are moved to the `locale.ts` file. Also, at runtime, users can change the locale for their group via related commands (administrators can see them via the `help` command)
+Group commands:
+
+- `silent` - manage bot silent mode
+- `help` - send help message
+- `silentonlocale` - change message when silent mode is enabled
+- `silentonlocalereset` - reset message when silent mode is enabled
+- `silentofflocale` - change message when silent mode is disabled
+- `silentofflocalereset` - reset message when silent mode is disabled
+- `messagelocale` - change message when bot removes stickers
+- `messagelocalereset` - reset message when bot removes stickers
+
+DM commands:
+
+- `addwhitelist` - add group ID to white list
+- `removewhitelist` - remove group ID from white list
+- `getwhitelist` - get all groups info from white list
+- `addignorelist` - add group ID to ignore list
+- `removeignorelist` - remove group ID from ignore list
+- `getignorelist` - get all groups ID from ignore list
+
+## Bot locale configuration
+
+The entire locale is now stored in the `locale.ts` file. Some words can be changed for chats using the commands above with `locale` substring in it
+
+## FAQ
+
+- Q: How white/ignore lists are working?
+
+> A: When a bot is added to an unknown group, you will be prompted to add the group to the whitelist, reject it, or add it to the ignore list. The ignore list is used to prevent the bot from sending you information about future additions to the group that you have set to ignore. In the case of a simple rejection, you will continue to receive information about the following additions, if suddenly, you decide to add a new group later
 
 ## License
 
