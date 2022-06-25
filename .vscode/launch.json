@@ -4,14 +4,15 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Debug locally Program",
             "runtimeArgs": [
                 "-r",
                 "ts-node/register"
             ],
             "args": [
                 "${workspaceFolder}/bot.ts"
-            ]
+            ],
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
