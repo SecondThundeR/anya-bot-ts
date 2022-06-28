@@ -4,32 +4,39 @@ import { createClient } from 'redis';
 import { RedisClientType } from '@redis/client';
 import {
     isGroupAdmin,
-    convertStringToBoolean,
-    manageNewChatJoin,
+    getBoolean,
+    newChatJoinHandler,
     setHashData,
-    getHashSingleData,
+    getHashData,
     getHashMultipleData,
     deleteHashData,
-    checkLocaleWord,
-    getWhiteListKeyboardResponseLocale,
+    verifyLocaleWord,
+    getWhiteListResponseLocale,
     getAllValuesFromList,
     getChatsByIDs,
     isBotCreator,
     isStringEmpty,
     getAuthorStatus,
-    createMessageMentionLocaleKeyboard,
-    isInList,
+    getStickerMessageKeyboard,
+    isItemInList,
     addIDToLists,
     removeIDFromLists,
-    generateStickerLocaleMessage,
+    generateStickerMessageLocale,
     sendAccessGrantedMessage,
     sendIgnoredMessage,
     isBotInChat,
     leaveFromIgnoredChat,
     sendAccessRemovedMessage,
-    getChatLink,
     asyncTimeout,
-    getSessionKey
+    getSessionKey,
+    getChatID,
+    getMessageID,
+    getUserID,
+    getCallbackData,
+    isMessageAlreadyDeleted,
+    isPremiumSticker,
+    isBotCanDelete,
+    getListOfChats
 } from './utils';
 import {
     silentMessagesLocale,
@@ -47,6 +54,7 @@ if (process.env.NODE_ENV === 'local') {
 let whiteListIDs: string[] = [];
 let ignoreListIDs: string[] = [];
 let isMessageLocaleChanging = false;
+
 const whiteListIDsListName = 'whiteListIDs';
 const ignoreListIDsListName = 'ignoreListIDs';
 const messageLocaleWaitTime = 10;
@@ -74,18 +82,16 @@ bot.use(sequentialize(getSessionKey));
 bot.use(session({ getSessionKey }));
 
 group.command('help', async ctx => {
-    const chatID = ctx.update.message?.chat.id!;
-    const isWhitelistedLocally = isInList(whiteListIDs, chatID);
-    if (!isWhitelistedLocally)
-        return await ctx.reply(
-            whiteListLocale['noAccess'].replace(
-                /xxx/i,
-                `<code>${chatID}</code>`
-            ),
-            {
-                parse_mode: 'HTML'
-            }
-        );
+    const chatID = getChatID(ctx);
+    const noAccessMessage = whiteListLocale['noAccess'].replace(
+        /xxx/i,
+        `<code>${chatID}</code>`
+    );
+
+    if (!isItemInList(chatID, whiteListIDs))
+        return await ctx.reply(noAccessMessage, {
+            parse_mode: 'HTML'
+        });
 
     if (!isGroupAdmin(await getAuthorStatus(ctx)))
         return await ctx.reply(helpLocale['message']);
@@ -94,9 +100,9 @@ group.command('help', async ctx => {
 });
 
 group.command('silent', async ctx => {
-    const chatID = ctx.update.message?.chat.id!;
-    const isWhitelistedLocally = isInList(whiteListIDs, chatID);
-    if (!isWhitelistedLocally) return;
+    const chatID = getChatID(ctx);
+
+    if (!isItemInList(chatID, whiteListIDs)) return;
 
     if (!isGroupAdmin(await getAuthorStatus(ctx)))
         return await ctx.deleteMessage();
@@ -107,101 +113,117 @@ group.command('silent', async ctx => {
             'silentOnLocale',
             'silentOffLocale'
         ]);
-    const isSilent =
-        isSilentString === null
-            ? false
-            : convertStringToBoolean(isSilentString);
-    const newSilentStatus = !isSilent;
-
-    await setHashData(client, chatID, ['isSilent', String(newSilentStatus)]);
-
-    const messageText = checkLocaleWord(
+    const isSilentBoolean =
+        isSilentString === null ? false : getBoolean(isSilentString);
+    const newSilentStatus = !isSilentBoolean;
+    const messageText = verifyLocaleWord(
         newSilentStatus ? silentOnLocale : silentOffLocale,
         newSilentStatus
             ? silentMessagesLocale['enabledDefault']
             : silentMessagesLocale['disabledDefault']
     );
 
+    if (!newSilentStatus) await deleteHashData(client, chatID, ['isSilent']);
+    else
+        await setHashData(client, chatID, [
+            'isSilent',
+            String(newSilentStatus)
+        ]);
+
     await ctx.reply(messageText);
 });
 
 group.command('silentonlocale', async ctx => {
-    const chatID = ctx.update.message?.chat.id!;
-    const isWhitelistedLocally = isInList(whiteListIDs, chatID);
-    if (!isWhitelistedLocally) return;
+    const chatID = getChatID(ctx);
+    const authorStatus = await getAuthorStatus(ctx);
+    const botData = await ctx.getChatMember(ctx.me.id);
+    const newLocaleString = ctx.match;
 
-    if (!isGroupAdmin(await getAuthorStatus(ctx)))
+    if (!isItemInList(chatID, whiteListIDs)) return;
+
+    if (!isGroupAdmin(authorStatus) && isBotCanDelete(botData))
         return await ctx.deleteMessage();
 
-    const newLocaleString = ctx.match;
     if (isStringEmpty(newLocaleString))
         return await ctx.reply(otherLocale['stringIsEmpty']);
 
     await setHashData(client, chatID, ['silentOnLocale', newLocaleString]);
+
     await ctx.reply(silentMessagesLocale['enabledMessageChange']);
 });
 
 group.command('silentonlocalereset', async ctx => {
-    const chatID = ctx.update.message?.chat.id!;
-    const isWhitelistedLocally = isInList(whiteListIDs, chatID);
-    if (!isWhitelistedLocally) return;
+    const chatID = getChatID(ctx);
+    const authorStatus = await getAuthorStatus(ctx);
+    const botData = await ctx.getChatMember(ctx.me.id);
 
-    if (!isGroupAdmin(await getAuthorStatus(ctx)))
+    if (!isItemInList(chatID, whiteListIDs)) return;
+
+    if (!isGroupAdmin(authorStatus) && isBotCanDelete(botData))
         return await ctx.deleteMessage();
 
     await deleteHashData(client, chatID, ['silentOnLocale']);
+
     await ctx.reply(silentMessagesLocale['enabledMessageReset']);
 });
 
 group.command('silentofflocale', async ctx => {
-    const chatID = ctx.update.message?.chat.id!;
-    const isWhitelistedLocally = isInList(whiteListIDs, chatID);
-    if (!isWhitelistedLocally) return;
+    const chatID = getChatID(ctx);
+    const authorStatus = await getAuthorStatus(ctx);
+    const botData = await ctx.getChatMember(ctx.me.id);
+    const newLocaleString = ctx.match;
 
-    if (!isGroupAdmin(await getAuthorStatus(ctx)))
+    if (!isItemInList(chatID, whiteListIDs)) return;
+
+    if (!isGroupAdmin(authorStatus) && isBotCanDelete(botData))
         return await ctx.deleteMessage();
 
-    const newLocaleString = ctx.match;
     if (isStringEmpty(newLocaleString))
         return await ctx.reply(otherLocale['stringIsEmpty']);
 
     await setHashData(client, chatID, ['silentOffLocale', newLocaleString]);
+
     await ctx.reply(silentMessagesLocale['disabledMessageChange']);
 });
 
 group.command('silentofflocalereset', async ctx => {
-    const chatID = ctx.update.message?.chat.id!;
-    const isWhitelistedLocally = isInList(whiteListIDs, chatID);
-    if (!isWhitelistedLocally) return;
+    const chatID = getChatID(ctx);
+    const authorStatus = await getAuthorStatus(ctx);
+    const botData = await ctx.getChatMember(ctx.me.id);
 
-    if (!isGroupAdmin(await getAuthorStatus(ctx)))
+    if (!isItemInList(chatID, whiteListIDs)) return;
+
+    if (!isGroupAdmin(authorStatus) && isBotCanDelete(botData))
         return await ctx.deleteMessage();
 
     await deleteHashData(client, chatID, ['silentOffLocale']);
+
     await ctx.reply(silentMessagesLocale['disabledMessageReset']);
 });
 
 group.command('messagelocale', async ctx => {
-    const chatID = ctx.update.message?.chat.id!;
-    const isWhitelistedLocally = isInList(whiteListIDs, chatID);
-    if (!isWhitelistedLocally) return;
+    const chatID = getChatID(ctx);
+    const authorStatus = await getAuthorStatus(ctx);
+    const botData = await ctx.getChatMember(ctx.me.id);
+    const newLocaleString = ctx.match;
 
-    if (!isGroupAdmin(await getAuthorStatus(ctx)))
+    if (!isItemInList(chatID, whiteListIDs)) return;
+
+    if (!isGroupAdmin(authorStatus) && isBotCanDelete(botData))
         return await ctx.deleteMessage();
 
     if (isMessageLocaleChanging)
         return await ctx.reply(stickerMessagesLocale['inProgress'], {
-            reply_to_message_id: ctx.update.message?.message_id
+            reply_to_message_id: getMessageID(ctx.update.message)
         });
 
     isMessageLocaleChanging = true;
 
-    const newLocaleString = ctx.match;
     if (isStringEmpty(newLocaleString))
         return await ctx.reply(otherLocale['stringIsEmpty']);
 
-    const userID = ctx.update.message?.from.id!;
-    const keyboard = createMessageMentionLocaleKeyboard(userID, chatID);
+    const userID = getUserID(ctx);
+    const keyboard = getStickerMessageKeyboard(userID, chatID);
 
     const message = await ctx.reply(stickerMessagesLocale['mentionQuestion'], {
         reply_markup: keyboard
@@ -213,6 +235,7 @@ group.command('messagelocale', async ctx => {
     ]);
 
     let messageExists = true;
+
     await asyncTimeout(messageLocaleWaitTime * 1000);
     await bot.api
         .deleteMessage(chatID, message.message_id)
@@ -220,35 +243,38 @@ group.command('messagelocale', async ctx => {
         .catch(_ => (messageExists = false));
 
     isMessageLocaleChanging = false;
+
     if (messageExists) {
         await deleteHashData(client, chatID, [
             'stickerMessageLocale',
             'stickerMessageMention'
         ]);
         return await ctx.reply(stickerMessagesLocale['timeoutError'], {
-            reply_to_message_id: ctx.update.message?.message_id
+            reply_to_message_id: getMessageID(ctx.update.message)
         });
     }
 });
 
 group.command('messagelocalereset', async ctx => {
-    const chatID = ctx.update.message?.chat.id!;
-    const isWhitelistedLocally = isInList(whiteListIDs, chatID);
-    if (!isWhitelistedLocally) return;
+    const chatID = getChatID(ctx);
+    const authorStatus = await getAuthorStatus(ctx);
+    const botData = await ctx.getChatMember(ctx.me.id);
 
-    if (!isGroupAdmin(await getAuthorStatus(ctx)))
+    if (!isItemInList(chatID, whiteListIDs)) return;
+
+    if (!isGroupAdmin(authorStatus) && isBotCanDelete(botData))
         return await ctx.deleteMessage();
 
     await deleteHashData(client, chatID, [
         'stickerMessageLocale',
         'stickerMessageMention'
     ]);
+
     await ctx.reply(stickerMessagesLocale['messageReset']);
 });
 
 group.on('callback_query:data', async ctx => {
-    const data = ctx.update.callback_query.data;
-    const splitData = data.split('|');
+    const splitData = getCallbackData(ctx).split('|');
 
     if (splitData.length !== 3)
         return await ctx.answerCallbackQuery({
@@ -257,13 +283,16 @@ group.on('callback_query:data', async ctx => {
 
     const [userID, chatID, mentionMode] = splitData;
     const clickUserID = ctx.update.callback_query.from.id;
+
     if (userID != String(clickUserID))
         return await ctx.answerCallbackQuery({
             text: otherLocale['callbackWrongUser']
         });
 
     isMessageLocaleChanging = false;
-    await ctx.deleteMessage();
+
+    const botData = await bot.api.getChatMember(chatID, ctx.me.id);
+    if (isBotCanDelete(botData)) await ctx.deleteMessage();
 
     const mentionModeBoolean = mentionMode === 'yes';
 
@@ -273,6 +302,7 @@ group.on('callback_query:data', async ctx => {
     ]);
 
     await ctx.answerCallbackQuery();
+
     await ctx.reply(
         `${stickerMessagesLocale['messageWithMentionChanged']} ${
             stickerMessagesLocale[
@@ -283,66 +313,54 @@ group.on('callback_query:data', async ctx => {
 });
 
 group.on('msg:new_chat_members:me', async ctx => {
-    const chatID = ctx.update.message?.chat.id!;
-    const isWhitelistedLocally = isInList(whiteListIDs, chatID);
-    if (isWhitelistedLocally)
-        return await ctx.reply(otherLocale['botAdminHint']);
+    const chatID = getChatID(ctx);
 
-    const isIgnoredLocally = isInList(ignoreListIDs, chatID);
+    if (!isItemInList(chatID, whiteListIDs))
+        return await newChatJoinHandler(
+            bot,
+            ctx,
+            creatorID,
+            isItemInList(chatID, ignoreListIDs)
+        );
 
-    return await manageNewChatJoin(bot, ctx, creatorID, isIgnoredLocally);
+    return await ctx.reply(otherLocale['botAdminHint']);
 });
 
 group.on('message:sticker', async ctx => {
-    const chatID = ctx.update.message?.chat.id!;
-    const isWhitelistedLocally = isInList(whiteListIDs, chatID);
-    if (!isWhitelistedLocally) return;
-
-    const isPremiumSticker =
-        ctx.update.message?.sticker.premium_animation !== undefined;
-    if (!isPremiumSticker) return;
-
+    const chatID = getChatID(ctx);
     const botData = await ctx.getChatMember(ctx.me.id);
-    const canBotDeleteMessages =
-        botData.status === 'administrator' &&
-        botData.can_delete_messages === true;
-    if (!canBotDeleteMessages) return;
 
-    let alreadyDeleted = false;
-    await ctx
-        .deleteMessage()
-        .then()
-        .catch(_ => {
-            alreadyDeleted = true;
-        });
-    if (alreadyDeleted) return;
+    if (!isItemInList(chatID, whiteListIDs)) return;
 
-    const dbData = await getHashSingleData(client, chatID, 'isSilent', 'false');
-    const isSilent = convertStringToBoolean(dbData);
+    if (!isPremiumSticker(ctx)) return;
 
-    if (isSilent) return;
+    if (!isBotCanDelete(botData)) return;
 
-    ctx.reply(await generateStickerLocaleMessage(client, ctx, chatID));
+    const deleteStatus = await isMessageAlreadyDeleted(ctx);
+    if (deleteStatus) return;
+
+    const silentStatus = await getHashData(client, chatID, 'isSilent', 'false');
+    if (getBoolean(silentStatus)) return;
+
+    ctx.reply(await generateStickerMessageLocale(client, ctx, chatID));
 });
 
 pm.command('start', async ctx => await ctx.reply(otherLocale['noPMHint']));
 
 pm.command('help', async ctx => {
-    const userID = ctx.update.message?.from.id!;
-    if (isBotCreator(userID, creatorID))
+    if (isBotCreator(getUserID(ctx), creatorID))
         return await ctx.reply(helpLocale['creatorMessage']);
 });
 
 pm.command('addwhitelist', async ctx => {
-    const userID = ctx.update.message?.from.id!;
-    if (!isBotCreator(userID, creatorID)) return;
-
     const chatID = ctx.match;
+
+    if (!isBotCreator(getUserID(ctx), creatorID)) return;
+
     if (isStringEmpty(chatID))
         return await ctx.reply(otherLocale['noChatIDProvided']);
 
-    const isWhitelistedLocally = isInList(whiteListIDs, chatID);
-    if (isWhitelistedLocally)
+    if (isItemInList(chatID, whiteListIDs))
         return await ctx.reply(whiteListLocale['alreadyAdded']);
 
     whiteListIDs = await addIDToLists(
@@ -352,8 +370,7 @@ pm.command('addwhitelist', async ctx => {
         whiteListIDs
     );
 
-    const isIgnoredLocally = isInList(ignoreListIDs, chatID);
-    if (isIgnoredLocally) {
+    if (isItemInList(chatID, ignoreListIDs)) {
         ignoreListIDs = await removeIDFromLists(
             client,
             chatID,
@@ -367,10 +384,7 @@ pm.command('addwhitelist', async ctx => {
     if (isInChat) await sendAccessGrantedMessage(bot, chatID);
 
     const botData = await bot.api.getChatMember(chatID, ctx.me.id);
-    const canBotDeleteMessages =
-        botData.status === 'administrator' &&
-        botData.can_delete_messages === true;
-    if (!canBotDeleteMessages)
+    if (!isBotCanDelete(botData))
         await bot.api.sendMessage(
             chatID,
             otherLocale['botAdminWhitelistedHint']
@@ -380,15 +394,14 @@ pm.command('addwhitelist', async ctx => {
 });
 
 pm.command('removewhitelist', async ctx => {
-    const userID = ctx.update.message?.from.id!;
-    if (!isBotCreator(userID, creatorID)) return;
-
     const chatID = ctx.match;
+
+    if (!isBotCreator(getUserID(ctx), creatorID)) return;
+
     if (isStringEmpty(chatID))
         return await ctx.reply(otherLocale['noChatIDProvided']);
 
-    const isWhitelistedLocally = isInList(whiteListIDs, chatID);
-    if (!isWhitelistedLocally)
+    if (!isItemInList(chatID, whiteListIDs))
         return await ctx.reply(whiteListLocale['alreadyRemoved']);
 
     whiteListIDs = await removeIDFromLists(
@@ -409,19 +422,9 @@ pm.command('getwhitelist', async ctx => {
         return await ctx.reply(whiteListLocale['listEmpty']);
 
     const [chats, ids] = await getChatsByIDs(bot, whiteListIDs);
-
-    const chatList = chats.map(chat => {
-        const chatID = chat.id;
-        // @ts-ignore
-        const chatName = chat.title;
-        // @ts-ignore
-        const chatLink = getChatLink(chat.username);
-        return `${
-            chatLink === undefined ? chatName : chatLink
-        } (<code>${chatID}</code>)`;
-    });
-
+    const chatList = getListOfChats(chats);
     const messageData: string[] = [];
+
     if (chats.length > 0)
         messageData.push(
             `${whiteListLocale['groupsInfo']}${chatList.join('\n')}`
@@ -438,15 +441,14 @@ pm.command('getwhitelist', async ctx => {
 });
 
 pm.command('addignorelist', async ctx => {
-    const userID = ctx.update.message?.from.id!;
-    if (!isBotCreator(userID, creatorID)) return;
-
     const chatID = ctx.match;
+
+    if (!isBotCreator(getUserID(ctx), creatorID)) return;
+
     if (isStringEmpty(chatID))
         return await ctx.reply(otherLocale['noChatIDProvided']);
 
-    const isIgnoredLocally = isInList(ignoreListIDs, chatID);
-    if (isIgnoredLocally)
+    if (isItemInList(chatID, ignoreListIDs))
         return await ctx.reply(ignoreListLocale['alreadyAdded']);
 
     ignoreListIDs = await addIDToLists(
@@ -456,7 +458,7 @@ pm.command('addignorelist', async ctx => {
         ignoreListIDs
     );
 
-    const isWhitelistedLocally = isInList(whiteListIDs, chatID);
+    const isWhitelistedLocally = isItemInList(chatID, whiteListIDs);
     if (isWhitelistedLocally)
         whiteListIDs = await removeIDFromLists(
             client,
@@ -476,15 +478,14 @@ pm.command('addignorelist', async ctx => {
 });
 
 pm.command('removeignorelist', async ctx => {
-    const userID = ctx.update.message?.from.id!;
-    if (!isBotCreator(userID, creatorID)) return;
-
     const chatID = ctx.match;
+
+    if (!isBotCreator(getUserID(ctx), creatorID)) return;
+
     if (isStringEmpty(chatID))
         return await ctx.reply(otherLocale['noChatIDProvided']);
 
-    const isIgnoredLocally = isInList(ignoreListIDs, chatID);
-    if (!isIgnoredLocally)
+    if (!isItemInList(chatID, ignoreListIDs))
         return await ctx.reply(ignoreListLocale['alreadyRemoved']);
 
     ignoreListIDs = await removeIDFromLists(
@@ -500,14 +501,14 @@ pm.command('removeignorelist', async ctx => {
 pm.command('getignorelist', async ctx => {
     if (ignoreListIDs.length === 0)
         return await ctx.reply(ignoreListLocale['listEmpty']);
+
     await ctx.reply(
         `${ignoreListLocale['idsInfo']}${ignoreListIDs.join('\n')}`
     );
 });
 
 pm.on('callback_query:data', async ctx => {
-    const data = ctx.update.callback_query.data;
-    const splitData = data.split('|');
+    const splitData = getCallbackData(ctx).split('|');
 
     if (splitData.length !== 2)
         return await ctx.answerCallbackQuery({
@@ -517,15 +518,12 @@ pm.on('callback_query:data', async ctx => {
     const originalMessage = await ctx.editMessageReplyMarkup({
         reply_markup: undefined
     });
-
     const [chatID, listMode] = splitData;
-
     const whiteListAccept = listMode === 'accept';
     const ignoreListIgnore = listMode === 'ignore';
-    const isWhitelistedLocally = isInList(whiteListIDs, chatID);
-    const isIgnoredLocally = isInList(ignoreListIDs, chatID);
+    const botData = await bot.api.getChatMember(chatID, ctx.me.id);
 
-    if (ignoreListIgnore && !isIgnoredLocally) {
+    if (ignoreListIgnore && !isItemInList(chatID, ignoreListIDs)) {
         ignoreListIDs = await addIDToLists(
             client,
             chatID,
@@ -535,7 +533,7 @@ pm.on('callback_query:data', async ctx => {
         await sendIgnoredMessage(bot, chatID);
     }
 
-    if (whiteListAccept && !isWhitelistedLocally) {
+    if (whiteListAccept && !isItemInList(chatID, whiteListIDs)) {
         whiteListIDs = await addIDToLists(
             client,
             chatID,
@@ -545,11 +543,7 @@ pm.on('callback_query:data', async ctx => {
         await sendAccessGrantedMessage(bot, chatID);
     }
 
-    const botData = await bot.api.getChatMember(chatID, ctx.me.id);
-    const canBotDeleteMessages =
-        botData.status === 'administrator' &&
-        botData.can_delete_messages === true;
-    if (!canBotDeleteMessages)
+    if (!isBotCanDelete(botData))
         await bot.api.sendMessage(
             chatID,
             otherLocale['botAdminWhitelistedHint']
@@ -558,11 +552,12 @@ pm.on('callback_query:data', async ctx => {
     await ctx.answerCallbackQuery({
         text: otherLocale['callbackSuccess']
     });
+
     await ctx.reply(
-        getWhiteListKeyboardResponseLocale(whiteListAccept, ignoreListIgnore),
+        getWhiteListResponseLocale(whiteListAccept, ignoreListIgnore),
         {
             // @ts-ignore
-            reply_to_message_id: originalMessage.message_id
+            reply_to_message_id: getMessageID(originalMessage)
         }
     );
 });

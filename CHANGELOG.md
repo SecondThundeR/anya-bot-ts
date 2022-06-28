@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2022-06-28
+
+> This release is mainly aimed at some refactoring
+
+### Added
+
+- Сheck on the bot's ability to delete messages
+
+### Changed
+
+- Break down some of the logic in `utils.ts`
+- Now when `isSilent` equals `false`, it will trigger `hDel` to save space in the database
+
 ## [1.2.0] - 2022-06-25
 
 ### Added
@@ -51,6 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ability to change some localization strings via commands
 - A placeholder when trying to write a private message to a bot by a non-creator
 
-[Unreleased]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v1.2.1...v1.2.1
 [1.2.0]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/pre-1.2.0...v1.2.0
 [pre-1.2.0]: https://github.com/SecondThundeR/anti-premium-stickers-bot/releases/tag/pre-1.2.0

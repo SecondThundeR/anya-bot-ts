@@ -1,6 +1,11 @@
 import { RedisClientType } from '@redis/client';
 import { Bot, Context, InlineKeyboard } from 'grammy';
-import { ChatFromGetChat, User } from 'grammy/out/platform.node';
+import {
+    ChatFromGetChat,
+    ChatMember,
+    Message,
+    User
+} from 'grammy/out/platform.node';
 import {
     ignoreListLocale,
     keyboardLocale,
@@ -11,9 +16,20 @@ import {
 
 const chatsConfigTableName = 'chats_config';
 
-// Regular Utils functions
+// Regular Utils Functions
+export function isPremiumSticker(ctx: Context): boolean {
+    return ctx.update.message?.sticker?.premium_animation !== undefined;
+}
+
 export function isGroupAdmin(status: string): boolean {
     return status === 'administrator' || status === 'creator';
+}
+
+export function isBotCanDelete(botData: ChatMember): boolean {
+    return (
+        botData.status === 'administrator' &&
+        botData.can_delete_messages === true
+    );
 }
 
 export function isBotCreator(
@@ -27,49 +43,88 @@ export function isStringEmpty(str: string): boolean {
     return str === '';
 }
 
-export function isInList(list: string[], item: number | string): boolean {
+export function isItemInList(item: number | string, list: string[]): boolean {
     return list.includes(String(item));
 }
 
-export function convertStringToBoolean(str: string): boolean {
+export function getBoolean(str: string | null): boolean {
+    if (str === null) return false;
     return str === 'true';
-}
-
-export function createMessageMentionLocaleKeyboard(
-    userID: string | number,
-    chatID: string | number
-): InlineKeyboard {
-    return new InlineKeyboard()
-        .text(keyboardLocale['buttonYes'], `${userID}|${chatID}|yes`)
-        .text(keyboardLocale['buttonNo'], `${userID}|${chatID}|no`);
 }
 
 export function getSessionKey(ctx: Context): string | undefined {
     return ctx.chat?.id.toString();
 }
 
-export function getStickerMessageMentionLocale(
-    text: string,
-    isMention: string | null,
-    userMention: string | null | undefined = null
-) {
-    const mentionBoolean =
-        isMention === null ? false : convertStringToBoolean(isMention);
-    if (mentionBoolean) return `${userMention}, ${text}`;
-    return text;
+export function getChatID(ctx: Context): number {
+    return ctx.update.message?.chat.id!;
 }
 
-export function getWhiteListKeyboardLocale(
-    inviteUser: string,
+export function getUserID(ctx: Context): number {
+    return ctx.update.message?.from?.id!;
+}
+
+export function getMessageID(msg: Message | undefined): number | undefined {
+    return msg?.message_id;
+}
+
+export function getCallbackData(ctx: Context): string {
+    return ctx.update.callback_query?.data || '';
+}
+
+export function getUserMention(user: User): string {
+    return user.username === undefined ? user.first_name : `@${user.username}`;
+}
+
+export function getChatInfo(
+    ctx: Context
+): [string | undefined, string | undefined] {
+    // @ts-ignore
+    return [ctx.update.message?.chat.title, ctx.update.message?.chat.username];
+}
+
+export function getUser(ctx: Context): User | undefined {
+    return ctx.update.message?.from;
+}
+
+export function getChatLink(chatLink: string | undefined): string | undefined {
+    return chatLink !== undefined ? `@${chatLink}` : undefined;
+}
+
+export function getListOfChats(chats: ChatFromGetChat[]): string[] {
+    return chats.map(chat => {
+        const chatID = chat.id;
+        // @ts-ignore
+        const chatName = chat.title;
+        // @ts-ignore
+        const chatLink = getChatLink(chat.username);
+        return `${
+            chatLink === undefined ? chatName : chatLink
+        } (<code>${chatID}</code>)`;
+    });
+}
+
+export function getStickerMessageLocale(
+    text: string,
+    isMention: string | null,
+    userMention: string | undefined = undefined
+) {
+    let messageText = text;
+    if (getBoolean(isMention)) messageText = `${userMention}, ` + messageText;
+    return messageText;
+}
+
+export function getWhiteListLocale(
+    inviteUser: string | undefined,
     chatData: string
 ): string {
-    if (inviteUser === 'null') inviteUser = otherLocale['unknownUser'];
+    if (inviteUser === undefined) inviteUser = otherLocale['unknownUser'];
     return whiteListLocale['newGroupInfo']
         .replace(/xxx/i, inviteUser)
         .replace(/yyy/i, chatData);
 }
 
-export function getWhiteListKeyboardResponseLocale(
+export function getWhiteListResponseLocale(
     isWhitelisted: boolean,
     isIgnored: boolean
 ): string {
@@ -78,56 +133,61 @@ export function getWhiteListKeyboardResponseLocale(
     return whiteListLocale['keyboardRemoved'];
 }
 
-export function getUserMention(user: User): string {
-    return user.username === undefined ? user.first_name : `@${user.username}`;
+export function getStickerMessageKeyboard(
+    userID: string | number,
+    chatID: string | number
+): InlineKeyboard {
+    return new InlineKeyboard()
+        .text(keyboardLocale['buttonYes'], `${userID}|${chatID}|yes`)
+        .text(keyboardLocale['buttonNo'], `${userID}|${chatID}|no`);
 }
 
-export function getChatLink(chatLink: string | undefined): string | undefined {
-    return chatLink !== undefined ? `@${chatLink}` : undefined;
-}
-
-export function checkLocaleWord(
+export function verifyLocaleWord(
     word: string | null,
     defaultWord: string
 ): string {
     return word === null || word === '' ? defaultWord : word;
 }
 
-export function checkStickerMessageLocale(
+export function verifyStickerMessageLocale(
     customText: string | null,
     stickerMessageMention: string | null
 ): [string, string | null] {
-    const stickerMessageLocale = checkLocaleWord(
+    const stickerMessageLocale = verifyLocaleWord(
         customText,
         stickerMessagesLocale['messageDefault']
     );
-    const stickerMessageMentionStatus =
+    const mentionStatus =
         stickerMessageLocale === stickerMessagesLocale['messageDefault']
             ? 'true'
             : stickerMessageMention;
-    return [stickerMessageLocale, stickerMessageMentionStatus];
+    return [stickerMessageLocale, mentionStatus];
 }
 
-export async function asyncTimeout(ms: number) {
-    return new Promise(resolve => {
-        setTimeout(resolve, ms);
-    });
-}
-
+// Async Utils Functions
 export async function isBotInChat(
     bot: Bot,
     chatID: string | number
 ): Promise<boolean> {
-    let isInChatFlag: boolean = false;
+    let isInChat: boolean = true;
     await bot.api
         .getChat(chatID)
-        .then(_ => {
-            isInChatFlag = true;
-        })
+        .then()
         .catch(_ => {
-            isInChatFlag = false;
+            isInChat = false;
         });
-    return isInChatFlag;
+    return isInChat;
+}
+
+export async function isMessageAlreadyDeleted(ctx: Context): Promise<boolean> {
+    let alreadyDeleted = false;
+    await ctx
+        .deleteMessage()
+        .then()
+        .catch(_ => {
+            alreadyDeleted = true;
+        });
+    return alreadyDeleted;
 }
 
 export async function getAuthorStatus(ctx: Context): Promise<string> {
@@ -139,24 +199,30 @@ export async function getChatsByIDs(
     bot: Bot,
     chatsIDs: string[]
 ): Promise<[ChatFromGetChat[], string[]]> {
-    let chatsInfo: ChatFromGetChat[] = [];
-    let idsInfo: string[] = [];
+    let chats: ChatFromGetChat[] = [];
+    let ids: string[] = [];
     await Promise.all(
         chatsIDs.map(async id => {
             await bot.api
                 .getChat(id)
                 .then(chat => {
-                    chatsInfo.push(chat);
+                    chats.push(chat);
                 })
                 .catch(_ => {
-                    idsInfo.push(id);
+                    ids.push(id);
                 });
         })
     );
-    return [chatsInfo, idsInfo];
+    return [chats, ids];
 }
 
-export async function generateStickerLocaleMessage(
+export async function asyncTimeout(ms: number) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
+}
+
+export async function generateStickerMessageLocale(
     client: RedisClientType,
     ctx: Context,
     chatID: number | string
@@ -166,79 +232,66 @@ export async function generateStickerLocaleMessage(
         chatID,
         ['stickerMessageLocale', 'stickerMessageMention']
     );
-    const [checkedCustomText, checkedStickerMessageMentionStatus] =
-        checkStickerMessageLocale(customText, stickerMessageMention);
-
+    const [verifiedCustomText, verifiedStickerMessageMentionStatus] =
+        verifyStickerMessageLocale(customText, stickerMessageMention);
     const userMention = getUserMention(ctx.update.message?.from!);
-    return getStickerMessageMentionLocale(
-        checkedCustomText,
-        checkedStickerMessageMentionStatus,
+    return getStickerMessageLocale(
+        verifiedCustomText,
+        verifiedStickerMessageMentionStatus,
         userMention
     );
 }
 
-export async function manageNewChatJoin(
+export async function newChatJoinHandler(
     bot: Bot,
     ctx: Context,
     creatorID: string | undefined,
     isIgnored: boolean
 ) {
-    const chatID = ctx.update.message?.chat.id!;
+    const chatID = getChatID(ctx);
 
     if (isIgnored) {
-        await ctx.reply(
-            ignoreListLocale['noAccess'].replace(
-                /xxx/i,
-                `<code>${chatID}</code>`
-            ),
-            {
-                parse_mode: 'HTML'
-            }
+        const ignoredMessage = ignoreListLocale['noAccess'].replace(
+            /xxx/i,
+            `<code>${chatID}</code>`
         );
+        await ctx.reply(ignoredMessage, {
+            parse_mode: 'HTML'
+        });
         return await ctx.leaveChat();
     }
-    await ctx.reply(
-        whiteListLocale['noAccess'].replace(/xxx/i, `<code>${chatID}</code>`),
-        {
-            parse_mode: 'HTML'
-        }
+
+    const whiteListMessage = whiteListLocale['noAccess'].replace(
+        /xxx/i,
+        `<code>${chatID}</code>`
     );
+
+    await ctx.reply(whiteListMessage, {
+        parse_mode: 'HTML'
+    });
 
     if (creatorID === undefined) return;
 
-    // @ts-ignore
-    const chatName = ctx.update.message?.chat.title;
-    // @ts-ignore
-    const chatUsername = ctx.update.message?.chat.username;
+    const [chatName, chatUsername] = getChatInfo(ctx);
     const chatLink = getChatLink(chatUsername);
     const chatLinkMessage = chatLink !== undefined ? chatLink : chatName;
-    const userInfo = ctx.update.message?.from;
-
-    let userMention: string;
-
-    if (userInfo === undefined) {
-        userMention = 'null';
-    } else {
-        userMention = getUserMention(userInfo);
-    }
-
+    const userInfo = getUser(ctx);
+    const userMention =
+        userInfo !== undefined ? getUserMention(userInfo) : undefined;
+    const messageText = getWhiteListLocale(
+        userMention,
+        `${chatLinkMessage} (<code>${chatID}</code>)`
+    );
     const keyboard = new InlineKeyboard()
         .text(keyboardLocale['buttonYes'], `${chatID}|accept`)
         .text(keyboardLocale['buttonNo'], `${chatID}|deny`)
         .row()
         .text(keyboardLocale['buttonIgnore'], `${chatID}|ignore`);
 
-    await bot.api.sendMessage(
-        Number(creatorID),
-        getWhiteListKeyboardLocale(
-            userMention,
-            `${chatLinkMessage} (<code>${chatID}</code>)`
-        ),
-        {
-            reply_markup: keyboard,
-            parse_mode: 'HTML'
-        }
-    );
+    await bot.api.sendMessage(Number(creatorID), messageText, {
+        reply_markup: keyboard,
+        parse_mode: 'HTML'
+    });
 }
 
 export async function sendAccessGrantedMessage(
@@ -285,7 +338,7 @@ export async function addIDToLists(
     listName: string,
     IDsList: string[]
 ): Promise<string[]> {
-    await addValueToList(client, listName, String(chatID));
+    await pushValueToList(client, listName, String(chatID));
     return [...IDsList, String(chatID)];
 }
 
@@ -295,21 +348,21 @@ export async function removeIDFromLists(
     listName: string,
     IDsList: string[]
 ): Promise<string[]> {
-    await deleteValueFromList(client, listName, String(chatID));
+    await removeValueFromList(client, listName, String(chatID));
     return IDsList.filter(id => id !== String(chatID));
 }
 
-// DB functions
-export async function getHashSingleData(
+// Database Utils functions
+export async function getHashData(
     client: RedisClientType,
     chatID: number,
     hashName: string,
     defaultData: string = ''
 ): Promise<string> {
-    const dbData =
+    return (
         (await client.hGet(`${chatsConfigTableName}:${chatID}`, hashName)) ||
-        defaultData;
-    return dbData;
+        defaultData
+    );
 }
 
 export async function getHashMultipleData(
@@ -317,11 +370,14 @@ export async function getHashMultipleData(
     chatID: number | string,
     hashNames: string[]
 ): Promise<(string | null)[]> {
-    const dbArrayData = await client.hmGet(
-        `${chatsConfigTableName}:${chatID}`,
-        hashNames
-    );
-    return dbArrayData;
+    return await client.hmGet(`${chatsConfigTableName}:${chatID}`, hashNames);
+}
+
+export async function getAllValuesFromList(
+    client: RedisClientType,
+    listName: string
+): Promise<string[]> {
+    return await client.lRange(listName, 0, -1);
 }
 
 export async function setHashData(
@@ -332,6 +388,14 @@ export async function setHashData(
     await client.hSet(`${chatsConfigTableName}:${chatID}`, hashData);
 }
 
+export async function pushValueToList(
+    client: RedisClientType,
+    listName: string,
+    value: string
+) {
+    await client.rPush(listName, value);
+}
+
 export async function deleteHashData(
     client: RedisClientType,
     chatID: number | string,
@@ -340,30 +404,14 @@ export async function deleteHashData(
     await client.hDel(`${chatsConfigTableName}:${chatID}`, fieldsName);
 }
 
-export async function deleteHashKey(
+export async function deleteHashTable(
     client: RedisClientType,
     chatID: number | string
 ) {
     await client.del(`${chatsConfigTableName}:${chatID}`);
 }
 
-export async function getAllValuesFromList(
-    client: RedisClientType,
-    listName: string
-): Promise<string[]> {
-    const dbArrayData = await client.lRange(listName, 0, -1);
-    return dbArrayData;
-}
-
-export async function addValueToList(
-    client: RedisClientType,
-    listName: string,
-    value: string
-) {
-    await client.rPush(listName, value);
-}
-
-export async function deleteValueFromList(
+export async function removeValueFromList(
     client: RedisClientType,
     listName: string,
     value: string
