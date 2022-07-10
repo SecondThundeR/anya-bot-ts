@@ -26,10 +26,7 @@ export function isGroupAdmin(status: string): boolean {
 }
 
 export function isBotCanDelete(botData: ChatMember): boolean {
-    return (
-        botData.status === 'administrator' &&
-        botData.can_delete_messages === true
-    );
+    return botData.status === 'administrator' && botData.can_delete_messages;
 }
 
 export function isBotCreator(
@@ -216,6 +213,16 @@ export async function getChatsByIDs(
     return [chats, ids];
 }
 
+export async function extractContextData(
+    ctx: Context
+): Promise<[number, string, ChatMember, string]> {
+    const chatID = getChatID(ctx);
+    const authorStatus = await getAuthorStatus(ctx);
+    const botData = await ctx.getChatMember(ctx.me.id);
+    const messageText = String(ctx.match) || '';
+    return [chatID, authorStatus, botData, messageText];
+}
+
 export async function asyncTimeout(ms: number) {
     return new Promise(resolve => {
         setTimeout(resolve, ms);
@@ -355,7 +362,7 @@ export async function removeIDFromLists(
 // Database Utils functions
 export async function getHashData(
     client: RedisClientType,
-    chatID: number,
+    chatID: number | string,
     hashName: string,
     defaultData: string = ''
 ): Promise<string> {

@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Display basic bot data _(first name and username)_ on startup
+- Check for bot kick when trying to add a chat to the whitelist/ignored list
+- New message text if bot was kicked when adding chat to the list with button
+
+### Changed
+
+- Rephrase some of the bot's message text for better understanding
+- Update dependencies
+- Minor refactoring
+
+### Fixed
+
+- Function call to send a message after removing a sticker is now asynchronous
+- Commands to view data in the white and ignore list now check for the creator
+
 ## [1.2.1] - 2022-06-28
 
 > This release is mainly aimed at some refactoring

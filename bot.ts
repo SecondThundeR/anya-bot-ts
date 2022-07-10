@@ -1,5 +1,6 @@
 import { Bot, session, GrammyError, HttpError } from 'grammy';
 import { run, sequentialize, RunnerHandle } from '@grammyjs/runner';
+import { ChatMember } from 'grammy/out/platform.node';
 import { createClient } from 'redis';
 import { RedisClientType } from '@redis/client';
 import {
@@ -36,7 +37,9 @@ import {
     isMessageAlreadyDeleted,
     isPremiumSticker,
     isBotCanDelete,
-    getListOfChats
+    getListOfChats,
+    getUserMention,
+    extractContextData
 } from './utils';
 import {
     silentMessagesLocale,
@@ -44,7 +47,8 @@ import {
     otherLocale,
     whiteListLocale,
     ignoreListLocale,
-    helpLocale
+    helpLocale,
+    keyboardLocale
 } from './locale';
 
 if (process.env.NODE_ENV === 'local') {
@@ -134,10 +138,8 @@ group.command('silent', async ctx => {
 });
 
 group.command('silentonlocale', async ctx => {
-    const chatID = getChatID(ctx);
-    const authorStatus = await getAuthorStatus(ctx);
-    const botData = await ctx.getChatMember(ctx.me.id);
-    const newLocaleString = ctx.match;
+    const [chatID, authorStatus, botData, newLocaleString] =
+        await extractContextData(ctx);
 
     if (!isItemInList(chatID, whiteListIDs)) return;
 
@@ -168,10 +170,8 @@ group.command('silentonlocalereset', async ctx => {
 });
 
 group.command('silentofflocale', async ctx => {
-    const chatID = getChatID(ctx);
-    const authorStatus = await getAuthorStatus(ctx);
-    const botData = await ctx.getChatMember(ctx.me.id);
-    const newLocaleString = ctx.match;
+    const [chatID, authorStatus, botData, newLocaleString] =
+        await extractContextData(ctx);
 
     if (!isItemInList(chatID, whiteListIDs)) return;
 
@@ -202,10 +202,8 @@ group.command('silentofflocalereset', async ctx => {
 });
 
 group.command('messagelocale', async ctx => {
-    const chatID = getChatID(ctx);
-    const authorStatus = await getAuthorStatus(ctx);
-    const botData = await ctx.getChatMember(ctx.me.id);
-    const newLocaleString = ctx.match;
+    const [chatID, authorStatus, botData, newLocaleString] =
+        await extractContextData(ctx);
 
     if (!isItemInList(chatID, whiteListIDs)) return;
 
@@ -342,7 +340,7 @@ group.on('message:sticker', async ctx => {
     const silentStatus = await getHashData(client, chatID, 'isSilent', 'false');
     if (getBoolean(silentStatus)) return;
 
-    ctx.reply(await generateStickerMessageLocale(client, ctx, chatID));
+    await ctx.reply(await generateStickerMessageLocale(client, ctx, chatID));
 });
 
 pm.command('start', async ctx => await ctx.reply(otherLocale['noPMHint']));
@@ -418,6 +416,8 @@ pm.command('removewhitelist', async ctx => {
 });
 
 pm.command('getwhitelist', async ctx => {
+    if (!isBotCreator(getUserID(ctx), creatorID)) return;
+
     if (whiteListIDs.length === 0)
         return await ctx.reply(whiteListLocale['listEmpty']);
 
@@ -499,6 +499,8 @@ pm.command('removeignorelist', async ctx => {
 });
 
 pm.command('getignorelist', async ctx => {
+    if (!isBotCreator(getUserID(ctx), creatorID)) return;
+
     if (ignoreListIDs.length === 0)
         return await ctx.reply(ignoreListLocale['listEmpty']);
 
@@ -521,7 +523,16 @@ pm.on('callback_query:data', async ctx => {
     const [chatID, listMode] = splitData;
     const whiteListAccept = listMode === 'accept';
     const ignoreListIgnore = listMode === 'ignore';
-    const botData = await bot.api.getChatMember(chatID, ctx.me.id);
+    let botData: ChatMember | undefined = undefined;
+
+    try {
+        botData = await bot.api.getChatMember(chatID, ctx.me.id);
+    } catch (e) {
+        return await ctx.reply(keyboardLocale['keyboardError'], {
+            // @ts-ignore
+            reply_to_message_id: getMessageID(originalMessage)
+        });
+    }
 
     if (ignoreListIgnore && !isItemInList(chatID, ignoreListIDs)) {
         ignoreListIDs = await addIDToLists(
@@ -543,7 +554,7 @@ pm.on('callback_query:data', async ctx => {
         await sendAccessGrantedMessage(bot, chatID);
     }
 
-    if (!isBotCanDelete(botData))
+    if (botData && !isBotCanDelete(botData))
         await bot.api.sendMessage(
             chatID,
             otherLocale['botAdminWhitelistedHint']
@@ -586,9 +597,14 @@ process.once('SIGTERM', stopOnTerm);
 
 (async () => {
     try {
-        console.log('Starting bot');
+        const botData = await bot.api.getMe();
+
+        if (botData === undefined) return;
+        console.log(`Started as ${botData.first_name} (@${botData.username})`);
+
         await client.connect();
         client.on('error', err => console.log('Redis Client Error', err));
+
         whiteListIDs = await getAllValuesFromList(client, whiteListIDsListName);
         ignoreListIDs = await getAllValuesFromList(
             client,

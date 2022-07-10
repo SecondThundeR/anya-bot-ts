@@ -14,12 +14,12 @@
     "dependencies": {
         "@grammyjs/runner": "^1.0.3",
         "grammy": "^1.9.0",
-        "redis": "^4.1.0"
+        "redis": "^4.2.0"
     },
     "devDependencies": {
-        "@types/node": "^18.0.0",
+        "@types/node": "^18.0.3",
         "dotenv": "^16.0.1",
-        "ts-node": "^10.8.1",
+        "ts-node": "^10.8.2",
         "typescript": "^4.7.4"
     }
 }
