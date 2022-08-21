@@ -11,7 +11,6 @@ module.exports = {
     singleQuote: true,
     printWidth: 80,
     svelteSortOrder: 'options-scripts-markup-styles',
-    trailingComma: 'none',
     overrides: [
         {
             files: ['*.json'],

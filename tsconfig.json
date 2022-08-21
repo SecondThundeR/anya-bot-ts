@@ -8,6 +8,10 @@
         "skipLibCheck": true,
         "outDir": "./out",
         "rootDir": "./",
-        "moduleResolution": "node"
+        "moduleResolution": "node16",
+        "inlineSources": false,
+        // Enable when need to debug in WebStorm
+        "sourceMap": false
+        // Enable when need to debug in WebStorm
     }
 }

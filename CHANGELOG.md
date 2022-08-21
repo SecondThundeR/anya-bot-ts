@@ -7,22 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+> Uncoming release which adds new features and fixes, as well as refactor of project files (WIP for now)
+
 ### Added
 
+- New features: Delete voice/video messages, and premium emojis
+- New commands:
+  - `/aidenmode` - Enables/disables Aiden Pierce mode _(Removal of voice/video messages)_
+    > Named after my previous bot, [@voicecringe_bot](https://t.me/voicecringe_bot), which is now disabled
+  - `/aidenmodesilent` - Triggers silent mode for Aiden Pierce mode
+  - `/adminpower` - Allows admin to send "restricted" content
+  - `/noemoji` - Disables premium emoji in messages
+- Dummy .env file for development
+- Redis singleton for working with DB from multiple files
 - Display basic bot data _(first name and username)_ on startup
 - Check for bot kick when trying to add a chat to the whitelist/ignored list
 - New message text if bot was kicked when adding chat to the list with button
+- Interfaces for locale objects
 
 ### Changed
 
+- Project renamed to `anya-bot-ts`
+- Started work on refactoring project files _(Thx to `Composer()`, now commands are separated from bot.ts file)_
 - Rephrase some of the bot's message text for better understanding
 - Update dependencies
-- Minor refactoring
+- `tsconfig.json` now has options for debugging in WebStorm
+
+### Removed
+- `.vscode/launch.json` is no longer present _(Dependency, related with it, removed as well)_
+- `utils.ts` removed _(Replaced with `utils/regularUtils.ts` and `utils/asyncUtils.ts`)_
+- `locale.ts` removed _(Replaced with `locale` folder)_
+- Removed local arrays with whiteList and ignoreList IDs
 
 ### Fixed
 
 - Function call to send a message after removing a sticker is now asynchronous
 - Commands to view data in the white and ignore list now check for the creator
+- Bug which caused the bot to show all private info for the creator to the others _(Sometimes I hate myself)_
+- Typings are now up to date _(Removed `@ts-ignore` in many places)_
+- Some files are prettified and fixed
 
 ## [1.2.1] - 2022-06-28
 
