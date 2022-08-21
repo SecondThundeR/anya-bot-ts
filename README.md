@@ -1,4 +1,4 @@
-# anti-premium-stickers-bot
+# anya-bot-ts
 
 Some random TypeScript bot with interesting features based on the grammY library
 
