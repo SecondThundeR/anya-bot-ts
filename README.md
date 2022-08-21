@@ -3,6 +3,8 @@
 Some random TypeScript bot with interesting features based on the grammY library
 
 > This bot was created as an additional tool to fight against premium Telegram stickers and emoji (Because they sucks)
+> 
+> Live instance of bot: [@antipremiumbullshit_bot](https://t.me/antipremiumbullshit_bot)
 
 ## Features
 
