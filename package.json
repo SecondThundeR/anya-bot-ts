@@ -1,5 +1,5 @@
 {
-    "name": "anya-bot",
+    "name": "anya-bot-ts",
     "version": "2.0.0-beta.2",
     "description": "Some random TypeScript bot with interesting features",
     "main": "bot.js",
