@@ -5,9 +5,13 @@ import AsyncUtils from '../../../utils/asyncUtils';
 
 const customEmojisHandler = new Composer();
 
-// TODO: Add strict check for custom_emoji when update of Grammy will be available
 customEmojisHandler.on(
-    ['message:entities', 'edited_message:entities'],
+    [
+        'message:entities:custom_emoji',
+        'edited_message:entities:custom_emoji',
+        'message:caption_entities:custom_emoji',
+        'edited_message:caption_entities:custom_emoji'
+    ],
     async ctx => {
         const chatID = RegularUtils.getChatID(ctx);
         const botData = await ctx.getChatMember(ctx.me.id);
@@ -36,14 +40,12 @@ customEmojisHandler.on(
 
         const entities_array =
             ctx?.update?.message?.entities ||
-            ctx?.update?.edited_message?.entities;
+            ctx?.update?.edited_message?.entities ||
+            ctx?.update?.message?.caption_entities ||
+            ctx?.update?.edited_message?.caption_entities;
         if (entities_array === undefined) return;
 
-        const isCustomEmojiExists = entities_array.some(
-            // @ts-ignore Fix on next version of grammY
-            entity => entity.type === 'custom_emoji'
-        );
-        if (isCustomEmojiExists) return await ctx.deleteMessage();
+        if (entities_array.length > 0) return await ctx.deleteMessage();
     }
 );
 
