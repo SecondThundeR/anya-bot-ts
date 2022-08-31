@@ -66,6 +66,7 @@ bot.use(sequentialize(getSessionKeyFunc));
 // @ts-ignore
 bot.use(session({ getSessionKeyFunc }));
 
+// Group Commands
 group.use(helpGroupMessage);
 group.use(aidenMode);
 group.use(silentTrigger);
@@ -79,12 +80,14 @@ group.use(messageLocale);
 group.use(messageLocaleReset);
 group.use(noCustomEmoji);
 
+// Group Handlers
 group.use(groupCallbackHandler);
 group.use(newChatHandler);
 group.use(customEmojisHandler);
 group.use(premiumStickersHandler);
 group.use(voiceAndVideoHandler);
 
+// PM Commands
 pm.use(startMessage);
 pm.use(helpPMMessage);
 pm.use(addWhiteList);
@@ -94,6 +97,7 @@ pm.use(addIgnoreList);
 pm.use(removeIgnoreList);
 pm.use(getIgnoreList);
 
+// PM Handlers
 pm.use(pmCallbackHandler);
 
 bot.catch(err => {
