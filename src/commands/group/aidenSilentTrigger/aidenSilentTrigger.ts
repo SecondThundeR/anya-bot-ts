@@ -6,7 +6,7 @@ import { updateAidenSilentData } from './helpers';
 
 const aidenSilentTrigger = new Composer();
 
-aidenSilentTrigger.command('aidenSilent', async ctx => {
+aidenSilentTrigger.command('aidensilent', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
     const chatID = RegularUtils.getChatID(ctx);
     const authorStatus = await AsyncUtils.getAuthorStatus(ctx);

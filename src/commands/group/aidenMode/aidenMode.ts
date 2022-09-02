@@ -6,7 +6,7 @@ import { updateAidenData } from './helpers';
 
 const aidenMode = new Composer();
 
-aidenMode.command('aidenMode', async ctx => {
+aidenMode.command('aidenmode', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
     const chatID = RegularUtils.getChatID(ctx);
     const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
