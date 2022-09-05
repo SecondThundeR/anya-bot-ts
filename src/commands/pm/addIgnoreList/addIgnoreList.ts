@@ -9,24 +9,26 @@ import ListsNames from '../../../enums/listsNames';
 const addIgnoreList = new Composer();
 
 addIgnoreList.command('addignorelist', async ctx => {
-    const redisInstance = RedisSingleton.getInstance();
     const chatID = ctx.match;
-    const whiteListIDs = await redisInstance.getAllList(ListsNames.WHITELIST);
-    const ignoreListIDs = await redisInstance.getAllList(ListsNames.IGNORELIST);
+    const redisInstance = RedisSingleton.getInstance();
+    const idsLists = await redisInstance.getLists([
+        ListsNames.WHITELIST,
+        ListsNames.IGNORELIST
+    ]);
 
     if (!RegularUtils.isBotCreator(ctx)) return;
 
     if (RegularUtils.isStringEmpty(chatID))
         return await ctx.reply(otherMessages.noChatIDProvided);
 
-    if (RegularUtils.isItemInList(chatID, ignoreListIDs))
+    if (RegularUtils.isItemInList(chatID, idsLists[ListsNames.IGNORELIST]))
         return await ctx.reply(ignoreListMessages.alreadyAdded);
 
     await redisInstance.pushValueToList(ListsNames.IGNORELIST, String(chatID));
 
     const isWhitelistedLocally = RegularUtils.isItemInList(
         chatID,
-        whiteListIDs
+        idsLists[ListsNames.WHITELIST]
     );
     if (isWhitelistedLocally)
         await redisInstance.removeValueFromList(

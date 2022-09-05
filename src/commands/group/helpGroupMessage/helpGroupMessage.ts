@@ -9,7 +9,7 @@ import { sendNoAccessMessage } from './helpers';
 const helpGroupMessage = new Composer();
 
 helpGroupMessage.command('help', async ctx => {
-    const whiteListIDs = await RedisSingleton.getInstance().getAllList(
+    const whiteListIDs = await RedisSingleton.getInstance().getList(
         ListsNames.WHITELIST
     );
     const chatID = RegularUtils.getChatID(ctx);

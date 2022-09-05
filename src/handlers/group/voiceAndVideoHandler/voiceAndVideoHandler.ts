@@ -7,7 +7,7 @@ import RedisSingleton from '../../../utils/redisSingleton';
 const voiceAndVideoHandler = new Composer();
 
 voiceAndVideoHandler.on(['message:voice', 'message:video_note'], async ctx => {
-    const redisSingleton = RedisSingleton.getInstance();
+    const redisInstance = RedisSingleton.getInstance();
     const chatID = RegularUtils.getChatID(ctx);
     const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
     const isAdminPowerEnabled = await redisSingleton.getHashData(

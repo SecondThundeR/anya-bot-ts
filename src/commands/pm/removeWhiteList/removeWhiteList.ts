@@ -11,7 +11,7 @@ const removeWhiteList = new Composer();
 removeWhiteList.command('removewhitelist', async ctx => {
     const redisInstance = RedisSingleton.getInstance();
     const chatID = ctx.match;
-    const whiteListIDs = await redisInstance.getAllList(ListsNames.WHITELIST);
+    const whiteListIDs = await redisInstance.getList(ListsNames.WHITELIST);
 
     if (!RegularUtils.isBotCreator(ctx)) return;
 

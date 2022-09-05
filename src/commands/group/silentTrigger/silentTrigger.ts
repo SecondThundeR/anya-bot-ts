@@ -9,7 +9,7 @@ const silentTrigger = new Composer();
 
 silentTrigger.command('silent', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
-    const whiteListIDs = await redisSingleton.getAllList(ListsNames.WHITELIST);
+    const whiteListIDs = await redisSingleton.getList(ListsNames.WHITELIST);
     const chatID = RegularUtils.getChatID(ctx);
     const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
 

@@ -8,7 +8,7 @@ import ListsNames from '../../../enums/listsNames';
 const getWhiteList = new Composer();
 
 getWhiteList.command('getwhitelist', async ctx => {
-    const whiteListIDs = await RedisSingleton.getInstance().getAllList(
+    const whiteListIDs = await RedisSingleton.getInstance().getList(
         ListsNames.WHITELIST
     );
 

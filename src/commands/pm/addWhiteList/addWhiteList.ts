@@ -11,15 +11,17 @@ const addWhiteList = new Composer();
 addWhiteList.command('addwhitelist', async ctx => {
     const redisInstance = RedisSingleton.getInstance();
     const chatID = ctx.match;
-    const whiteListIDs = await redisInstance.getAllList(ListsNames.WHITELIST);
-    const ignoreListIDs = await redisInstance.getAllList(ListsNames.IGNORELIST);
+    const idsLists = await redisInstance.getLists([
+        ListsNames.WHITELIST,
+        ListsNames.IGNORELIST
+    ]);
 
     if (!RegularUtils.isBotCreator(ctx)) return;
 
     if (RegularUtils.isStringEmpty(chatID))
         return await ctx.reply(otherMessages.noChatIDProvided);
 
-    if (RegularUtils.isItemInList(chatID, whiteListIDs))
+    if (RegularUtils.isItemInList(chatID, idsLists[ListsNames.WHITELIST]))
         return await ctx.reply(whiteListMessages.alreadyAdded);
 
     await RedisSingleton.getInstance().pushValueToList(
@@ -27,7 +29,7 @@ addWhiteList.command('addwhitelist', async ctx => {
         String(chatID)
     );
 
-    if (RegularUtils.isItemInList(chatID, ignoreListIDs)) {
+    if (RegularUtils.isItemInList(chatID, idsLists[ListsNames.IGNORELIST])) {
         await RedisSingleton.getInstance().removeValueFromList(
             ListsNames.IGNORELIST,
             String(chatID)

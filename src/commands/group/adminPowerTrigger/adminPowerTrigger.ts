@@ -8,8 +8,8 @@ import { updateAllowData } from './helpers';
 const adminPowerTrigger = new Composer();
 
 adminPowerTrigger.command('adminpower', async ctx => {
-    const redisSingleton = RedisSingleton.getInstance();
-    const whiteListIDs = await redisSingleton.getAllList(ListsNames.WHITELIST);
+    const redisInstance = RedisSingleton.getInstance();
+    const whiteListIDs = await redisInstance.getList(ListsNames.WHITELIST);
     const chatID = RegularUtils.getChatID(ctx);
     const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
 
@@ -19,7 +19,7 @@ adminPowerTrigger.command('adminpower', async ctx => {
     )
         return;
 
-    const replyText = await updateAllowData(redisSingleton, chatID);
+    const replyText = await updateAllowData(redisInstance, chatID);
     await ctx.reply(replyText, {
         reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
     });

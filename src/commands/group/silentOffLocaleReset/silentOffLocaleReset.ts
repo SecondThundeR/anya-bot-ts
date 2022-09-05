@@ -8,7 +8,7 @@ const silentOffLocaleReset = new Composer();
 
 silentOffLocaleReset.command('silentonlocalereset', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
-    const whiteListIDs = await RedisSingleton.getInstance().getAllList(
+    const whiteListIDs = await RedisSingleton.getInstance().getList(
         ListsNames.WHITELIST
     );
 

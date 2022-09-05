@@ -9,18 +9,18 @@ const newChatHandler = new Composer();
 
 newChatHandler.on('msg:new_chat_members:me', async ctx => {
     const creatorID = process.env.CREATOR_ID;
-    const redisSingleton = RedisSingleton.getInstance();
+    const redisInstance = RedisSingleton.getInstance();
     const chatID = RegularUtils.getChatID(ctx);
-    const whiteListIDs = await redisSingleton.getAllList(ListsNames.WHITELIST);
-    const ignoreListIDs = await redisSingleton.getAllList(
+    const idsLists = await redisInstance.getLists([
+        ListsNames.WHITELIST,
         ListsNames.IGNORELIST
-    );
+    ]);
 
-    if (!RegularUtils.isItemInList(chatID, whiteListIDs))
+    if (!RegularUtils.isItemInList(chatID, idsLists[ListsNames.WHITELIST]))
         return await AsyncUtils.newChatJoinHandler(
             ctx,
             creatorID,
-            RegularUtils.isItemInList(chatID, ignoreListIDs)
+            RegularUtils.isItemInList(chatID, idsLists[ListsNames.IGNORELIST])
         );
 
     return await ctx.reply(otherMessages.botAdminHint);

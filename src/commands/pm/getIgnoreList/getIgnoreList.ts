@@ -8,7 +8,7 @@ const getIgnoreList = new Composer();
 
 getIgnoreList.command('getignorelist', async ctx => {
     const redisInstance = RedisSingleton.getInstance();
-    const ignoreListIDs = await redisInstance.getAllList(ListsNames.IGNORELIST);
+    const ignoreListIDs = await redisInstance.getList(ListsNames.IGNORELIST);
 
     if (!RegularUtils.isBotCreator(ctx)) return;
 

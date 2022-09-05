@@ -12,8 +12,10 @@ const pmCallbackHandler = new Composer();
 pmCallbackHandler.on('callback_query:data', async ctx => {
     const splitData = RegularUtils.getCallbackData(ctx).split('|');
     const redisInstance = RedisSingleton.getInstance();
-    const whiteListIDs = await redisInstance.getAllList(ListsNames.WHITELIST);
-    const ignoreListIDs = await redisInstance.getAllList(ListsNames.IGNORELIST);
+    const idsLists = await redisInstance.getLists([
+        ListsNames.WHITELIST,
+        ListsNames.IGNORELIST
+    ]);
 
     if (splitData.length !== 2)
         return await ctx.answerCallbackQuery({
@@ -38,7 +40,10 @@ pmCallbackHandler.on('callback_query:data', async ctx => {
         });
     }
 
-    if (ignoreListIgnore && !RegularUtils.isItemInList(chatID, ignoreListIDs)) {
+    if (
+        ignoreListIgnore &&
+        !RegularUtils.isItemInList(chatID, idsLists[ListsNames.IGNORELIST])
+    ) {
         await RedisSingleton.getInstance().pushValueToList(
             ListsNames.IGNORELIST,
             String(chatID)
@@ -46,7 +51,10 @@ pmCallbackHandler.on('callback_query:data', async ctx => {
         await AsyncUtils.sendIgnoredMessage(ctx, chatID);
     }
 
-    if (whiteListAccept && !RegularUtils.isItemInList(chatID, whiteListIDs)) {
+    if (
+        whiteListAccept &&
+        !RegularUtils.isItemInList(chatID, idsLists[ListsNames.WHITELIST])
+    ) {
         await RedisSingleton.getInstance().pushValueToList(
             ListsNames.WHITELIST,
             String(chatID)
