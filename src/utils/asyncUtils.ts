@@ -8,26 +8,35 @@ import keyboardMessages from '../locale/keyboardMessages';
 import RedisSingleton from './redisSingleton';
 
 export default class AsyncUtils {
-    public static async logBotInfo(botAPI: Api) {
-        const botBasicInfo = await botAPI.getMe();
+    /**
+     * Gets the name and username of the currently running bot
+     * and logs the information to the console
+     * @param api - Telegram Bot API instance
+     */
+    public static async logBotInfo(api: Api) {
+        const botBasicInfo = await api.getMe();
         if (botBasicInfo === undefined) return;
         console.log(
             `Started as ${botBasicInfo.first_name} (@${botBasicInfo.username})`
         );
     }
 
+    /**
+     * Checks that the bot is in chat
+     * @param ctx - Context object
+     * @param chatID - ID of chat to check
+     * @returns - true if bot is in chat, false if not
+     */
     public static async isBotInChat(
         ctx: Context,
         chatID: string | number
     ): Promise<boolean> {
-        let isBotInChat = true;
-        await ctx.api
-            .getChat(chatID)
-            .then()
-            .catch(_ => {
-                isBotInChat = false;
-            });
-        return isBotInChat;
+        try {
+            await ctx.api.getChat(chatID);
+            return true;
+        } catch (_) {
+            return false;
+        }
     }
 
     public static async isMessageAlreadyDeleted(
@@ -73,12 +82,11 @@ export default class AsyncUtils {
 
     public static async extractContextData(
         ctx: Context
-    ): Promise<[number, string, ChatMember, string]> {
+    ): Promise<[number, ChatMember, string]> {
         const chatID = RegularUtils.getChatID(ctx);
-        const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
         const botData = await ctx.getChatMember(ctx.me.id);
         const messageText = String(ctx.match) || '';
-        return [chatID, authorStatus, botData, messageText];
+        return [chatID, botData, messageText];
     }
 
     public static async resetLocaleHandler(
@@ -89,13 +97,12 @@ export default class AsyncUtils {
         localeResetMessage: string
     ) {
         const chatID = RegularUtils.getChatID(ctx);
-        const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
         const botData = await ctx.getChatMember(ctx.me.id);
 
         if (!RegularUtils.isItemInList(chatID, whiteListIDs)) return;
 
         if (
-            !RegularUtils.isGroupAdmin(authorStatus) &&
+            !(await AsyncUtils.isGroupAdmin(ctx)) &&
             RegularUtils.isBotCanDelete(botData)
         )
             return await ctx.deleteMessage();
@@ -136,6 +143,15 @@ export default class AsyncUtils {
         );
     }
 
+    public static async isGroupAdmin(ctx: Context): Promise<boolean> {
+        const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
+        return (
+            authorStatus === 'administrator' ||
+            authorStatus === 'creator' ||
+            authorStatus === 'anon'
+        );
+    }
+
     public static async newChatJoinHandler(
         ctx: Context,
         creatorID: string | undefined,
@@ -144,7 +160,7 @@ export default class AsyncUtils {
         const chatID = RegularUtils.getChatID(ctx);
 
         if (isIgnored) {
-            const ignoredMessage = ignoreListMessages.noAccess.replace(
+            const ignoredMessage = ignoreListMessages.chatMessage.replace(
                 /xxx/i,
                 `<code>${chatID}</code>`
             );
@@ -154,7 +170,7 @@ export default class AsyncUtils {
             return await ctx.leaveChat();
         }
 
-        const whiteListMessage = whiteListMessages.noAccess.replace(
+        const whiteListMessage = whiteListMessages.chatMessage.replace(
             /xxx/i,
             `<code>${chatID}</code>`
         );
@@ -218,7 +234,7 @@ export default class AsyncUtils {
     ) {
         await ctx.api.sendMessage(
             chatID,
-            ignoreListMessages.noAccess.replace(
+            ignoreListMessages.chatMessage.replace(
                 /xxx/i,
                 `<code>${chatID}</code>`
             ),
@@ -236,6 +252,9 @@ export default class AsyncUtils {
         await ctx.api.leaveChat(chatID);
     }
 
+    /**
+     * @deprecated Function is not used anymore. Will be deleted is later versions.
+     */
     public static async addIDToLists(
         client: RedisClientType,
         chatID: string | number,
@@ -249,6 +268,9 @@ export default class AsyncUtils {
         return [...IDsList, String(chatID)];
     }
 
+    /**
+     * @deprecated Function is not used anymore. Will be deleted is later versions.
+     */
     public static async removeIDFromLists(
         client: RedisClientType,
         chatID: string | number,
