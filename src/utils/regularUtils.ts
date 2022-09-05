@@ -17,14 +17,6 @@ export default class RegularUtils {
         return ctx.update.message?.sticker?.premium_animation !== undefined;
     }
 
-    public static isGroupAdmin(status: string): boolean {
-        return (
-            status === 'administrator' ||
-            status === 'creator' ||
-            status === 'anon'
-        );
-    }
-
     public static isBotCanDelete(botData: ChatMember): boolean {
         return (
             botData.status === 'administrator' && botData.can_delete_messages
@@ -58,6 +50,10 @@ export default class RegularUtils {
 
     public static getUserID(ctx: Context): number {
         return ctx.update.message?.from?.id!;
+    }
+
+    public static convertHelpMessageToHTMLFormat(helpMessage: string): string {
+        return helpMessage.replace(/\[/g, '<code>').replace(/]/g, '</code>');
     }
 
     public static getMessageID(msg: Message | undefined): number | undefined {
@@ -121,7 +117,7 @@ export default class RegularUtils {
         chatData: string
     ): string {
         if (inviteUser === undefined) inviteUser = otherMessages.unknownUser;
-        return whiteListMessages.newGroupInfo
+        return whiteListMessages.newChatInfo
             .replace(/xxx/i, inviteUser)
             .replace(/yyy/i, chatData);
     }
