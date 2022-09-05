@@ -1,6 +1,4 @@
-import IStickerMessages from '../../interfaces/locale/IStickerMessages';
-
-const stickerMessages: IStickerMessages = {
+const stickerMessages = {
     messageDefault:
         'мой папа говорит, что такие стикеры используют плохие дяди!',
     messageChanged: 'Теперь я буду говорить это, когда я увижу любой стикер!',

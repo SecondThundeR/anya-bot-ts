@@ -1,6 +1,4 @@
-import ISilentMessages from '../../interfaces/locale/ISilentMessages';
-
-const silentMessages: ISilentMessages = {
+const silentMessages = {
     enabledDefault: 'Поняла! Теперь я буду бороться со стикерами в тишине',
     disabledDefault: 'Ура! Буду говорить обо всех стикерах сразу же',
     enabledMessageChange:

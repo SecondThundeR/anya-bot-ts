@@ -1,6 +1,4 @@
-import IKeyboardMessages from '../../interfaces/locale/IKeyboardMessages';
-
-const keyboardMessages: IKeyboardMessages = {
+const keyboardMessages = {
     buttonYes: 'Да',
     buttonNo: 'Нет',
     buttonIgnore: 'Игнорировать',
