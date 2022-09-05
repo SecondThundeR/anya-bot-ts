@@ -11,7 +11,7 @@ const startMessage = new Composer();
  */
 startMessage.command('start', async ctx => {
     if (!RegularUtils.isBotCreator(ctx))
-        await ctx.reply(otherMessages.noPMHint);
+        return await ctx.reply(otherMessages.noPMHint);
     await ctx.reply(otherMessages.creatorPMHint);
 });
 

@@ -1,6 +1,6 @@
 {
     "name": "anya-bot-ts",
-    "version": "2.0.0-beta.4",
+    "version": "2.0.0-beta.5",
     "description": "Some random TypeScript bot with interesting features",
     "main": "bot.js",
     "scripts": {
