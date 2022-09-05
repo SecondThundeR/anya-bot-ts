@@ -31,10 +31,9 @@ export default class RegularUtils {
         );
     }
 
-    public static isBotCreator(
-        userID: number | undefined,
-        botCreatorID: string | undefined
-    ): boolean {
+    public static isBotCreator(ctx: Context): boolean {
+        const botCreatorID = process.env.CREATOR_ID;
+        const userID = RegularUtils.getUserID(ctx);
         return botCreatorID !== undefined && String(userID) === botCreatorID;
     }
 

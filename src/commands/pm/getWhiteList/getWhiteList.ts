@@ -8,13 +8,11 @@ import ListsNames from '../../../enums/listsNames';
 const getWhiteList = new Composer();
 
 getWhiteList.command('getwhitelist', async ctx => {
-    const creatorID = process.env.CREATOR_ID;
     const whiteListIDs = await RedisSingleton.getInstance().getAllList(
         ListsNames.WHITELIST
     );
-    const userID = RegularUtils.getUserID(ctx);
 
-    if (!RegularUtils.isBotCreator(userID, creatorID)) return;
+    if (!RegularUtils.isBotCreator(ctx)) return;
 
     if (whiteListIDs.length === 0)
         return await ctx.reply(whiteListMessages.listEmpty);

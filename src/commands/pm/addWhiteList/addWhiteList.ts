@@ -9,14 +9,12 @@ import ListsNames from '../../../enums/listsNames';
 const addWhiteList = new Composer();
 
 addWhiteList.command('addwhitelist', async ctx => {
-    const creatorID = process.env.CREATOR_ID;
     const redisInstance = RedisSingleton.getInstance();
     const chatID = ctx.match;
-    const userID = RegularUtils.getUserID(ctx);
     const whiteListIDs = await redisInstance.getAllList(ListsNames.WHITELIST);
     const ignoreListIDs = await redisInstance.getAllList(ListsNames.IGNORELIST);
 
-    if (!RegularUtils.isBotCreator(userID, creatorID)) return;
+    if (!RegularUtils.isBotCreator(ctx)) return;
 
     if (RegularUtils.isStringEmpty(chatID))
         return await ctx.reply(otherMessages.noChatIDProvided);

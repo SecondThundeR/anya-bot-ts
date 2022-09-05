@@ -8,13 +8,11 @@ import ListsNames from '../../../enums/listsNames';
 const removeIgnoreList = new Composer();
 
 removeIgnoreList.command('removeignorelist', async ctx => {
-    const creatorID = process.env.CREATOR_ID;
     const redisInstance = RedisSingleton.getInstance();
     const chatID = ctx.match;
-    const userID = RegularUtils.getUserID(ctx);
     const ignoreListIDs = await redisInstance.getAllList(ListsNames.IGNORELIST);
 
-    if (!RegularUtils.isBotCreator(userID, creatorID)) return;
+    if (!RegularUtils.isBotCreator(ctx)) return;
 
     if (RegularUtils.isStringEmpty(chatID))
         return await ctx.reply(otherMessages.noChatIDProvided);

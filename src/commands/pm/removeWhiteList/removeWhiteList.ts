@@ -9,13 +9,11 @@ import RedisSingleton from '../../../utils/redisSingleton';
 const removeWhiteList = new Composer();
 
 removeWhiteList.command('removewhitelist', async ctx => {
-    const creatorID = process.env.CREATOR_ID;
     const redisInstance = RedisSingleton.getInstance();
     const chatID = ctx.match;
-    const userID = RegularUtils.getUserID(ctx);
     const whiteListIDs = await redisInstance.getAllList(ListsNames.WHITELIST);
 
-    if (!RegularUtils.isBotCreator(userID, creatorID)) return;
+    if (!RegularUtils.isBotCreator(ctx)) return;
 
     if (RegularUtils.isStringEmpty(chatID))
         return await ctx.reply(otherMessages.noChatIDProvided);
