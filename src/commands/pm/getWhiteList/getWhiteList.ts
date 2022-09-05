@@ -15,7 +15,7 @@ getWhiteList.command('getwhitelist', async ctx => {
     if (!RegularUtils.isBotCreator(ctx)) return;
 
     if (whiteListIDs.length === 0)
-        return await ctx.reply(whiteListMessages.listEmpty);
+        return await ctx.reply(whiteListMessages.chatsAndIdsListEmpty);
 
     const [chats, ids] = await AsyncUtils.getChatsByIDs(ctx, whiteListIDs);
     const chatList = RegularUtils.getListOfChats(chats);
@@ -23,11 +23,17 @@ getWhiteList.command('getwhitelist', async ctx => {
 
     if (chats.length > 0)
         messageData.push(
-            `${whiteListMessages.groupsInfo}${chatList.join('\n')}`
+            `${whiteListMessages.chatsListHeader}${chatList.join('\n')}`
         );
 
     if (ids.length > 0)
-        messageData.push(`${whiteListMessages.groupsInfoIds}${ids.join('\n')}`);
+        messageData.push(
+            `${whiteListMessages.idsListHeader}${ids
+                .map(id => {
+                    return `<code>${id}</code>`;
+                })
+                .join('\n')}`
+        );
 
     await ctx.reply(messageData.join('\n\n'), {
         parse_mode: 'HTML'
