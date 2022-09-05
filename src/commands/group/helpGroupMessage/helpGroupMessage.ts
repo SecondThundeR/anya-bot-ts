@@ -20,7 +20,12 @@ helpGroupMessage.command('help', async ctx => {
     if (!(await AsyncUtils.isGroupAdmin(ctx)))
         return await ctx.reply(helpMessages.noAccessMessage);
 
-    await ctx.reply(helpMessages.adminMessage);
+    await ctx.reply(
+        RegularUtils.convertHelpMessageToHTMLFormat(helpMessages.groupMessage),
+        {
+            parse_mode: 'HTML'
+        }
+    );
 });
 
 export default helpGroupMessage;
