@@ -9,9 +9,8 @@ const aidenSilentTrigger = new Composer();
 aidenSilentTrigger.command('aidensilent', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
     const chatID = RegularUtils.getChatID(ctx);
-    const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
 
-    if (!RegularUtils.isGroupAdmin(authorStatus)) return;
+    if (!(await AsyncUtils.isGroupAdmin(ctx))) return;
 
     const replyText = await updateAidenSilentData(redisSingleton, chatID);
 

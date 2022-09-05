@@ -11,11 +11,10 @@ silentTrigger.command('silent', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
     const whiteListIDs = await redisSingleton.getList(ListsNames.WHITELIST);
     const chatID = RegularUtils.getChatID(ctx);
-    const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
 
     if (
         !RegularUtils.isItemInList(chatID, whiteListIDs) ||
-        !RegularUtils.isGroupAdmin(authorStatus)
+        !(await AsyncUtils.isGroupAdmin(ctx))
     )
         return;
 

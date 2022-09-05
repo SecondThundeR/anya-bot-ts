@@ -13,9 +13,11 @@ getIgnoreList.command('getignorelist', async ctx => {
     if (!RegularUtils.isBotCreator(ctx)) return;
 
     if (ignoreListIDs.length === 0)
-        return await ctx.reply(ignoreListMessages.listEmpty);
+        return await ctx.reply(ignoreListMessages.idsListEmpty);
 
-    await ctx.reply(`${ignoreListMessages.idsInfo}${ignoreListIDs.join('\n')}`);
+    await ctx.reply(
+        `${ignoreListMessages.idsListHeader}${ignoreListIDs.join('\n')}`
+    );
 });
 
 export default getIgnoreList;

@@ -26,11 +26,11 @@ addIgnoreList.command('addignorelist', async ctx => {
 
     await redisInstance.pushValueToList(ListsNames.IGNORELIST, String(chatID));
 
-    const isWhitelistedLocally = RegularUtils.isItemInList(
+    const isWhitelisted = RegularUtils.isItemInList(
         chatID,
         idsLists[ListsNames.WHITELIST]
     );
-    if (isWhitelistedLocally)
+    if (isWhitelisted)
         await redisInstance.removeValueFromList(
             ListsNames.WHITELIST,
             String(chatID)
@@ -40,7 +40,7 @@ addIgnoreList.command('addignorelist', async ctx => {
     if (isInChat) await AsyncUtils.leaveFromIgnoredChat(ctx, chatID);
 
     await ctx.reply(
-        isWhitelistedLocally
+        isWhitelisted
             ? ignoreListMessages.addedAndUnwhitelisted
             : ignoreListMessages.added
     );

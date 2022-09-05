@@ -9,15 +9,14 @@ const voiceAndVideoHandler = new Composer();
 voiceAndVideoHandler.on(['message:voice', 'message:video_note'], async ctx => {
     const redisInstance = RedisSingleton.getInstance();
     const chatID = RegularUtils.getChatID(ctx);
-    const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
-    const isAdminPowerEnabled = await redisSingleton.getHashData(
+    const isAdminPowerEnabled = await redisInstance.getHashData(
         chatID,
         'adminPower',
         'false'
     );
 
     const [aidenPierceMode, aidenPierceSilent] =
-        await redisSingleton.getHashMultipleData(chatID, [
+        await redisInstance.getHashMultipleData(chatID, [
             'aidenMode',
             'isAidenSilent'
         ]);
@@ -25,7 +24,7 @@ voiceAndVideoHandler.on(['message:voice', 'message:video_note'], async ctx => {
     if (
         !RegularUtils.getBoolean(aidenPierceMode || 'false') ||
         RegularUtils.getBoolean(aidenPierceSilent || 'false') ||
-        (RegularUtils.isGroupAdmin(authorStatus) &&
+        ((await AsyncUtils.isGroupAdmin(ctx)) &&
             RegularUtils.getBoolean(isAdminPowerEnabled))
     )
         return;

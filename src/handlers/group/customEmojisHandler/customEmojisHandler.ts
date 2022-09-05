@@ -15,7 +15,6 @@ customEmojisHandler.on(
     async ctx => {
         const chatID = RegularUtils.getChatID(ctx);
         const botData = await ctx.getChatMember(ctx.me.id);
-        const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
         const isAdminPowerEnabled =
             await RedisSingleton.getInstance().getHashData(
                 chatID,
@@ -25,7 +24,7 @@ customEmojisHandler.on(
 
         if (
             !RegularUtils.isBotCanDelete(botData) ||
-            (RegularUtils.isGroupAdmin(authorStatus) &&
+            ((await AsyncUtils.isGroupAdmin(ctx)) &&
                 RegularUtils.getBoolean(isAdminPowerEnabled))
         )
             return;

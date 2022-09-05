@@ -11,11 +11,10 @@ adminPowerTrigger.command('adminpower', async ctx => {
     const redisInstance = RedisSingleton.getInstance();
     const whiteListIDs = await redisInstance.getList(ListsNames.WHITELIST);
     const chatID = RegularUtils.getChatID(ctx);
-    const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
 
     if (
         !RegularUtils.isItemInList(chatID, whiteListIDs) ||
-        !RegularUtils.isGroupAdmin(authorStatus)
+        !(await AsyncUtils.isGroupAdmin(ctx))
     )
         return;
 

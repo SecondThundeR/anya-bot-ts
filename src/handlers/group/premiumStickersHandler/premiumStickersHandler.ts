@@ -9,9 +9,8 @@ const premiumStickersHandler = new Composer();
 premiumStickersHandler.on('message:sticker', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
     const chatID = RegularUtils.getChatID(ctx);
-    const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
     const botData = await ctx.getChatMember(ctx.me.id);
-    const whiteListIDs = await redisSingleton.getAllList(ListsNames.WHITELIST);
+    const whiteListIDs = await redisSingleton.getList(ListsNames.WHITELIST);
     const isAdminPowerEnabled = await redisSingleton.getHashData(
         chatID,
         'adminPower',
@@ -22,7 +21,7 @@ premiumStickersHandler.on('message:sticker', async ctx => {
         !RegularUtils.isItemInList(chatID, whiteListIDs) ||
         !RegularUtils.isPremiumSticker(ctx) ||
         !RegularUtils.isBotCanDelete(botData) ||
-        (RegularUtils.isGroupAdmin(authorStatus) &&
+        ((await AsyncUtils.isGroupAdmin(ctx)) &&
             RegularUtils.getBoolean(isAdminPowerEnabled))
     )
         return;

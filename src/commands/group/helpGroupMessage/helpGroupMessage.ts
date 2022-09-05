@@ -13,13 +13,12 @@ helpGroupMessage.command('help', async ctx => {
         ListsNames.WHITELIST
     );
     const chatID = RegularUtils.getChatID(ctx);
-    const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
 
     if (!RegularUtils.isItemInList(chatID, whiteListIDs))
         return await sendNoAccessMessage(ctx, chatID);
 
-    if (!RegularUtils.isGroupAdmin(authorStatus))
-        return await ctx.reply(helpMessages.regularMessage);
+    if (!(await AsyncUtils.isGroupAdmin(ctx)))
+        return await ctx.reply(helpMessages.noAccessMessage);
 
     await ctx.reply(helpMessages.adminMessage);
 });

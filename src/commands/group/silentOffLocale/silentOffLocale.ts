@@ -10,15 +10,16 @@ const silentOffLocale = new Composer();
 
 silentOffLocale.command('silentofflocale', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
-    const [chatID, authorStatus, _, newLocaleString] =
-        await AsyncUtils.extractContextData(ctx);
-    const whiteListIDs = await RedisSingleton.getInstance().getAllList(
+    const [chatID, _, newLocaleString] = await AsyncUtils.extractContextData(
+        ctx
+    );
+    const whiteListIDs = await RedisSingleton.getInstance().getList(
         ListsNames.WHITELIST
     );
 
     if (
         !RegularUtils.isItemInList(chatID, whiteListIDs) ||
-        !RegularUtils.isGroupAdmin(authorStatus)
+        !(await AsyncUtils.isGroupAdmin(ctx))
     )
         return;
 

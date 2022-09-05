@@ -8,9 +8,8 @@ const noCustomEmoji = new Composer();
 noCustomEmoji.command('noemoji', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
     const chatID = RegularUtils.getChatID(ctx);
-    const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
 
-    if (!RegularUtils.isGroupAdmin(authorStatus)) return;
+    if (!(await AsyncUtils.isGroupAdmin(ctx))) return;
 
     const strictEmojiRemoval =
         (await redisSingleton.getHashData(chatID, 'strictEmojiRemoval')) ||

@@ -16,9 +16,10 @@ const messageLocaleWaitTime = 10;
 
 messageLocale.command('messagelocale', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
-    const [chatID, authorStatus, _, newLocaleString] =
-        await AsyncUtils.extractContextData(ctx);
-    const whiteListIDs = await RedisSingleton.getInstance().getAllList(
+    const [chatID, _, newLocaleString] = await AsyncUtils.extractContextData(
+        ctx
+    );
+    const whiteListIDs = await RedisSingleton.getInstance().getList(
         ListsNames.WHITELIST
     );
     const messageLocaleChangeStatus = RegularUtils.getBoolean(
@@ -27,7 +28,7 @@ messageLocale.command('messagelocale', async ctx => {
 
     if (
         !RegularUtils.isItemInList(chatID, whiteListIDs) ||
-        !RegularUtils.isGroupAdmin(authorStatus)
+        !(await AsyncUtils.isGroupAdmin(ctx))
     )
         return;
 
