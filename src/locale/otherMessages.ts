@@ -14,6 +14,7 @@ const otherMessages = {
         'Так я точно смогу бороться в полную силу.',
     botAdminWhitelistedHint:
         'Еще вижу, у меня нет прав на удаление сообщений! Дайте мне их пожалуйста :(',
+    uptimeMessage: 'Текущее время работы:',
     creatorLink: '@someusername' // TODO: Change this username, because it used in noAccess message
 };
 

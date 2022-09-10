@@ -23,7 +23,8 @@ const helpMessages = {
         '/getwhitelist - покажу все хорошие чаты и айди\n' +
         '/addignorelist [айди] - добавлю этот айди в список плохих чатов\n' +
         '/removeignorelist [айди] - удалю этот айди их списка плохих чатов\n' +
-        '/getignorelist - покажу все айди плохих чатов'
+        '/getignorelist - покажу все айди плохих чатов\n' +
+        '/uptime - покажу сколько времени я уже работаю'
 };
 
 export default helpMessages;
