@@ -1,7 +1,7 @@
 import RegularUtils from '../../../utils/regularUtils';
 import aidenPierceMessages from '../../../locale/aidenPierceMessages';
 import RedisSingleton from '../../../utils/redisSingleton';
-import { Context } from "grammy";
+import { Context } from 'grammy';
 
 const getAidenModeWord = (currentStatus: boolean): string => {
     return currentStatus
@@ -24,9 +24,7 @@ const changeAidenStatusDB = async (
     await client.setHashData(chatID, ['aidenMode', String(aidenStatus)]);
 };
 
-export const updateAidenData = async (
-    ctx: Context
-) => {
+export const updateAidenData = async (ctx: Context) => {
     const chatID = RegularUtils.getChatID(ctx);
     const redisInstance = RedisSingleton.getInstance();
 
