@@ -66,6 +66,12 @@ class RedisSingleton {
         );
     }
 
+    public async getAllHashData(
+        hashName: string
+    ): Promise<{ [key: string]: string }> {
+        return await this.redisClient.hGetAll(hashName);
+    }
+
     public async getHashMultipleData(
         chatID: number | string,
         hashNames: string[]
@@ -96,6 +102,14 @@ class RedisSingleton {
             `${this.chatsConfigTableName}:${chatID}`,
             hashData
         );
+    }
+
+    public async incrementFieldBy(
+        hashName: string,
+        field: string,
+        value: number
+    ): Promise<void> {
+        await this.redisClient.hIncrBy(hashName, field, value);
     }
 
     public async pushValueToList(

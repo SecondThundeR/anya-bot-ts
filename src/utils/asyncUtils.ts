@@ -89,6 +89,19 @@ export default class AsyncUtils {
         return [chatID, botData, messageText];
     }
 
+    public static async incrementCommandUsageCounter(
+        client: RedisSingleton,
+        command: string
+    ): Promise<void> {
+        await client.incrementFieldBy('commandsUsage', command, 1);
+    }
+
+    public static async getCommandsUsage(
+        client: RedisSingleton
+    ): Promise<{ [key: string]: string }> {
+        return await client.getAllHashData('commandsUsage');
+    }
+
     public static async resetLocaleHandler(
         ctx: Context,
         client: RedisSingleton,
