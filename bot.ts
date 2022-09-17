@@ -33,6 +33,7 @@ import getIgnoreList from './src/commands/pm/getIgnoreList/getIgnoreList';
 import pmCallbackHandler from './src/handlers/pm/pmCallbackHandler/pmCallbackHandler';
 import adminPowerTrigger from './src/commands/group/adminPowerTrigger/adminPowerTrigger';
 import uptimeMessage from './src/commands/pm/uptimeMessage/uptimeMessage';
+import getCommandsUsage from './src/commands/pm/getCommandsUsage/getCommandsUsage';
 
 if (process.env.NODE_ENV === 'local') {
     require('dotenv').config();
@@ -98,6 +99,7 @@ pm.use(addIgnoreList);
 pm.use(removeIgnoreList);
 pm.use(getIgnoreList);
 pm.use(uptimeMessage);
+pm.use(getCommandsUsage);
 
 // PM Handlers
 pm.use(pmCallbackHandler);
