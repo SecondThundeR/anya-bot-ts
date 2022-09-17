@@ -1,6 +1,6 @@
 {
-    "name": "anya-bot",
-    "version": "2.0.0-beta.6",
+    "name": "anya-bot-ts",
+    "version": "2.0.0-beta.7",
     "description": "Some random TypeScript bot with interesting features",
     "main": "bot.js",
     "scripts": {
@@ -19,7 +19,7 @@
         "dotenv": "^16.0.2"
     },
     "devDependencies": {
-        "@types/node": "^18.7.16",
+        "@types/node": "^18.7.18",
         "prettier": "^2.7.1",
         "@grammyjs/types": "^2.9.1"
     }
