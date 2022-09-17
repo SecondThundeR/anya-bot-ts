@@ -10,7 +10,7 @@ import RedisSingleton from './redisSingleton';
 export default class AsyncUtils {
     /**
      * Gets the name and username of the currently running bot
-     * and logs the information to the console
+     * and logs the information to the console, as well as send message to creator
      * @param api - Telegram Bot API instance
      */
     public static async logBotInfo(api: Api) {
@@ -18,6 +18,10 @@ export default class AsyncUtils {
         if (botBasicInfo === undefined) return;
         console.log(
             `Started as ${botBasicInfo.first_name} (@${botBasicInfo.username})`
+        );
+        await api.sendMessage(
+            String(process.env.CREATOR_ID),
+            'Бот запущен и готов к работе!'
         );
     }
 
