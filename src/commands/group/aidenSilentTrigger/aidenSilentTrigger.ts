@@ -8,6 +8,11 @@ const aidenSilentTrigger = new Composer();
 
 aidenSilentTrigger.command('aidensilent', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
+    await AsyncUtils.incrementCommandUsageCounter(
+        redisSingleton,
+        'aidensilent'
+    );
+
     const chatID = RegularUtils.getChatID(ctx);
 
     if (!(await AsyncUtils.isGroupAdmin(ctx))) return;

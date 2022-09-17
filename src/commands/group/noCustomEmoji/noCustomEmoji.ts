@@ -1,4 +1,4 @@
-import { Composer } from 'grammy';
+import {Composer} from 'grammy';
 import RedisSingleton from '../../../utils/redisSingleton';
 import RegularUtils from '../../../utils/regularUtils';
 import AsyncUtils from '../../../utils/asyncUtils';
@@ -7,6 +7,11 @@ const noCustomEmoji = new Composer();
 
 noCustomEmoji.command('noemoji', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
+    await AsyncUtils.incrementCommandUsageCounter(
+        redisSingleton,
+        'noemoji'
+    );
+
     const chatID = RegularUtils.getChatID(ctx);
 
     if (!(await AsyncUtils.isGroupAdmin(ctx))) return;

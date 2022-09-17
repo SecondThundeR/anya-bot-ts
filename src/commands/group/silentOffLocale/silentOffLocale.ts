@@ -1,4 +1,4 @@
-import { Composer } from 'grammy';
+import {Composer} from 'grammy';
 import AsyncUtils from '../../../utils/asyncUtils';
 import RegularUtils from '../../../utils/regularUtils';
 import otherMessages from '../../../locale/otherMessages';
@@ -10,6 +10,11 @@ const silentOffLocale = new Composer();
 
 silentOffLocale.command('silentofflocale', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
+    await AsyncUtils.incrementCommandUsageCounter(
+        redisSingleton,
+        'silentofflocale'
+    );
+
     const [chatID, _, newLocaleString] = await AsyncUtils.extractContextData(
         ctx
     );

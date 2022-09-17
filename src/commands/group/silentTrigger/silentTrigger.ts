@@ -2,13 +2,18 @@ import RegularUtils from '../../../utils/regularUtils';
 import AsyncUtils from '../../../utils/asyncUtils';
 import RedisSingleton from '../../../utils/redisSingleton';
 import ListsNames from '../../../enums/listsNames';
-import { Composer } from 'grammy';
-import { updateSilentData } from './helpers';
+import {Composer} from 'grammy';
+import {updateSilentData} from './helpers';
 
 const silentTrigger = new Composer();
 
 silentTrigger.command('silent', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
+    await AsyncUtils.incrementCommandUsageCounter(
+        redisSingleton,
+        'silent'
+    );
+
     const whiteListIDs = await redisSingleton.getList(ListsNames.WHITELIST);
     const chatID = RegularUtils.getChatID(ctx);
 

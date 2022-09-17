@@ -6,8 +6,13 @@ import ListsNames from '../../../enums/listsNames';
 
 const silentOffLocaleReset = new Composer();
 
-silentOffLocaleReset.command('silentonlocalereset', async ctx => {
+silentOffLocaleReset.command('silentofflocalereset', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
+    await AsyncUtils.incrementCommandUsageCounter(
+        redisSingleton,
+        'silentofflocalereset'
+    );
+
     const whiteListIDs = await RedisSingleton.getInstance().getList(
         ListsNames.WHITELIST
     );

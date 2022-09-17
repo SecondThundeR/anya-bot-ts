@@ -1,14 +1,19 @@
-import { Composer } from 'grammy';
+import {Composer} from 'grammy';
 import RegularUtils from '../../../utils/regularUtils';
 import AsyncUtils from '../../../utils/asyncUtils';
 import helpMessages from '../../../locale/helpMessages';
 import ListsNames from '../../../enums/listsNames';
 import RedisSingleton from '../../../utils/redisSingleton';
-import { sendNoAccessMessage } from './helpers';
+import {sendNoAccessMessage} from './helpers';
 
 const helpGroupMessage = new Composer();
 
 helpGroupMessage.command('help', async ctx => {
+    await AsyncUtils.incrementCommandUsageCounter(
+        RedisSingleton.getInstance(),
+        'help'
+    );
+
     const whiteListIDs = await RedisSingleton.getInstance().getList(
         ListsNames.WHITELIST
     );

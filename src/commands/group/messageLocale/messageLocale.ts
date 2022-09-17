@@ -1,4 +1,4 @@
-import { Composer } from 'grammy';
+import {Composer} from 'grammy';
 import AsyncUtils from '../../../utils/asyncUtils';
 import RegularUtils from '../../../utils/regularUtils';
 import stickerMessages from '../../../locale/stickerMessages';
@@ -16,6 +16,11 @@ const messageLocaleWaitTime = 10;
 
 messageLocale.command('messagelocale', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
+    await AsyncUtils.incrementCommandUsageCounter(
+        redisSingleton,
+        'messagelocale'
+    );
+
     const [chatID, _, newLocaleString] = await AsyncUtils.extractContextData(
         ctx
     );

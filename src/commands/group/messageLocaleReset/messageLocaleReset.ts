@@ -6,8 +6,13 @@ import stickerMessages from '../../../locale/stickerMessages';
 
 const messageLocaleReset = new Composer();
 
-messageLocaleReset.command('silentonlocalereset', async ctx => {
+messageLocaleReset.command('messagelocalereset', async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
+    await AsyncUtils.incrementCommandUsageCounter(
+        redisSingleton,
+        'messagelocalereset'
+    );
+
     const whiteListIDs = await RedisSingleton.getInstance().getList(
         ListsNames.WHITELIST
     );
