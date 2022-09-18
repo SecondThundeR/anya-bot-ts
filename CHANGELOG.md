@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-> Uncoming release which adds new features and fixes, as well as refactor of project files (WIP for now)
+## [2.0.0] - 2022-09-18
+
+> This release adds new features and fixes, as well as start of refactoring of project files
 
 ### Added
 
@@ -115,7 +117,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ability to change some localization strings via commands
 - A placeholder when trying to write a private message to a bot by a non-creator
 
-[Unreleased]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v1.2.1...v2.0.0
 [1.2.1]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v1.2.1...v1.2.1
 [1.2.0]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/pre-1.2.0...v1.2.0
 [pre-1.2.0]: https://github.com/SecondThundeR/anti-premium-stickers-bot/releases/tag/pre-1.2.0
