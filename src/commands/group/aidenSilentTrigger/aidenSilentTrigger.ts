@@ -1,24 +1,22 @@
-import RegularUtils from '../../../utils/regularUtils';
-import AsyncUtils from '../../../utils/asyncUtils';
 import { Composer } from 'grammy';
+
+import AsyncUtils from '../../../utils/asyncUtils';
 import RedisSingleton from '../../../utils/redisSingleton';
+import RegularUtils from '../../../utils/regularUtils';
 import { updateAidenSilentData } from './helpers';
 
 const aidenSilentTrigger = new Composer();
 
 aidenSilentTrigger.command('aidensilent', async ctx => {
-    const redisSingleton = RedisSingleton.getInstance();
-    await AsyncUtils.incrementCommandUsageCounter(
-        redisSingleton,
-        'aidensilent'
+    const redisInstance = RedisSingleton.getInstance();
+    await AsyncUtils.incrementCommandUsageCounter(redisInstance, 'aidensilent');
+
+    if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
+
+    const replyText = await updateAidenSilentData(
+        redisInstance,
+        RegularUtils.getChatID(ctx)
     );
-
-    const chatID = RegularUtils.getChatID(ctx);
-
-    if (!(await AsyncUtils.isGroupAdmin(ctx))) return;
-
-    const replyText = await updateAidenSilentData(redisSingleton, chatID);
-
     await ctx.reply(replyText, {
         reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
     });

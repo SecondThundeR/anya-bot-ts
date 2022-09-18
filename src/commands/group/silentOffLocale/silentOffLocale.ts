@@ -1,37 +1,30 @@
-import {Composer} from 'grammy';
-import AsyncUtils from '../../../utils/asyncUtils';
-import RegularUtils from '../../../utils/regularUtils';
+import { Composer } from 'grammy';
+
 import otherMessages from '../../../locale/otherMessages';
 import silentMessages from '../../../locale/silentMessages';
+import AsyncUtils from '../../../utils/asyncUtils';
 import RedisSingleton from '../../../utils/redisSingleton';
-import ListsNames from '../../../enums/listsNames';
+import RegularUtils from '../../../utils/regularUtils';
 
 const silentOffLocale = new Composer();
 
 silentOffLocale.command('silentofflocale', async ctx => {
-    const redisSingleton = RedisSingleton.getInstance();
+    const redisInstance = RedisSingleton.getInstance();
     await AsyncUtils.incrementCommandUsageCounter(
-        redisSingleton,
+        redisInstance,
         'silentofflocale'
     );
+
+    if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
 
     const [chatID, _, newLocaleString] = await AsyncUtils.extractContextData(
         ctx
     );
-    const whiteListIDs = await RedisSingleton.getInstance().getList(
-        ListsNames.WHITELIST
-    );
-
-    if (
-        !RegularUtils.isItemInList(chatID, whiteListIDs) ||
-        !(await AsyncUtils.isGroupAdmin(ctx))
-    )
-        return;
 
     if (RegularUtils.isStringEmpty(newLocaleString))
         return await ctx.reply(otherMessages.stringIsEmpty);
 
-    await redisSingleton.setHashData(chatID, [
+    await redisInstance.setHashData(chatID, [
         'silentOffLocale',
         newLocaleString
     ]);

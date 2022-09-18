@@ -1,9 +1,9 @@
-import {Composer} from 'grammy';
-import RedisSingleton from '../../../utils/redisSingleton';
-import ListsNames from '../../../enums/listsNames';
-import RegularUtils from '../../../utils/regularUtils';
+import { Composer } from 'grammy';
+
 import AsyncUtils from '../../../utils/asyncUtils';
-import {updateAllowData} from './helpers';
+import RedisSingleton from '../../../utils/redisSingleton';
+import RegularUtils from '../../../utils/regularUtils';
+import { updateAllowData } from './helpers';
 
 const adminPowerTrigger = new Composer();
 
@@ -11,16 +11,12 @@ adminPowerTrigger.command('adminpower', async ctx => {
     const redisInstance = RedisSingleton.getInstance();
     await AsyncUtils.incrementCommandUsageCounter(redisInstance, 'adminpower');
 
-    const whiteListIDs = await redisInstance.getList(ListsNames.WHITELIST);
-    const chatID = RegularUtils.getChatID(ctx);
+    if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
 
-    if (
-        !RegularUtils.isItemInList(chatID, whiteListIDs) ||
-        !(await AsyncUtils.isGroupAdmin(ctx))
-    )
-        return;
-
-    const replyText = await updateAllowData(redisInstance, chatID);
+    const replyText = await updateAllowData(
+        redisInstance,
+        RegularUtils.getChatID(ctx)
+    );
     await ctx.reply(replyText, {
         reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
     });

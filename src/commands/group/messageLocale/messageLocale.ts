@@ -1,10 +1,10 @@
-import {Composer} from 'grammy';
-import AsyncUtils from '../../../utils/asyncUtils';
-import RegularUtils from '../../../utils/regularUtils';
-import stickerMessages from '../../../locale/stickerMessages';
+import { Composer } from 'grammy';
+
 import otherMessages from '../../../locale/otherMessages';
+import stickerMessages from '../../../locale/stickerMessages';
+import AsyncUtils from '../../../utils/asyncUtils';
 import RedisSingleton from '../../../utils/redisSingleton';
-import ListsNames from '../../../enums/listsNames';
+import RegularUtils from '../../../utils/regularUtils';
 import {
     deleteLocaleChangingStatus,
     getLocaleChangingStatus,
@@ -15,34 +15,27 @@ const messageLocale = new Composer();
 const messageLocaleWaitTime = 10;
 
 messageLocale.command('messagelocale', async ctx => {
-    const redisSingleton = RedisSingleton.getInstance();
+    const redisInstance = RedisSingleton.getInstance();
     await AsyncUtils.incrementCommandUsageCounter(
-        redisSingleton,
+        redisInstance,
         'messagelocale'
     );
+
+    if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
 
     const [chatID, _, newLocaleString] = await AsyncUtils.extractContextData(
         ctx
     );
-    const whiteListIDs = await RedisSingleton.getInstance().getList(
-        ListsNames.WHITELIST
-    );
     const messageLocaleChangeStatus = RegularUtils.getBoolean(
-        await getLocaleChangingStatus(redisSingleton, chatID)
+        await getLocaleChangingStatus(redisInstance, chatID)
     );
-
-    if (
-        !RegularUtils.isItemInList(chatID, whiteListIDs) ||
-        !(await AsyncUtils.isGroupAdmin(ctx))
-    )
-        return;
 
     if (messageLocaleChangeStatus)
         return await ctx.reply(stickerMessages.inProgress, {
             reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
         });
 
-    await setLocaleChangingStatus(redisSingleton, chatID);
+    await setLocaleChangingStatus(redisInstance, chatID);
 
     if (RegularUtils.isStringEmpty(newLocaleString))
         return await ctx.reply(otherMessages.stringIsEmpty);
@@ -54,7 +47,7 @@ messageLocale.command('messagelocale', async ctx => {
         reply_markup: keyboard
     });
 
-    await redisSingleton.setHashData(chatID, [
+    await redisInstance.setHashData(chatID, [
         'stickerMessageLocale',
         newLocaleString
     ]);
@@ -67,10 +60,10 @@ messageLocale.command('messagelocale', async ctx => {
         .then()
         .catch(_ => (messageExists = false));
 
-    await deleteLocaleChangingStatus(redisSingleton, chatID);
+    await deleteLocaleChangingStatus(redisInstance, chatID);
 
     if (messageExists) {
-        await redisSingleton.deleteHashData(chatID, [
+        await redisInstance.deleteHashData(chatID, [
             'stickerMessageLocale',
             'stickerMessageMention'
         ]);

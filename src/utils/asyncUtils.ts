@@ -1,11 +1,13 @@
+import { RedisClientType } from '@redis/client';
 import { Api, Context, InlineKeyboard } from 'grammy';
 import { ChatFromGetChat, ChatMember } from 'grammy/types';
-import RegularUtils from './regularUtils';
-import { RedisClientType } from '@redis/client';
+
+import ListsNames from '../enums/listsNames';
 import ignoreListMessages from '../locale/ignoreListMessages';
-import whiteListMessages from '../locale/whiteListMessages';
 import keyboardMessages from '../locale/keyboardMessages';
+import whiteListMessages from '../locale/whiteListMessages';
 import RedisSingleton from './redisSingleton';
+import RegularUtils from './regularUtils';
 
 export default class AsyncUtils {
     /**
@@ -157,6 +159,19 @@ export default class AsyncUtils {
             verifiedCustomText,
             verifiedStickerMessageMentionStatus,
             userMention
+        );
+    }
+
+    public static async isCommandIgnored(
+        ctx: Context,
+        redisInstance: RedisSingleton
+    ): Promise<boolean> {
+        const whiteListIDs = await redisInstance.getList(ListsNames.WHITELIST);
+        const chatID = RegularUtils.getChatID(ctx);
+
+        return (
+            !RegularUtils.isItemInList(chatID, whiteListIDs) ||
+            !(await AsyncUtils.isGroupAdmin(ctx))
         );
     }
 

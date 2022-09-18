@@ -1,24 +1,21 @@
-import {Composer} from 'grammy';
+import { Composer } from 'grammy';
+
+import AsyncUtils from '../../../utils/asyncUtils';
 import RedisSingleton from '../../../utils/redisSingleton';
 import RegularUtils from '../../../utils/regularUtils';
-import AsyncUtils from '../../../utils/asyncUtils';
 
 const noCustomEmoji = new Composer();
 
 noCustomEmoji.command('noemoji', async ctx => {
-    const redisSingleton = RedisSingleton.getInstance();
-    await AsyncUtils.incrementCommandUsageCounter(
-        redisSingleton,
-        'noemoji'
-    );
+    const redisInstance = RedisSingleton.getInstance();
+    await AsyncUtils.incrementCommandUsageCounter(redisInstance, 'noemoji');
+
+    if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
 
     const chatID = RegularUtils.getChatID(ctx);
 
-    if (!(await AsyncUtils.isGroupAdmin(ctx))) return;
-
     const strictEmojiRemoval =
-        (await redisSingleton.getHashData(chatID, 'strictEmojiRemoval')) ||
-        null;
+        (await redisInstance.getHashData(chatID, 'strictEmojiRemoval')) || null;
     const strictEmojiRemovalBoolean =
         strictEmojiRemoval === null
             ? false
@@ -26,9 +23,9 @@ noCustomEmoji.command('noemoji', async ctx => {
     const newStrictEmojiRemovalBoolean = !strictEmojiRemovalBoolean;
 
     if (!newStrictEmojiRemovalBoolean)
-        await redisSingleton.deleteHashData(chatID, ['strictEmojiRemoval']);
+        await redisInstance.deleteHashData(chatID, ['strictEmojiRemoval']);
     else
-        await redisSingleton.setHashData(chatID, [
+        await redisInstance.setHashData(chatID, [
             'strictEmojiRemoval',
             String(newStrictEmojiRemovalBoolean)
         ]);

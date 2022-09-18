@@ -1,29 +1,20 @@
-import RegularUtils from '../../../utils/regularUtils';
+import { Composer } from 'grammy';
+
 import AsyncUtils from '../../../utils/asyncUtils';
 import RedisSingleton from '../../../utils/redisSingleton';
-import ListsNames from '../../../enums/listsNames';
-import {Composer} from 'grammy';
-import {updateSilentData} from './helpers';
+import RegularUtils from '../../../utils/regularUtils';
+import { updateSilentData } from './helpers';
 
 const silentTrigger = new Composer();
 
 silentTrigger.command('silent', async ctx => {
-    const redisSingleton = RedisSingleton.getInstance();
-    await AsyncUtils.incrementCommandUsageCounter(
-        redisSingleton,
-        'silent'
-    );
+    const redisInstance = RedisSingleton.getInstance();
+    await AsyncUtils.incrementCommandUsageCounter(redisInstance, 'silent');
 
-    const whiteListIDs = await redisSingleton.getList(ListsNames.WHITELIST);
+    if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
+
     const chatID = RegularUtils.getChatID(ctx);
-
-    if (
-        !RegularUtils.isItemInList(chatID, whiteListIDs) ||
-        !(await AsyncUtils.isGroupAdmin(ctx))
-    )
-        return;
-
-    const replyText = await updateSilentData(redisSingleton, chatID);
+    const replyText = await updateSilentData(redisInstance, chatID);
     await ctx.reply(replyText, {
         reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
     });
