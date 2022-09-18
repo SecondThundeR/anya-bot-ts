@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Add wildcard for ignoring all .md files in `.prettierignore`
+- Update some info in `README.md`
+
+### Fixed
+
+- Fix links to current repo in `README.md`
+
 ## [2.0.0] - 2022-09-18
 
 > This release adds new features and fixes, as well as start of refactoring of project files
@@ -37,10 +46,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Project renamed to `anya-bot-ts`
 - Started work on refactoring project files _(Thx to `Composer()`, now commands are separated from bot.ts file)_
 - Rephrase some of the bot's message text for better understanding
-- Update dependencies
-- `tsconfig.json` now has options for debugging in WebStorm
+- Update dependencies in `package.json`
 - Update configurations in `.vscode/launch.json`
+- Update `tsconfig.json`: Now it has options for debugging in WebStorm
 - Update `.prettierignore`: Add `CHANGELOG.md`
+- Update `.dockerignore`, `.gitignore`, `.prettierrc.json` _(Remove redundant options)_
 
 ### Removed
 
