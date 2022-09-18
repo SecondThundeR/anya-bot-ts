@@ -3,7 +3,7 @@
 Some random TypeScript bot with interesting features based on the grammY library
 
 > This bot was created as an additional tool to fight against premium Telegram stickers and emoji (Because they sucks)
-> 
+>
 > Live instance of bot: [@antipremiumbullshit_bot](https://t.me/antipremiumbullshit_bot)
 
 ## Features
@@ -25,7 +25,7 @@ Some random TypeScript bot with interesting features based on the grammY library
     - `BOT_KEY` - bot token
     - `CREATOR_ID` - your ID for working with the bot whitelist/ignored list from the DM
 5. Run `npm i` and `npm run local`
-6. Wait for `Starting as @...` message in console
+6. Wait for `Started as @...` message and/or message in PM from bot
 7. Bot is ready to go!
 
 > If you want to pass environment variables on your system, all you need to do is run `npm start` in step 5
@@ -43,7 +43,7 @@ Some random TypeScript bot with interesting features based on the grammY library
     - `REDIS_URL` - endpoint of Redis DB
     - `REDIS_PORT` - port of Redis DB endpoint
 4. Push sources on Heroku _(or set up auto-deployment)_ and wait for build
-5. Wait for `Starting as @...` message in console
+5. Wait for `Started as @...` message in console and/or message in PM from bot
 6. Bot is ready to go!
 
 #### Note about Heroku
@@ -58,6 +58,10 @@ While doing step 3, go to [Heroku Docker Docs](https://devcenter.heroku.com/arti
 
 - `silent` - manage bot silent mode
 - `help` - send help message
+- `aidenmode` - enables "Aiden Pierce" mode _(Removes voice/video messages)_
+- `aidensilent` - manage "Aiden Pierce" silent mode
+- `noemoji` - triggers emoji strictness removal _(Currently works like on/off switch. Custom rules will be added later)_
+- `adminpower` - triggers ignoring of restricted messages from admins
 - `silentonlocale` - change message when silent mode is enabled
 - `silentonlocalereset` - reset message when silent mode is enabled
 - `silentofflocale` - change message when silent mode is disabled
@@ -73,6 +77,8 @@ While doing step 3, go to [Heroku Docker Docs](https://devcenter.heroku.com/arti
 - `addignorelist` - add group ID to ignore list
 - `removeignorelist` - remove group ID from ignore list
 - `getignorelist` - get all groups ID from ignore list
+- `getcommandsusage` - get counters of commands usage
+- `uptime` - get current uptime of bot
 
 ## Bot locale configuration
 
@@ -82,7 +88,7 @@ Remember to change `creatorLink` in `src/locale/otherMessages.ts`, which allows 
 
 ## Changelog
 
-The project now has a separate file [CHANGELOG.md](https://github.com/SecondThundeR/anti-premium-stickers-bot/blob/main/CHANGELOG.md). Check it for details
+The project now has a separate file [CHANGELOG.md](https://github.com/SecondThundeR/anya-bot-ts/blob/main/CHANGELOG.md). Check it for details
 
 ## FAQ
 
@@ -96,4 +102,4 @@ During the tests, it became clear that with limited resources _(small database m
 
 ## License
 
-This repository is licensed under [MIT License](https://github.com/SecondThundeR/anti-premium-stickers-bot/blob/main/LICENSE)
+This repository is licensed under [MIT License](https://github.com/SecondThundeR/anya-bot-ts/blob/main/LICENSE)
