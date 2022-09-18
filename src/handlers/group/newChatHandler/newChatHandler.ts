@@ -1,9 +1,10 @@
 import { Composer } from 'grammy';
-import RegularUtils from '../../../utils/regularUtils';
-import AsyncUtils from '../../../utils/asyncUtils';
-import otherMessages from '../../../locale/otherMessages';
-import RedisSingleton from '../../../utils/redisSingleton';
+
 import ListsNames from '../../../enums/listsNames';
+import otherMessages from '../../../locale/otherMessages';
+import AsyncUtils from '../../../utils/asyncUtils';
+import RedisSingleton from '../../../utils/redisSingleton';
+import RegularUtils from '../../../utils/regularUtils';
 
 const newChatHandler = new Composer();
 

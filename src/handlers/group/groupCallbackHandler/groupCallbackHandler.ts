@@ -1,8 +1,9 @@
 import { Composer } from 'grammy';
-import RegularUtils from '../../../utils/regularUtils';
+
 import otherMessages from '../../../locale/otherMessages';
 import stickerMessages from '../../../locale/stickerMessages';
 import RedisSingleton from '../../../utils/redisSingleton';
+import RegularUtils from '../../../utils/regularUtils';
 import { deleteLocaleChangingStatus } from './helpers';
 
 const groupCallbackHandler = new Composer();

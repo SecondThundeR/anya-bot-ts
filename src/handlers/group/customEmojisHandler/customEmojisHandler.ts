@@ -1,7 +1,8 @@
 import { Composer } from 'grammy';
-import RegularUtils from '../../../utils/regularUtils';
-import RedisSingleton from '../../../utils/redisSingleton';
+
 import AsyncUtils from '../../../utils/asyncUtils';
+import RedisSingleton from '../../../utils/redisSingleton';
+import RegularUtils from '../../../utils/regularUtils';
 
 const customEmojisHandler = new Composer();
 

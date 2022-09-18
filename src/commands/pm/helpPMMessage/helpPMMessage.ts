@@ -1,6 +1,7 @@
 import { Composer } from 'grammy';
-import RegularUtils from '../../../utils/regularUtils';
+
 import helpMessages from '../../../locale/helpMessages';
+import RegularUtils from '../../../utils/regularUtils';
 
 const helpPMMessage = new Composer();
 

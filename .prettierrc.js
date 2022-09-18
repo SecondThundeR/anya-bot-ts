@@ -5,12 +5,11 @@ module.exports = {
     useTabs: false,
     trailingComma: 'none',
     bracketSpacing: true,
-    jsxBracketSameLine: false,
     semi: true,
     arrowParens: 'avoid',
     singleQuote: true,
     printWidth: 80,
-    svelteSortOrder: 'options-scripts-markup-styles',
+    endOfLine: 'auto',
     overrides: [
         {
             files: ['*.json'],
@@ -18,5 +17,8 @@ module.exports = {
                 parser: 'json'
             }
         }
-    ]
+    ],
+    importOrder: ['^[./]'],
+    importOrderSeparation: true,
+    importOrderSortSpecifiers: true
 };

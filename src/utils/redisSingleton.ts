@@ -1,4 +1,4 @@
-import { createClient, RedisClientType } from 'redis';
+import { RedisClientType, createClient } from 'redis';
 
 interface ListsObject {
     [key: string]: string[];

@@ -1,10 +1,11 @@
 import { Composer } from 'grammy';
-import RegularUtils from '../../../utils/regularUtils';
-import otherMessages from '../../../locale/otherMessages';
+
+import ListsNames from '../../../enums/listsNames';
 import ignoreListMessages from '../../../locale/ignoreListMessages';
+import otherMessages from '../../../locale/otherMessages';
 import AsyncUtils from '../../../utils/asyncUtils';
 import RedisSingleton from '../../../utils/redisSingleton';
-import ListsNames from '../../../enums/listsNames';
+import RegularUtils from '../../../utils/regularUtils';
 
 const addIgnoreList = new Composer();
 
