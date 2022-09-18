@@ -18,12 +18,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `/aidenmodesilent` - Triggers silent mode for Aiden Pierce mode
   - `/adminpower` - Allows admin to send "restricted" content
   - `/noemoji` - Disables premium emoji in messages
+- New commands for creator PM: `/getcommandsusage` and `/uptime`
+- Mini-analytics of bot's commands usage _(Anonymous counters without linking to chat IDs)_
 - Dummy .env file for development
 - Redis singleton for working with DB from multiple files
-- Display basic bot data _(first name and username)_ on startup
+- Display basic bot data _(first name and username)_ in console and send it to bot creator PM on startup
 - Check for bot kick when trying to add a chat to the whitelist/ignored list
 - New message text if bot was kicked when adding chat to the list with button
-- Interfaces for locale objects
+- Link to live Telegram bot instance in README.md
+- Prettier plugin for import sorting
+- Check in all group commands for non-whitelist and non-admin trigger
+- Docs on some functions
 
 ### Changed
 
@@ -32,12 +37,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rephrase some of the bot's message text for better understanding
 - Update dependencies
 - `tsconfig.json` now has options for debugging in WebStorm
+- Update configurations in `.vscode/launch.json`
+- Update `.prettierignore`: Add `CHANGELOG.md`
 
 ### Removed
-- `.vscode/launch.json` is no longer present _(Dependency, related with it, removed as well)_
+
 - `utils.ts` removed _(Replaced with `utils/regularUtils.ts` and `utils/asyncUtils.ts`)_
 - `locale.ts` removed _(Replaced with `locale` folder)_
-- Removed local arrays with whiteList and ignoreList IDs
+- Local arrays with whiteList and ignoreList IDs
+- Message in `/help` when triggered by non-admin user
+- RUN workaround from Dockerfile _(By moving TypeScript from dev-deps to deps)_
 
 ### Fixed
 
@@ -45,7 +54,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Commands to view data in the white and ignore list now check for the creator
 - Bug which caused the bot to show all private info for the creator to the others _(Sometimes I hate myself)_
 - Typings are now up to date _(Removed `@ts-ignore` in many places)_
+- Title of project in README.md
 - Some files are prettified and fixed
+- Some sources fixed and improved
 
 ## [1.2.1] - 2022-06-28
 
