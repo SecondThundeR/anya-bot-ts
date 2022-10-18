@@ -9,7 +9,24 @@
         "outDir": "./out",
         "rootDir": "./",
         "moduleResolution": "node16",
-        "sourceMap": true
+        "paths": {
+            "@utils/*": [
+                "src/utils/*"
+            ],
+            "@groupCommands/*": [
+                "src/commands/group/*"
+            ],
+            "@pmCommands/*": [
+                "src/commands/pm/*"
+            ],
+            "@groupHandlers/*": [
+                "src/handlers/group/*"
+            ],
+            "@pmHandlers/*": [
+                "src/handlers/pm/*"
+            ]
+        },
         // Enable when need to debug in WebStorm/VSCode
+        "sourceMap": false
     }
 }
