@@ -1,7 +1,6 @@
 module.exports = {
     proseWrap: 'always',
     tabWidth: 4,
-    requireConfig: false,
     useTabs: false,
     trailingComma: 'none',
     bracketSpacing: true,
@@ -18,7 +17,14 @@ module.exports = {
             }
         }
     ],
-    importOrder: ['^[./]'],
+    importOrder: [
+        '^@groupCommands/(.*)$',
+        '^@pmCommands/(.*)$',
+        '^@groupHandlers/(.*)$',
+        '^@pmHandlers/(.*)$',
+        '^@utils/(.*)$',
+        '^[./]'
+    ],
     importOrderSeparation: true,
     importOrderSortSpecifiers: true
 };
