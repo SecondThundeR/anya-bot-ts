@@ -8,7 +8,7 @@
         "skipLibCheck": true,
         "outDir": "./out",
         "rootDir": "./",
-        "baseUrl": "src",
+        "baseUrl": "./src",
         "moduleResolution": "node16",
         "paths": {
             "@utils/*": [
