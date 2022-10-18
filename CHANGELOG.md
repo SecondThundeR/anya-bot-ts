@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2022-10-18
+
 ### Changed
 
 - Add wildcard for ignoring all .md files in `.prettierignore`
 - Update some info in `README.md`
+- Update dependencies
 
 ### Fixed
 
@@ -127,7 +130,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ability to change some localization strings via commands
 - A placeholder when trying to write a private message to a bot by a non-creator
 
-[Unreleased]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v1.2.1...v2.0.0
 [1.2.1]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v1.2.1...v1.2.1
 [1.2.0]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/pre-1.2.0...v1.2.0
