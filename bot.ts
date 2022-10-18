@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import {run, sequentialize} from '@grammyjs/runner';
 import {Bot, GrammyError, HttpError, session} from 'grammy';
 

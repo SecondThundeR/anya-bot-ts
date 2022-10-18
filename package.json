@@ -16,6 +16,7 @@
         "@grammyjs/runner": "^1.0.4",
         "dotenv": "^16.0.3",
         "grammy": "^1.11.2",
+        "module-alias": "^2.2.2",
         "redis": "^4.3.1",
         "typescript": "^4.8.4"
     },
@@ -24,5 +25,12 @@
         "@trivago/prettier-plugin-sort-imports": "^3.3.1",
         "@types/node": "^18.11.0",
         "prettier": "^2.7.1"
+    },
+    "_moduleAliases": {
+        "@utils": "out/src/utils",
+        "@groupCommands": "out/src/commands/group",
+        "@pmCommands": "out/src/commands/pm",
+        "@groupHandlers": "out/src/handlers/group",
+        "@pmHandlers": "out/src/handlers/pm"
     }
 }
