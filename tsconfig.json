@@ -8,22 +8,23 @@
         "skipLibCheck": true,
         "outDir": "./out",
         "rootDir": "./",
+        "baseUrl": "src",
         "moduleResolution": "node16",
         "paths": {
             "@utils/*": [
-                "src/utils/*"
+                "utils/*"
             ],
             "@groupCommands/*": [
-                "src/commands/group/*"
+                "commands/group/*"
             ],
             "@pmCommands/*": [
-                "src/commands/pm/*"
+                "commands/pm/*"
             ],
             "@groupHandlers/*": [
-                "src/handlers/group/*"
+                "handlers/group/*"
             ],
             "@pmHandlers/*": [
-                "src/handlers/pm/*"
+                "handlers/pm/*"
             ]
         },
         // Enable when need to debug in WebStorm/VSCode
