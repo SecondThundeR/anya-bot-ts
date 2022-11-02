@@ -35,7 +35,7 @@ messageLocale.command('messagelocale', async ctx => {
         });
     }
 
-    const messageLocaleChangeStatus = await getLocaleChangingStatus(
+    let messageLocaleChangeStatus = await getLocaleChangingStatus(
         redisInstance,
         chatID
     );
@@ -54,7 +54,8 @@ messageLocale.command('messagelocale', async ctx => {
     const keyboard = RegularUtils.getStickerMessageKeyboard(userID, chatID);
 
     const message = await ctx.reply(stickerMessages.mentionQuestion, {
-        reply_markup: keyboard
+        reply_markup: keyboard,
+        reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
     });
 
     await redisInstance.setHashData(chatID, [
@@ -70,13 +71,18 @@ messageLocale.command('messagelocale', async ctx => {
         .then()
         .catch(_ => (messageExists = false));
 
-    await deleteLocaleChangingStatus(redisInstance, chatID);
+    messageLocaleChangeStatus = await getLocaleChangingStatus(
+        redisInstance,
+        chatID
+    );
 
+    if (!messageLocaleChangeStatus) return;
+
+    await deleteLocaleChangingStatus(redisInstance, chatID);
     await redisInstance.deleteHashData(chatID, [
         'stickerMessageLocale',
         'stickerMessageMention'
     ]);
-
     try {
         await ctx.reply(stickerMessages.timeoutError, {
             reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
