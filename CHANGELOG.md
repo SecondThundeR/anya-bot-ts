@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update dependencies
 - Format code with Prettier
 
+### Removed
+
+- `requireConfig` parameter from .prettierrc.js
+
 ### Fixed
 
 - Change cast to Update.Message & Edited in pmHandlerCallback
@@ -32,10 +36,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add wildcard for ignoring all .md files in `.prettierignore`
 - Update some info in `README.md`
 - Update dependencies
-
-### Removed
-
-- `requireConfig` parameter from .prettierrc.js
 
 ### Fixed
 
