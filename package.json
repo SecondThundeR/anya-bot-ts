@@ -28,6 +28,8 @@
     },
     "_moduleAliases": {
         "@utils": "out/src/utils",
+        "@locale": "out/src/locale",
+        "@enums": "out/src/enums",
         "@groupCommands": "out/src/commands/group",
         "@pmCommands": "out/src/commands/pm",
         "@groupHandlers": "out/src/handlers/group",
