@@ -167,3 +167,4 @@ dist
 
 # Other
 .idea/
+*.DS_Store
