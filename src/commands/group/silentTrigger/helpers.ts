@@ -1,6 +1,7 @@
+import RedisSingleton from '@utils/redisSingleton';
+import RegularUtils from '@utils/regularUtils';
+
 import silentMessages from '../../../locale/silentMessages';
-import RedisSingleton from '../../../utils/redisSingleton';
-import RegularUtils from '../../../utils/regularUtils';
 
 const getDefaultSilentWord = (currentStatus: boolean): string => {
     return currentStatus

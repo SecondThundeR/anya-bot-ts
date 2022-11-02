@@ -1,4 +1,4 @@
-import RedisSingleton from '../../../utils/redisSingleton';
+import RedisSingleton from '@utils/redisSingleton';
 
 export const getLocaleChangingStatus = async (
     client: RedisSingleton,

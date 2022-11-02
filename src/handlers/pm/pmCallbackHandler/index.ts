@@ -1,11 +1,13 @@
 import { Composer } from 'grammy';
-import RegularUtils from '../../../utils/regularUtils';
-import otherMessages from '../../../locale/otherMessages';
 import { ChatMember, Message, Update } from 'grammy/types';
-import keyboardMessages from '../../../locale/keyboardMessages';
-import AsyncUtils from '../../../utils/asyncUtils';
-import RedisSingleton from '../../../utils/redisSingleton';
+
+import AsyncUtils from '@utils/asyncUtils';
+import RedisSingleton from '@utils/redisSingleton';
+import RegularUtils from '@utils/regularUtils';
+
 import ListsNames from '../../../enums/listsNames';
+import keyboardMessages from '../../../locale/keyboardMessages';
+import otherMessages from '../../../locale/otherMessages';
 
 const pmCallbackHandler = new Composer();
 
@@ -22,11 +24,9 @@ pmCallbackHandler.on('callback_query:data', async ctx => {
             text: otherMessages.callbackFailure
         });
 
-    const originalMessage = <Update.Edited & Message>(
-        await ctx.editMessageReplyMarkup({
-            reply_markup: undefined
-        })
-    );
+    const originalMessage = (await ctx.editMessageReplyMarkup({
+        reply_markup: undefined
+    })) as Update.Edited & Message;
     const [chatID, listMode] = splitData;
     const whiteListAccept = listMode === 'accept';
     const ignoreListIgnore = listMode === 'ignore';

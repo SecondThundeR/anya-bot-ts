@@ -8,7 +8,7 @@
         "local": "npm run prestart && NODE_ENV=local node out/bot.js",
         "prestart": "npm run build",
         "build": "npx tsc",
-        "format": "npx prettier --write src/**/*.ts"
+        "format": "npx prettier --write ./**/*.ts"
     },
     "author": "SecondThundeR",
     "license": "MIT",

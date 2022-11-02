@@ -1,9 +1,10 @@
 import { Composer } from 'grammy';
 
+import AsyncUtils from '@utils/asyncUtils';
+import RedisSingleton from '@utils/redisSingleton';
+import RegularUtils from '@utils/regularUtils';
+
 import helpMessages from '../../../locale/helpMessages';
-import AsyncUtils from '../../../utils/asyncUtils';
-import RedisSingleton from '../../../utils/redisSingleton';
-import RegularUtils from '../../../utils/regularUtils';
 import { isHelpIgnored } from './helpers';
 
 const helpGroupMessage = new Composer();

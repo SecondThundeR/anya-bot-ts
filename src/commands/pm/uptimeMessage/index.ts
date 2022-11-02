@@ -1,6 +1,7 @@
 import { Composer } from 'grammy';
 
-import RegularUtils from '../../../utils/regularUtils';
+import RegularUtils from '@utils/regularUtils';
+
 import { getUptimeMessage } from './helpers';
 
 const uptimeMessage = new Composer();

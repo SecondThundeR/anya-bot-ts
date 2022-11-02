@@ -1,5 +1,5 @@
-import RedisSingleton from '../../../utils/redisSingleton';
-import RegularUtils from '../../../utils/regularUtils';
+import RedisSingleton from '@utils/redisSingleton';
+import RegularUtils from '@utils/regularUtils';
 
 const getDefaultAllowWord = (currentStatus: boolean): string => {
     return currentStatus

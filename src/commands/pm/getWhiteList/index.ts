@@ -1,10 +1,11 @@
 import { Composer } from 'grammy';
 
+import AsyncUtils from '@utils/asyncUtils';
+import RedisSingleton from '@utils/redisSingleton';
+import RegularUtils from '@utils/regularUtils';
+
 import ListsNames from '../../../enums/listsNames';
 import whiteListMessages from '../../../locale/whiteListMessages';
-import AsyncUtils from '../../../utils/asyncUtils';
-import RedisSingleton from '../../../utils/redisSingleton';
-import RegularUtils from '../../../utils/regularUtils';
 
 const getWhiteList = new Composer();
 

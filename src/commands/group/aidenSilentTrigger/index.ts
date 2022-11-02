@@ -1,8 +1,9 @@
 import { Composer } from 'grammy';
 
-import AsyncUtils from '../../../utils/asyncUtils';
-import RedisSingleton from '../../../utils/redisSingleton';
-import RegularUtils from '../../../utils/regularUtils';
+import AsyncUtils from '@utils/asyncUtils';
+import RedisSingleton from '@utils/redisSingleton';
+import RegularUtils from '@utils/regularUtils';
+
 import { updateAidenSilentData } from './helpers';
 
 const aidenSilentTrigger = new Composer();

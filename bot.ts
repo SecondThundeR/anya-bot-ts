@@ -1,6 +1,6 @@
+import { run, sequentialize } from '@grammyjs/runner';
+import { Bot, GrammyError, HttpError, session } from 'grammy';
 import 'module-alias/register';
-import {run, sequentialize} from '@grammyjs/runner';
-import {Bot, GrammyError, HttpError, session} from 'grammy';
 
 import adminPowerTrigger from '@groupCommands/adminPowerTrigger';
 import aidenMode from '@groupCommands/aidenMode';
@@ -14,6 +14,7 @@ import silentOffLocaleReset from '@groupCommands/silentOffLocaleReset';
 import silentOnLocale from '@groupCommands/silentOnLocale';
 import silentOnLocaleReset from '@groupCommands/silentOnLocaleReset';
 import silentTrigger from '@groupCommands/silentTrigger';
+
 import addIgnoreList from '@pmCommands/addIgnoreList';
 import addWhiteList from '@pmCommands/addWhiteList';
 import getCommandsUsage from '@pmCommands/getCommandsUsage';
@@ -24,12 +25,15 @@ import removeIgnoreList from '@pmCommands/removeIgnoreList';
 import removeWhiteList from '@pmCommands/removeWhiteList';
 import startMessage from '@pmCommands/startMessage';
 import uptimeMessage from '@pmCommands/uptimeMessage';
+
 import customEmojisHandler from '@groupHandlers/customEmojisHandler';
 import groupCallbackHandler from '@groupHandlers/groupCallbackHandler';
 import newChatHandler from '@groupHandlers/newChatHandler';
 import premiumStickersHandler from '@groupHandlers/premiumStickersHandler';
 import voiceAndVideoHandler from '@groupHandlers/voiceAndVideoHandler';
+
 import pmCallbackHandler from '@pmHandlers/pmCallbackHandler';
+
 import AsyncUtils from '@utils/asyncUtils';
 import RedisSingleton from '@utils/redisSingleton';
 import RegularUtils from '@utils/regularUtils';

@@ -1,9 +1,10 @@
 import { Composer } from 'grammy';
 
+import AsyncUtils from '@utils/asyncUtils';
+import RedisSingleton from '@utils/redisSingleton';
+
 import ListsNames from '../../../enums/listsNames';
 import silentMessages from '../../../locale/silentMessages';
-import AsyncUtils from '../../../utils/asyncUtils';
-import RedisSingleton from '../../../utils/redisSingleton';
 
 const silentOffLocaleReset = new Composer();
 
