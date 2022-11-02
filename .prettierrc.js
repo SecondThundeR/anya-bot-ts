@@ -22,6 +22,8 @@ module.exports = {
         '^@pmCommands/(.*)$',
         '^@groupHandlers/(.*)$',
         '^@pmHandlers/(.*)$',
+        '^@enums/(.*)$',
+        '^@locale/(.*)$',
         '^@utils/(.*)$',
         '^[./]'
     ],
