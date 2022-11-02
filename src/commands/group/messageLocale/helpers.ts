@@ -1,11 +1,12 @@
 import RedisSingleton from '@utils/redisSingleton';
+import RegularUtils from '@utils/regularUtils';
 
 export const getLocaleChangingStatus = async (
     client: RedisSingleton,
     chatID: number
-): Promise<string | null> => {
-    return (
-        (await client.getHashData(chatID, 'isMessageLocaleChanging')) || null
+): Promise<boolean> => {
+    return RegularUtils.getBoolean(
+        await client.getHashData(chatID, 'isMessageLocaleChanging')
     );
 };
 

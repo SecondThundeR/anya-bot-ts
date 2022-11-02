@@ -28,8 +28,16 @@ messageLocale.command('messagelocale', async ctx => {
     const [chatID, _, newLocaleString] = await AsyncUtils.extractContextData(
         ctx
     );
-    const messageLocaleChangeStatus = RegularUtils.getBoolean(
-        await getLocaleChangingStatus(redisInstance, chatID)
+
+    if (!newLocaleString) {
+        return await ctx.reply(stickerMessages.noTextProvided, {
+            reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
+        });
+    }
+
+    const messageLocaleChangeStatus = await getLocaleChangingStatus(
+        redisInstance,
+        chatID
     );
 
     if (messageLocaleChangeStatus)
@@ -64,14 +72,17 @@ messageLocale.command('messagelocale', async ctx => {
 
     await deleteLocaleChangingStatus(redisInstance, chatID);
 
-    if (messageExists) {
-        await redisInstance.deleteHashData(chatID, [
-            'stickerMessageLocale',
-            'stickerMessageMention'
-        ]);
-        return await ctx.reply(stickerMessages.timeoutError, {
+    await redisInstance.deleteHashData(chatID, [
+        'stickerMessageLocale',
+        'stickerMessageMention'
+    ]);
+
+    try {
+        await ctx.reply(stickerMessages.timeoutError, {
             reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
         });
+    } catch (e) {
+        await ctx.reply(stickerMessages.timeoutError);
     }
 });
 
