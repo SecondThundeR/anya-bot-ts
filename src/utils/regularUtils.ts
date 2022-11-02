@@ -1,11 +1,11 @@
 import { Context, InlineKeyboard } from 'grammy';
 import { Chat, ChatFromGetChat, ChatMember, Message, User } from 'grammy/types';
 
-import ignoreListMessages from '../locale/ignoreListMessages';
-import keyboardMessages from '../locale/keyboardMessages';
-import otherMessages from '../locale/otherMessages';
-import stickerMessages from '../locale/stickerMessages';
-import whiteListMessages from '../locale/whiteListMessages';
+import ignoreListMessages from '@locale/ignoreListMessages';
+import keyboardMessages from '@locale/keyboardMessages';
+import otherMessages from '@locale/otherMessages';
+import stickerMessages from '@locale/stickerMessages';
+import whiteListMessages from '@locale/whiteListMessages';
 
 type ChatInfoTuple = [string | undefined, string | undefined];
 

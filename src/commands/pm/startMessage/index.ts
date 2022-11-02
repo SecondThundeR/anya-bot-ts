@@ -1,8 +1,8 @@
 import { Composer } from 'grammy';
 
-import RegularUtils from '@utils/regularUtils';
+import otherMessages from '@locale/otherMessages';
 
-import otherMessages from '../../../locale/otherMessages';
+import RegularUtils from '@utils/regularUtils';
 
 const startMessage = new Composer();
 

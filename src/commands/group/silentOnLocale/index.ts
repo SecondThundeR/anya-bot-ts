@@ -1,11 +1,11 @@
 import { Composer } from 'grammy';
 
+import otherMessages from '@locale/otherMessages';
+import silentMessages from '@locale/silentMessages';
+
 import AsyncUtils from '@utils/asyncUtils';
 import RedisSingleton from '@utils/redisSingleton';
 import RegularUtils from '@utils/regularUtils';
-
-import otherMessages from '../../../locale/otherMessages';
-import silentMessages from '../../../locale/silentMessages';
 
 const silentOnLocale = new Composer();
 

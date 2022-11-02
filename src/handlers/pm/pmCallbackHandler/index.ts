@@ -1,13 +1,14 @@
 import { Composer } from 'grammy';
 import { ChatMember, Message, Update } from 'grammy/types';
 
+import ListsNames from '@enums/listsNames';
+
+import keyboardMessages from '@locale/keyboardMessages';
+import otherMessages from '@locale/otherMessages';
+
 import AsyncUtils from '@utils/asyncUtils';
 import RedisSingleton from '@utils/redisSingleton';
 import RegularUtils from '@utils/regularUtils';
-
-import ListsNames from '../../../enums/listsNames';
-import keyboardMessages from '../../../locale/keyboardMessages';
-import otherMessages from '../../../locale/otherMessages';
 
 const pmCallbackHandler = new Composer();
 

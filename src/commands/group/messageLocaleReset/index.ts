@@ -1,10 +1,11 @@
 import { Composer } from 'grammy';
 
+import ListsNames from '@enums/listsNames';
+
+import stickerMessages from '@locale/stickerMessages';
+
 import AsyncUtils from '@utils/asyncUtils';
 import RedisSingleton from '@utils/redisSingleton';
-
-import ListsNames from '../../../enums/listsNames';
-import stickerMessages from '../../../locale/stickerMessages';
 
 const messageLocaleReset = new Composer();
 

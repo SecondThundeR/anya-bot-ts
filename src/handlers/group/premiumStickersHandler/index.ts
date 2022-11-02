@@ -1,10 +1,10 @@
 import { Composer } from 'grammy';
 
+import ListsNames from '@enums/listsNames';
+
 import AsyncUtils from '@utils/asyncUtils';
 import RedisSingleton from '@utils/redisSingleton';
 import RegularUtils from '@utils/regularUtils';
-
-import ListsNames from '../../../enums/listsNames';
 
 const premiumStickersHandler = new Composer();
 

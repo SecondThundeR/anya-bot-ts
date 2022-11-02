@@ -1,6 +1,6 @@
 import process from 'node:process';
 
-import otherMessages from '../../../locale/otherMessages';
+import otherMessages from '@locale/otherMessages';
 
 /**
  * Helper function for uptimeFormat.

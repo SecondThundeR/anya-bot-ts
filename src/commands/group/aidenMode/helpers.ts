@@ -1,9 +1,9 @@
 import { Context } from 'grammy';
 
+import aidenPierceMessages from '@locale/aidenPierceMessages';
+
 import RedisSingleton from '@utils/redisSingleton';
 import RegularUtils from '@utils/regularUtils';
-
-import aidenPierceMessages from '../../../locale/aidenPierceMessages';
 
 const getAidenModeWord = (currentStatus: boolean): string => {
     return currentStatus

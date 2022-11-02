@@ -1,11 +1,12 @@
 import { Composer } from 'grammy';
 
+import otherMessages from '@locale/otherMessages';
+import stickerMessages from '@locale/stickerMessages';
+
 import AsyncUtils from '@utils/asyncUtils';
 import RedisSingleton from '@utils/redisSingleton';
 import RegularUtils from '@utils/regularUtils';
 
-import otherMessages from '../../../locale/otherMessages';
-import stickerMessages from '../../../locale/stickerMessages';
 import {
     deleteLocaleChangingStatus,
     getLocaleChangingStatus,

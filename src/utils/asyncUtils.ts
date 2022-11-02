@@ -2,10 +2,12 @@ import { RedisClientType } from '@redis/client';
 import { Api, Context, InlineKeyboard } from 'grammy';
 import { ChatFromGetChat, ChatMember } from 'grammy/types';
 
-import ListsNames from '../enums/listsNames';
-import ignoreListMessages from '../locale/ignoreListMessages';
-import keyboardMessages from '../locale/keyboardMessages';
-import whiteListMessages from '../locale/whiteListMessages';
+import ListsNames from '@enums/listsNames';
+
+import ignoreListMessages from '@locale/ignoreListMessages';
+import keyboardMessages from '@locale/keyboardMessages';
+import whiteListMessages from '@locale/whiteListMessages';
+
 import RedisSingleton from './redisSingleton';
 import RegularUtils from './regularUtils';
 

@@ -1,10 +1,10 @@
 import { Composer } from 'grammy';
 
+import aidenPierceMessages from '@locale/aidenPierceMessages';
+
 import AsyncUtils from '@utils/asyncUtils';
 import RedisSingleton from '@utils/redisSingleton';
 import RegularUtils from '@utils/regularUtils';
-
-import aidenPierceMessages from '../../../locale/aidenPierceMessages';
 
 const voiceAndVideoHandler = new Composer();
 
