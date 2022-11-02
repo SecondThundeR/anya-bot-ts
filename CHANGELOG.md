@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.2] - 2022-11-02
+
+### Added
+
+- Custom paths in TSConfig
+- Support for Module-alias package for correct custom paths usage 
+- Custom paths to importOrder option in .prettierrc.js
+- Prettier format script in package.json
+
+### Changed
+
+- Update dependencies
+- Format code with Prettier
+
+### Fixed
+
+- Change cast to Update.Message & Edited in pmHandlerCallback
+
 ## [2.0.1] - 2022-10-18
 
 ### Changed
@@ -14,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add wildcard for ignoring all .md files in `.prettierignore`
 - Update some info in `README.md`
 - Update dependencies
+
+### Removed
+
+- `requireConfig` parameter from .prettierrc.js
 
 ### Fixed
 
@@ -130,7 +152,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ability to change some localization strings via commands
 - A placeholder when trying to write a private message to a bot by a non-creator
 
-[Unreleased]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.1...HEAD
+[Unreleased]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.2...HEAD
+[2.0.2]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v1.2.1...v2.0.0
 [1.2.1]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v1.2.1...v1.2.1
