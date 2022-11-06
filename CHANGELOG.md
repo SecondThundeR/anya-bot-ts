@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.3] - 2022-11-06
+
+### Changed
+
+- Update dependencies
+
 ### Fixed
 
 - "Stuck" behaviour of /messagelocale command when user passed empty string as locale text
@@ -156,7 +162,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ability to change some localization strings via commands
 - A placeholder when trying to write a private message to a bot by a non-creator
 
-[Unreleased]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.2...HEAD
+[Unreleased]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.3...HEAD
+[2.0.3]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.2...v2.0.3
 [2.0.2]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v1.2.1...v2.0.0
