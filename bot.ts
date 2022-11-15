@@ -1,6 +1,5 @@
 import { run, sequentialize } from '@grammyjs/runner';
 import { Bot, GrammyError, HttpError, session } from 'grammy';
-import 'module-alias/register';
 
 import adminPowerTrigger from '@groupCommands/adminPowerTrigger';
 import aidenMode from '@groupCommands/aidenMode';

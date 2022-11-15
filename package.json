@@ -4,8 +4,8 @@
     "description": "Some random TypeScript bot with interesting features",
     "main": "bot.js",
     "scripts": {
-        "start": "ts-node bot.ts",
-        "local": "NODE_ENV=local ts-node-dev bot.ts",
+        "start": "ts-node -r tsconfig-paths/register bot.ts",
+        "local": "NODE_ENV=local ts-node-dev -r tsconfig-paths/register bot.ts",
         "format": "npx prettier --write ./**/*.ts"
     },
     "author": "SecondThundeR",
@@ -14,7 +14,6 @@
         "@grammyjs/runner": "^1.0.4",
         "dotenv": "^16.0.3",
         "grammy": "^1.12.0",
-        "module-alias": "^2.2.2",
         "redis": "^4.5.0",
         "typescript": "^4.8.4"
     },
@@ -24,15 +23,7 @@
         "@types/node": "^18.11.9",
         "prettier": "^2.7.1",
         "ts-node": "^10.9.1",
-        "ts-node-dev": "^2.0.0"
-    },
-    "_moduleAliases": {
-        "@utils": "out/src/utils",
-        "@locale": "out/src/locale",
-        "@enums": "out/src/enums",
-        "@groupCommands": "out/src/commands/group",
-        "@pmCommands": "out/src/commands/pm",
-        "@groupHandlers": "out/src/handlers/group",
-        "@pmHandlers": "out/src/handlers/pm"
+        "ts-node-dev": "^2.0.0",
+        "tsconfig-paths": "^4.1.0"
     }
 }
