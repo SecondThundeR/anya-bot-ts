@@ -21,7 +21,7 @@ Some random TypeScript bot with interesting features based on the grammY library
 1. Create a new bot and get a bot token
    > Note: Don't forget to disable [privacy mode](https://core.telegram.org/bots#privacy-mode) for your bot.
    >
-   > For more information about how this does not violate the privacy of users conversations, read the [FAQ section] (#faq)
+   > For more information about how this does not violate the privacy of users conversations, read the [FAQ section](#faq)
 2. Install `redis-cli` and `node.js`
 3. Clone this repository
 4. Open an `.env` file in the root of the folder and change variables into it:
