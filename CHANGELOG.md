@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.3] - 2022-11-06
 
+### Added
+
+- New dependencies: `ts-node` and `ts-node-dev`
+
 ### Changed
 
 - Update dependencies
