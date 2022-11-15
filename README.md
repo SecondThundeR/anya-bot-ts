@@ -19,6 +19,9 @@ Some random TypeScript bot with interesting features based on the grammY library
 ### Local
 
 1. Create a new bot and get a bot token
+   > Note: Don't forget to disable [privacy mode](https://core.telegram.org/bots#privacy-mode) for your bot.
+   >
+   > For more information about how this does not violate the privacy of users conversations, read the [FAQ section] (#faq)
 2. Install `redis-cli` and `node.js`
 3. Clone this repository
 4. Open an `.env` file in the root of the folder and change variables into it:
@@ -94,11 +97,30 @@ The project now has a separate file [CHANGELOG.md](https://github.com/SecondThun
 
 > Q: How white/ignore lists are working?
 
-When the bot is added to an unknown group, you will be prompted to add the group to the whitelist, decline the offer to add, or add it to the ignore list. The ignore list is used to prevent the bot from sending you information about future additions to the group that you have set to the ignore list. In the case of a simple rejection, the bot will not work in the new chat until you add it to the whitelist
+When the bot is added to an unknown group, you will be prompted
+to add the group to the whitelist, decline the offer to add,
+or add it to the ignore list. The ignore list is used to prevent
+the bot from sending you information about future additions to the
+group that  you have set to the ignore list. In the case of a simple
+rejection, the bot will not work in the new chat until you add it
+to the whitelist
 
 > Q: Why were these lists added in the first place?
 
-During the tests, it became clear that with limited resources _(small database memory, low system configuration, etc.)_, the best solution was to limit the number of chats, for less load on the infrastructure of the bot. If you want, whitelist can be cut out of the code, perhaps later will be created a separate branch for this, but not for sure
+During the tests, it became clear that with limited resources
+_(small database memory, low system configuration, etc.)_,
+the best solution was to limit the number of chats, for
+less load on the infrastructure of the bot. If you want,
+whitelist can be cut out of the code, perhaps later will
+be created a separate branch for this, but not for sure
+
+> Q: Is the privacy of conversations with the privacy mode disabled violated?
+
+No, it is not violated. The advantage of this bot is that it:
+1. Does not log messages received from the Telegram API
+2. Processes only stickers, emojis and voice/video messages, 
+thanks to a convenient filter provided by the grammY library.
+If you want to make sure of this, look at the folder with [handlers](https://github.com/SecondThundeR/anya-bot-ts/tree/main/src/handlers)
 
 ## License
 
