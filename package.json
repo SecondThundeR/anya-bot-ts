@@ -4,10 +4,8 @@
     "description": "Some random TypeScript bot with interesting features",
     "main": "bot.js",
     "scripts": {
-        "start": "node out/bot.js",
-        "local": "npm run prestart && NODE_ENV=local node out/bot.js",
-        "prestart": "npm run build",
-        "build": "npx tsc",
+        "start": "ts-node bot.ts",
+        "local": "NODE_ENV=local ts-node-dev bot.ts",
         "format": "npx prettier --write ./**/*.ts"
     },
     "author": "SecondThundeR",
@@ -24,7 +22,9 @@
         "@grammyjs/types": "^2.10.2",
         "@trivago/prettier-plugin-sort-imports": "^3.4.0",
         "@types/node": "^18.11.9",
-        "prettier": "^2.7.1"
+        "prettier": "^2.7.1",
+        "ts-node": "^10.9.1",
+        "ts-node-dev": "^2.0.0"
     },
     "_moduleAliases": {
         "@utils": "out/src/utils",
