@@ -41,7 +41,7 @@ if (process.env.NODE_ENV === 'local') {
     require('dotenv').config();
 }
 
-const botToken = process.env.BOT_KEY;
+const botToken = process.env.BOT_TOKEN;
 if (botToken === undefined) {
     console.log("Can't find bot token. Exiting...");
     process.exit(1);

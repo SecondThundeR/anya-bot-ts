@@ -25,7 +25,7 @@ Some random TypeScript bot with interesting features based on the grammY library
 2. Install `redis-cli` and `node.js`
 3. Clone this repository
 4. Open an `.env` file in the root of the folder and change variables into it:
-    - `BOT_KEY` - bot token
+    - `BOT_TOKEN` - bot token
     - `CREATOR_ID` - your ID for working with the bot whitelist/ignored list from the DM
 5. Run `npm i` and `npm run local`
 6. Wait for `Started as @...` message and/or message in PM from bot
@@ -39,7 +39,7 @@ Some random TypeScript bot with interesting features based on the grammY library
 2. Create a new Redis database and get: Username, Password, Host and Port
     > How to create a Redis database, create a user and get the necessary data to connect will not be written here
 3. Create a new pipeline in Heroku, the application in it and set neccessary config vars in the settings:
-    - `BOT_KEY` - bot token
+    - `BOT_TOKEN` - bot token
     - `CREATOR_ID` - your ID for working with the bot whitelist/ignored list from the DM (better to pass, as bot won't work correctly without it)
     - `REDIS_USER` - name of Redis DB user
     - `REDIS_PASS` - password of Redis DB user
@@ -118,7 +118,7 @@ be created a separate branch for this, but not for sure
 
 No, it is not violated. The advantage of this bot is that it:
 1. Does not log messages received from the Telegram API
-2. Processes only stickers, emojis and voice/video messages, 
+2. Processes only stickers, emojis and voice/video messages,
 thanks to a convenient filter provided by the grammY library.
 If you want to make sure of this, look at the folder with [handlers](https://github.com/SecondThundeR/anya-bot-ts/tree/main/src/handlers)
 
