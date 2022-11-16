@@ -1,6 +1,6 @@
 enum ListsNames {
     WHITELIST = 'whiteListIDs',
-    IGNORELIST = 'ignoreListIDs'
+    IGNORELIST = 'ignoreListIDs',
 }
 
 export default ListsNames;
