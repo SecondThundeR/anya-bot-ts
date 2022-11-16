@@ -1,5 +1,5 @@
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import RedisSingleton from '@/utils/redisSingleton.ts';
+import RegularUtils from '@/utils/regularUtils.ts';
 
 const getDefaultAllowWord = (currentStatus: boolean): string => {
     return currentStatus
@@ -16,20 +16,22 @@ const parseSilentValueFromDB = (currentStatus: string | null): boolean => {
 const changeAllowValueInDB = async (
     client: RedisSingleton,
     chatID: number,
-    silentStatus: boolean
+    silentStatus: boolean,
 ) => {
-    if (!silentStatus)
+    if (!silentStatus) {
         return await client.deleteHashData(chatID, ['adminPower']);
-    await client.setHashData(chatID, ['adminPower', String(silentStatus)]);
+    }
+    await client.setHashData(chatID, { adminPower: String(silentStatus) });
 };
 
 export const updateAllowData = async (
     client: RedisSingleton,
-    chatID: number
+    chatID: number,
 ): Promise<string> => {
     const allowStickersString = await client.getHashData(chatID, 'adminPower');
-    const allowStickersStringReversed =
-        !parseSilentValueFromDB(allowStickersString);
+    const allowStickersStringReversed = !parseSilentValueFromDB(
+        allowStickersString,
+    );
     await changeAllowValueInDB(client, chatID, allowStickersStringReversed);
 
     return getDefaultAllowWord(allowStickersStringReversed);

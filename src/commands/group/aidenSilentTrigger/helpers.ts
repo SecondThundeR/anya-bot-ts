@@ -1,7 +1,7 @@
-import aidenPierceMessages from '@locale/aidenPierceMessages';
+import aidenPierceMessages from '@/locale/aidenPierceMessages.ts';
 
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import RedisSingleton from '@/utils/redisSingleton.ts';
+import RegularUtils from '@/utils/regularUtils.ts';
 
 const getAidenModeWord = (currentStatus: boolean): string => {
     return currentStatus
@@ -18,27 +18,28 @@ const parseSilentValueFromDB = (currentStatus: string | null): boolean => {
 const changeAidenSilentStatusDB = async (
     client: RedisSingleton,
     chatID: number,
-    aidenStatus: boolean
+    aidenStatus: boolean,
 ) => {
-    if (!aidenStatus)
+    if (!aidenStatus) {
         return await client.deleteHashData(chatID, ['isAidenSilent']);
-    await client.setHashData(chatID, ['isAidenSilent', String(aidenStatus)]);
+    }
+    await client.setHashData(chatID, { isAidenSilent: String(aidenStatus) });
 };
 
 export const updateAidenSilentData = async (
     redisSingleton: RedisSingleton,
-    chatID: number
+    chatID: number,
 ) => {
     const isAidenSilentEnabledString =
         (await redisSingleton.getHashData(chatID, 'isAidenSilent')) || null;
     const isAidenSilentEnabledReverse = !parseSilentValueFromDB(
-        isAidenSilentEnabledString
+        isAidenSilentEnabledString,
     );
 
     await changeAidenSilentStatusDB(
         redisSingleton,
         chatID,
-        isAidenSilentEnabledReverse
+        isAidenSilentEnabledReverse,
     );
     return getAidenModeWord(isAidenSilentEnabledReverse);
 };

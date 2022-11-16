@@ -1,14 +1,15 @@
-import { Composer } from 'grammy';
+import { Composer } from '@/deps.ts';
 
-import otherMessages from '@locale/otherMessages';
+import otherMessages from '@/locale/otherMessages.ts';
 
-import RegularUtils from '@utils/regularUtils';
+import RegularUtils from '@/utils/regularUtils.ts';
 
 const startMessage = new Composer();
 
-startMessage.command('start', async ctx => {
-    if (!RegularUtils.isBotCreator(ctx))
+startMessage.command('start', async (ctx) => {
+    if (!RegularUtils.isBotCreator(ctx)) {
         return await ctx.reply(otherMessages.noPMHint);
+    }
     await ctx.reply(otherMessages.creatorPMHint);
 });
 

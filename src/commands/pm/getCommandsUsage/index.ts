@@ -1,19 +1,20 @@
-import { Composer } from 'grammy';
+import { Composer } from '@/deps.ts';
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from '@/utils/asyncUtils.ts';
+import RedisSingleton from '@/utils/redisSingleton.ts';
+import RegularUtils from '@/utils/regularUtils.ts';
 
 const getCommandsUsage = new Composer();
 
-getCommandsUsage.command('getcommandsusage', async ctx => {
+getCommandsUsage.command('getcommandsusage', async (ctx) => {
     if (!RegularUtils.isBotCreator(ctx)) return;
 
     const data = await AsyncUtils.getCommandsUsage(
-        RedisSingleton.getInstance()
+        RedisSingleton.getInstance(),
     );
-    if (Object.keys(data).length === 0)
+    if (Object.keys(data).length === 0) {
         return await ctx.reply('Нет данных по использованию команд');
+    }
 
     let formattedData = '';
     Object.entries(data).forEach(([key, value]) => {

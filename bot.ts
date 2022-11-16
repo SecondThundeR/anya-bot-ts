@@ -1,53 +1,53 @@
-import { run, sequentialize } from '@grammyjs/runner';
-import { Bot, GrammyError, HttpError, session } from 'grammy';
+import { Bot, GrammyError, HttpError, session, run, sequentialize, dotenv, process } from '@/deps.ts';
 
-import adminPowerTrigger from '@groupCommands/adminPowerTrigger';
-import aidenMode from '@groupCommands/aidenMode';
-import aidenSilentTrigger from '@groupCommands/aidenSilentTrigger';
-import helpGroupMessage from '@groupCommands/helpGroupMessage';
-import messageLocale from '@groupCommands/messageLocale';
-import messageLocaleReset from '@groupCommands/messageLocaleReset';
-import noCustomEmoji from '@groupCommands/noCustomEmoji';
-import silentOffLocale from '@groupCommands/silentOffLocale';
-import silentOffLocaleReset from '@groupCommands/silentOffLocaleReset';
-import silentOnLocale from '@groupCommands/silentOnLocale';
-import silentOnLocaleReset from '@groupCommands/silentOnLocaleReset';
-import silentTrigger from '@groupCommands/silentTrigger';
+import adminPowerTrigger from '@/groupCommands/adminPowerTrigger/index.ts';
+import aidenMode from '@/groupCommands/aidenMode/index.ts';
+import aidenSilentTrigger from '@/groupCommands/aidenSilentTrigger/index.ts';
+import helpGroupMessage from '@/groupCommands/helpGroupMessage/index.ts';
+import messageLocale from '@/groupCommands/messageLocale/index.ts';
+import messageLocaleReset from '@/groupCommands/messageLocaleReset/index.ts';
+import noCustomEmoji from '@/groupCommands/noCustomEmoji/index.ts';
+import silentOffLocale from '@/groupCommands/silentOffLocale/index.ts';
+import silentOffLocaleReset from '@/groupCommands/silentOffLocaleReset/index.ts';
+import silentOnLocale from '@/groupCommands/silentOnLocale/index.ts';
+import silentOnLocaleReset from '@/groupCommands/silentOnLocaleReset/index.ts';
+import silentTrigger from '@/groupCommands/silentTrigger/index.ts';
 
-import addIgnoreList from '@pmCommands/addIgnoreList';
-import addWhiteList from '@pmCommands/addWhiteList';
-import getCommandsUsage from '@pmCommands/getCommandsUsage';
-import getIgnoreList from '@pmCommands/getIgnoreList';
-import getWhiteList from '@pmCommands/getWhiteList';
-import helpPMMessage from '@pmCommands/helpPMMessage';
-import removeIgnoreList from '@pmCommands/removeIgnoreList';
-import removeWhiteList from '@pmCommands/removeWhiteList';
-import startMessage from '@pmCommands/startMessage';
-import uptimeMessage from '@pmCommands/uptimeMessage';
+import addIgnoreList from '@/pmCommands/addIgnoreList/index.ts';
+import addWhiteList from '@/pmCommands/addWhiteList/index.ts';
+import getCommandsUsage from '@/pmCommands/getCommandsUsage/index.ts';
+import getIgnoreList from '@/pmCommands/getIgnoreList/index.ts';
+import getWhiteList from '@/pmCommands/getWhiteList/index.ts';
+import helpPMMessage from '@/pmCommands/helpPMMessage/index.ts';
+import removeIgnoreList from '@/pmCommands/removeIgnoreList/index.ts';
+import removeWhiteList from '@/pmCommands/removeWhiteList/index.ts';
+import startMessage from '@/pmCommands/startMessage/index.ts';
+import uptimeMessage from '@/pmCommands/uptimeMessage/index.ts';
 
-import customEmojisHandler from '@groupHandlers/customEmojisHandler';
-import groupCallbackHandler from '@groupHandlers/groupCallbackHandler';
-import newChatHandler from '@groupHandlers/newChatHandler';
-import premiumStickersHandler from '@groupHandlers/premiumStickersHandler';
-import voiceAndVideoHandler from '@groupHandlers/voiceAndVideoHandler';
+import customEmojisHandler from '@/groupHandlers/customEmojisHandler/index.ts';
+import groupCallbackHandler from '@/groupHandlers/groupCallbackHandler/index.ts';
+import newChatHandler from '@/groupHandlers/newChatHandler/index.ts';
+import premiumStickersHandler from '@/groupHandlers/premiumStickersHandler/index.ts';
+import voiceAndVideoHandler from '@/groupHandlers/voiceAndVideoHandler/index.ts';
 
-import pmCallbackHandler from '@pmHandlers/pmCallbackHandler';
+import pmCallbackHandler from '@/pmHandlers/pmCallbackHandler/index.ts';
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from '@/utils/asyncUtils.ts';
+import RedisSingleton from '@/utils/redisSingleton.ts';
+import RegularUtils from '@/utils/regularUtils.ts';
 
-if (process.env.NODE_ENV === 'local') {
-    require('dotenv').config();
+await dotenv({ export: true });
+
+const BOT_TOKEN = Deno.env.get("BOT_TOKEN");
+
+if (!BOT_TOKEN) {
+  console.error(
+    "WARNING: Token for bot is not provided. Please set the BOT_TOKEN environment variable."
+  );
+  Deno.exit(1);
 }
 
-const botToken = process.env.BOT_KEY;
-if (botToken === undefined) {
-    console.log("Can't find bot token. Exiting...");
-    process.exit(1);
-}
-
-const bot = new Bot(botToken);
+const bot = new Bot(BOT_TOKEN);
 const runner = run(bot);
 const client = RedisSingleton.getInstance();
 
@@ -60,7 +60,7 @@ const getSessionKeyFunc = RegularUtils.getSessionKey;
 const stopOnTerm = async () => {
     if (runner.isRunning()) {
         await runner.stop();
-        await client.disconnectFromServer();
+        await client.quitClient();
         return true;
     }
     return false;
@@ -120,12 +120,9 @@ bot.catch(err => {
 process.once('SIGINT', stopOnTerm);
 process.once('SIGTERM', stopOnTerm);
 
-(async () => {
-    try {
-        await client.connectToServer();
-        await AsyncUtils.logBotInfo(bot.api);
-    } catch (e) {
-        console.log(e);
-        await client.disconnectFromServer();
-    }
-})();
+try {
+    await AsyncUtils.logBotInfo(bot.api);
+} catch (e) {
+    console.log(e);
+    await client.quitClient();
+}

@@ -1,7 +1,7 @@
-import silentMessages from '@locale/silentMessages';
+import silentMessages from '@/locale/silentMessages.ts';
 
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import RedisSingleton from '@/utils/redisSingleton.ts';
+import RegularUtils from '@/utils/regularUtils.ts';
 
 const getDefaultSilentWord = (currentStatus: boolean): string => {
     return currentStatus
@@ -18,27 +18,27 @@ const parseSilentValueFromDB = (currentStatus: string | null): boolean => {
 const changeSilentStatusInDB = async (
     client: RedisSingleton,
     chatID: number,
-    silentStatus: boolean
+    silentStatus: boolean,
 ) => {
     if (!silentStatus) return await client.deleteHashData(chatID, ['isSilent']);
-    await client.setHashData(chatID, ['isSilent', String(silentStatus)]);
+    await client.setHashData(chatID, { isSilent: String(silentStatus) });
 };
 
 export const updateSilentData = async (
     client: RedisSingleton,
-    chatID: number
+    chatID: number,
 ): Promise<string> => {
-    const [isSilentString, silentOnLocale, silentOffLocale] =
-        await client.getHashMultipleData(chatID, [
+    const [isSilentString, silentOnLocale, silentOffLocale] = await client
+        .getHashMultipleData(chatID, [
             'isSilent',
             'silentOnLocale',
-            'silentOffLocale'
+            'silentOffLocale',
         ]);
     const isSilentReversed = !parseSilentValueFromDB(isSilentString);
     await changeSilentStatusInDB(client, chatID, isSilentReversed);
 
     return RegularUtils.verifyLocaleWord(
         isSilentReversed ? silentOnLocale : silentOffLocale,
-        getDefaultSilentWord(isSilentReversed)
+        getDefaultSilentWord(isSilentReversed),
     );
 };

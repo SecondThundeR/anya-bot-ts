@@ -1,4 +1,4 @@
-# anya-bot-ts
+# anya-bot-ts (Deno version)
 
 Some random TypeScript bot with interesting features based on the grammY library
 
@@ -22,16 +22,15 @@ Some random TypeScript bot with interesting features based on the grammY library
    > Note: Don't forget to disable [privacy mode](https://core.telegram.org/bots#privacy-mode) for your bot.
    >
    > For more information about how this does not violate the privacy of users conversations, read the [FAQ section](#faq)
-2. Install `redis-cli` and `node.js`
+2. Install `redis-cli`, `deno` and [`velociraptor`](https://velociraptor.run/)
 3. Clone this repository
 4. Open an `.env` file in the root of the folder and change variables into it:
-    - `BOT_KEY` - bot token
+    - `BOT_TOKEN` - bot token
     - `CREATOR_ID` - your ID for working with the bot whitelist/ignored list from the DM
-5. Run `npm i` and `npm run local`
+5. Run `vr dev`
+    > If you want to get all debug data, run `export DEBUG="grammy*"` before launching bot
 6. Wait for `Started as @...` message and/or message in PM from bot
 7. Bot is ready to go!
-
-> If you want to pass environment variables on your system, all you need to do is run `npm start` in step 5
 
 ### Heroku
 
@@ -39,7 +38,7 @@ Some random TypeScript bot with interesting features based on the grammY library
 2. Create a new Redis database and get: Username, Password, Host and Port
     > How to create a Redis database, create a user and get the necessary data to connect will not be written here
 3. Create a new pipeline in Heroku, the application in it and set neccessary config vars in the settings:
-    - `BOT_KEY` - bot token
+    - `BOT_TOKEN` - bot token
     - `CREATOR_ID` - your ID for working with the bot whitelist/ignored list from the DM (better to pass, as bot won't work correctly without it)
     - `REDIS_USER` - name of Redis DB user
     - `REDIS_PASS` - password of Redis DB user
@@ -117,8 +116,9 @@ be created a separate branch for this, but not for sure
 > Q: Is the privacy of conversations with the privacy mode disabled violated?
 
 No, it is not violated. The advantage of this bot is that it:
+
 1. Does not log messages received from the Telegram API
-2. Processes only stickers, emojis and voice/video messages, 
+2. Processes only stickers, emojis and voice/video messages,
 thanks to a convenient filter provided by the grammY library.
 If you want to make sure of this, look at the folder with [handlers](https://github.com/SecondThundeR/anya-bot-ts/tree/main/src/handlers)
 

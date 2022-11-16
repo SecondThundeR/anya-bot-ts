@@ -1,4 +1,4 @@
-import otherMessages from './otherMessages';
+import otherMessages from './otherMessages.ts';
 
 const whiteListMessages = {
     added: 'Ура, теперь я могу работать в этом чате!',
@@ -27,7 +27,7 @@ const whiteListMessages = {
     chatsListHeader: 'Я сейчас работаю в:\n',
     idsListHeader: 'Я запомнила такие айди чатов:\n',
     chatsAndIdsListEmpty:
-        'Пока я не записала ни одного айди чата, в которых я могу работать.'
+        'Пока я не записала ни одного айди чата, в которых я могу работать.',
 };
 
 export default whiteListMessages;

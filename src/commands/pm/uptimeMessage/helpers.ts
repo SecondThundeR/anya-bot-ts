@@ -1,6 +1,6 @@
-import process from 'node:process';
+import { process } from '@/deps.ts';
 
-import otherMessages from '@locale/otherMessages';
+import otherMessages from '@/locale/otherMessages.ts';
 
 /**
  * Helper function for uptimeFormat.
@@ -22,9 +22,11 @@ const uptimeFormat = (uptimeSeconds: number): string => {
     const hours = Math.floor(uptimeSeconds / 3600);
     const minutes = Math.floor((uptimeSeconds % 3600) / 60);
     const seconds = Math.floor(uptimeSeconds % 60);
-    return `${zeroAppender(hours)}:${zeroAppender(minutes)}:${zeroAppender(
-        seconds
-    )}`;
+    return `${zeroAppender(hours)}:${zeroAppender(minutes)}:${
+        zeroAppender(
+            seconds,
+        )
+    }`;
 };
 
 /**
@@ -32,7 +34,9 @@ const uptimeFormat = (uptimeSeconds: number): string => {
  * @returns Formatted string
  */
 export const getUptimeMessage = (): string => {
-    return `${otherMessages.uptimeMessage} <b>${uptimeFormat(
-        process.uptime()
-    )}</b>`;
+    return `${otherMessages.uptimeMessage} <b>${
+        uptimeFormat(
+            process.uptime(),
+        )
+    }</b>`;
 };

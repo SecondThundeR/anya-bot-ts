@@ -1,4 +1,4 @@
-import otherMessages from './otherMessages';
+import otherMessages from './otherMessages.ts';
 
 const ignoreListMessages = {
     added: 'Хорошо, теперь я буду игнорировать этот чат!',
@@ -15,7 +15,7 @@ const ignoreListMessages = {
         'когда будете обращаться к нему, чтобы быстрее разобраться)',
     idsListHeader: 'Айди чатов, которые я игнорирую:\n',
     idsListEmpty:
-        'Пока я не записала ни одного айди чата, которые я буду игнорировать.'
+        'Пока я не записала ни одного айди чата, которые я буду игнорировать.',
 };
 
 export default ignoreListMessages;

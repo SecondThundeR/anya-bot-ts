@@ -1,19 +1,19 @@
-import { Composer } from 'grammy';
+import { Composer } from '@/deps.ts';
 
-import ListsNames from '@enums/listsNames';
+import ListsNames from '@/enums/listsNames.ts';
 
-import silentMessages from '@locale/silentMessages';
+import silentMessages from '@/locale/silentMessages.ts';
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
+import AsyncUtils from '@/utils/asyncUtils.ts';
+import RedisSingleton from '@/utils/redisSingleton.ts';
 
 const silentOnLocaleReset = new Composer();
 
-silentOnLocaleReset.command('silentonlocalereset', async ctx => {
+silentOnLocaleReset.command('silentonlocalereset', async (ctx) => {
     const redisInstance = RedisSingleton.getInstance();
     await AsyncUtils.incrementCommandUsageCounter(
         redisInstance,
-        'silentonlocalereset'
+        'silentonlocalereset',
     );
 
     if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
@@ -25,7 +25,7 @@ silentOnLocaleReset.command('silentonlocalereset', async ctx => {
         redisInstance,
         whiteListIDs,
         ['silentOnLocale'],
-        silentMessages.enabledMessageReset
+        silentMessages.enabledMessageReset,
     );
 });
 

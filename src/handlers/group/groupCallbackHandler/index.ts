@@ -1,31 +1,33 @@
-import { Composer } from 'grammy';
+import { Composer } from '@/deps.ts';
 
-import otherMessages from '@locale/otherMessages';
-import stickerMessages from '@locale/stickerMessages';
+import otherMessages from '@/locale/otherMessages.ts';
+import stickerMessages from '@/locale/stickerMessages.ts';
 
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import RedisSingleton from '@/utils/redisSingleton.ts';
+import RegularUtils from '@/utils/regularUtils.ts';
 
-import { deleteLocaleChangingStatus } from './helpers';
+import { deleteLocaleChangingStatus } from './helpers.ts';
 
 const groupCallbackHandler = new Composer();
 
-groupCallbackHandler.on('callback_query:data', async ctx => {
+groupCallbackHandler.on('callback_query:data', async (ctx) => {
     const redisSingleton = RedisSingleton.getInstance();
     const splitData = RegularUtils.getCallbackData(ctx).split('|');
 
-    if (splitData.length !== 3)
+    if (splitData.length !== 3) {
         return await ctx.answerCallbackQuery({
-            text: otherMessages.callbackFailure
+            text: otherMessages.callbackFailure,
         });
+    }
 
     const [userID, chatID, mentionMode] = splitData;
     const clickUserID = ctx.update.callback_query.from.id;
 
-    if (userID != String(clickUserID))
+    if (userID != String(clickUserID)) {
         return await ctx.answerCallbackQuery({
-            text: otherMessages.callbackWrongUser
+            text: otherMessages.callbackWrongUser,
         });
+    }
 
     await deleteLocaleChangingStatus(redisSingleton, chatID);
 
@@ -34,10 +36,9 @@ groupCallbackHandler.on('callback_query:data', async ctx => {
 
     const mentionModeBoolean = mentionMode === 'yes';
 
-    await redisSingleton.setHashData(chatID, [
-        'stickerMessageMention',
-        String(mentionModeBoolean)
-    ]);
+    await redisSingleton.setHashData(chatID, {
+        stickerMessageMention: String(mentionModeBoolean),
+    });
 
     await ctx.answerCallbackQuery();
 
@@ -46,7 +47,7 @@ groupCallbackHandler.on('callback_query:data', async ctx => {
             stickerMessages[
                 mentionModeBoolean ? 'mentionModeYes' : 'mentionModeNo'
             ]
-        }`
+        }`,
     );
 });
 

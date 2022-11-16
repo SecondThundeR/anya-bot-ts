@@ -1,16 +1,16 @@
-import { Composer } from 'grammy';
+import { Composer } from '@/deps.ts';
 
-import helpMessages from '@locale/helpMessages';
+import helpMessages from '@/locale/helpMessages.ts';
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from '@/utils/asyncUtils.ts';
+import RedisSingleton from '@/utils/redisSingleton.ts';
+import RegularUtils from '@/utils/regularUtils.ts';
 
-import { isHelpIgnored } from './helpers';
+import { isHelpIgnored } from './helpers.ts';
 
 const helpGroupMessage = new Composer();
 
-helpGroupMessage.command('help', async ctx => {
+helpGroupMessage.command('help', async (ctx) => {
     const redisInstance = RedisSingleton.getInstance();
     await AsyncUtils.incrementCommandUsageCounter(redisInstance, 'help');
 
@@ -19,8 +19,8 @@ helpGroupMessage.command('help', async ctx => {
     await ctx.reply(
         RegularUtils.convertHelpMessageToHTMLFormat(helpMessages.groupMessage),
         {
-            parse_mode: 'HTML'
-        }
+            parse_mode: 'HTML',
+        },
     );
 });
 

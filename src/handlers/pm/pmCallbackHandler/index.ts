@@ -1,32 +1,33 @@
-import { Composer } from 'grammy';
-import { ChatMember, Message, Update } from 'grammy/types';
+import { Composer } from '@/deps.ts';
+import { ChatMember, Message, Update } from '@/deps.ts';
 
-import ListsNames from '@enums/listsNames';
+import ListsNames from '@/enums/listsNames.ts';
 
-import keyboardMessages from '@locale/keyboardMessages';
-import otherMessages from '@locale/otherMessages';
+import keyboardMessages from '@/locale/keyboardMessages.ts';
+import otherMessages from '@/locale/otherMessages.ts';
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from '@/utils/asyncUtils.ts';
+import RedisSingleton from '@/utils/redisSingleton.ts';
+import RegularUtils from '@/utils/regularUtils.ts';
 
 const pmCallbackHandler = new Composer();
 
-pmCallbackHandler.on('callback_query:data', async ctx => {
+pmCallbackHandler.on('callback_query:data', async (ctx) => {
     const splitData = RegularUtils.getCallbackData(ctx).split('|');
     const redisInstance = RedisSingleton.getInstance();
     const idsLists = await redisInstance.getLists([
         ListsNames.WHITELIST,
-        ListsNames.IGNORELIST
+        ListsNames.IGNORELIST,
     ]);
 
-    if (splitData.length !== 2)
+    if (splitData.length !== 2) {
         return await ctx.answerCallbackQuery({
-            text: otherMessages.callbackFailure
+            text: otherMessages.callbackFailure,
         });
+    }
 
     const originalMessage = (await ctx.editMessageReplyMarkup({
-        reply_markup: undefined
+        reply_markup: undefined,
     })) as Update.Edited & Message;
     const [chatID, listMode] = splitData;
     const whiteListAccept = listMode === 'accept';
@@ -37,7 +38,7 @@ pmCallbackHandler.on('callback_query:data', async ctx => {
         botData = await ctx.api.getChatMember(chatID, ctx.me.id);
     } catch (e) {
         return await ctx.reply(keyboardMessages.keyboardError, {
-            reply_to_message_id: RegularUtils.getMessageID(originalMessage)
+            reply_to_message_id: RegularUtils.getMessageID(originalMessage),
         });
     }
 
@@ -47,7 +48,7 @@ pmCallbackHandler.on('callback_query:data', async ctx => {
     ) {
         await RedisSingleton.getInstance().pushValueToList(
             ListsNames.IGNORELIST,
-            String(chatID)
+            String(chatID),
         );
         await AsyncUtils.sendIgnoredMessage(ctx, chatID);
     }
@@ -58,29 +59,30 @@ pmCallbackHandler.on('callback_query:data', async ctx => {
     ) {
         await RedisSingleton.getInstance().pushValueToList(
             ListsNames.WHITELIST,
-            String(chatID)
+            String(chatID),
         );
         await AsyncUtils.sendAccessGrantedMessage(ctx, chatID);
     }
 
-    if (botData && !RegularUtils.isBotCanDelete(botData))
+    if (botData && !RegularUtils.isBotCanDelete(botData)) {
         await ctx.api.sendMessage(
             chatID,
-            otherMessages.botAdminWhitelistedHint
+            otherMessages.botAdminWhitelistedHint,
         );
+    }
 
     await ctx.answerCallbackQuery({
-        text: otherMessages.callbackSuccess
+        text: otherMessages.callbackSuccess,
     });
 
     await ctx.reply(
         RegularUtils.getWhiteListResponseLocale(
             whiteListAccept,
-            ignoreListIgnore
+            ignoreListIgnore,
         ),
         {
-            reply_to_message_id: RegularUtils.getMessageID(originalMessage)
-        }
+            reply_to_message_id: RegularUtils.getMessageID(originalMessage),
+        },
     );
 });
 

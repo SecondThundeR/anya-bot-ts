@@ -1,15 +1,14 @@
-import { RedisClientType } from '@redis/client';
-import { Api, Context, InlineKeyboard } from 'grammy';
-import { ChatFromGetChat, ChatMember } from 'grammy/types';
+import { Api, Context, InlineKeyboard } from '@/deps.ts';
+import type { ChatFromGetChat, ChatMember } from '@/deps.ts';
 
-import ListsNames from '@enums/listsNames';
+import ListsNames from '@/enums/listsNames.ts';
 
-import ignoreListMessages from '@locale/ignoreListMessages';
-import keyboardMessages from '@locale/keyboardMessages';
-import whiteListMessages from '@locale/whiteListMessages';
+import ignoreListMessages from '@/locale/ignoreListMessages.ts';
+import keyboardMessages from '@/locale/keyboardMessages.ts';
+import whiteListMessages from '@/locale/whiteListMessages.ts';
 
-import RedisSingleton from './redisSingleton';
-import RegularUtils from './regularUtils';
+import RedisSingleton from './redisSingleton.ts';
+import RegularUtils from './regularUtils.ts';
 
 export default class AsyncUtils {
     /**
@@ -21,11 +20,11 @@ export default class AsyncUtils {
         const botBasicInfo = await api.getMe();
         if (botBasicInfo === undefined) return;
         console.log(
-            `Started as ${botBasicInfo.first_name} (@${botBasicInfo.username})`
+            `Started as ${botBasicInfo.first_name} (@${botBasicInfo.username})`,
         );
         await api.sendMessage(
-            String(process.env.CREATOR_ID),
-            'Бот запущен и готов к работе!'
+            String(Deno.env.get('CREATOR_ID')),
+            'Бот запущен и готов к работе!',
         );
     }
 
@@ -37,7 +36,7 @@ export default class AsyncUtils {
      */
     public static async isBotInChat(
         ctx: Context,
-        chatID: string | number
+        chatID: string | number,
     ): Promise<boolean> {
         try {
             await ctx.api.getChat(chatID);
@@ -48,13 +47,13 @@ export default class AsyncUtils {
     }
 
     public static async isMessageAlreadyDeleted(
-        ctx: Context
+        ctx: Context,
     ): Promise<boolean> {
         let isMessageDeleted = false;
         await ctx
             .deleteMessage()
             .then()
-            .catch(_ => {
+            .catch((_) => {
                 isMessageDeleted = true;
             });
         return isMessageDeleted;
@@ -69,27 +68,27 @@ export default class AsyncUtils {
 
     public static async getChatsByIDs(
         ctx: Context,
-        chatsIDs: string[]
+        chatsIDs: string[],
     ): Promise<[ChatFromGetChat[], string[]]> {
-        let chatObjectArray: ChatFromGetChat[] = [];
-        let chatIDArray: string[] = [];
+        const chatObjectArray: ChatFromGetChat[] = [];
+        const chatIDArray: string[] = [];
         await Promise.all(
-            chatsIDs.map(async id => {
+            chatsIDs.map(async (id) => {
                 await ctx.api
                     .getChat(id)
-                    .then(chat => {
+                    .then((chat) => {
                         chatObjectArray.push(chat);
                     })
-                    .catch(_ => {
+                    .catch((_) => {
                         chatIDArray.push(id);
                     });
-            })
+            }),
         );
         return [chatObjectArray, chatIDArray];
     }
 
     public static async extractContextData(
-        ctx: Context
+        ctx: Context,
     ): Promise<[number, ChatMember, string]> {
         const chatID = RegularUtils.getChatID(ctx);
         const botData = await ctx.getChatMember(ctx.me.id);
@@ -99,14 +98,14 @@ export default class AsyncUtils {
 
     public static async incrementCommandUsageCounter(
         client: RedisSingleton,
-        command: string
+        command: string,
     ): Promise<void> {
         await client.incrementFieldBy('commandsUsage', command, 1);
     }
 
     public static async getCommandsUsage(
-        client: RedisSingleton
-    ): Promise<{ [key: string]: string }> {
+        client: RedisSingleton,
+    ): Promise<string[]> {
         return await client.getAllHashData('commandsUsage');
     }
 
@@ -115,7 +114,7 @@ export default class AsyncUtils {
         client: RedisSingleton,
         whiteListIDs: string[],
         fieldsArray: string[],
-        localeResetMessage: string
+        localeResetMessage: string,
     ) {
         const chatID = RegularUtils.getChatID(ctx);
         const botData = await ctx.getChatMember(ctx.me.id);
@@ -125,8 +124,9 @@ export default class AsyncUtils {
         if (
             !(await AsyncUtils.isGroupAdmin(ctx)) &&
             RegularUtils.isBotCanDelete(botData)
-        )
+        ) {
             return await ctx.deleteMessage();
+        }
 
         await RedisSingleton.getInstance().deleteHashData(chatID, fieldsArray);
 
@@ -134,39 +134,38 @@ export default class AsyncUtils {
     }
 
     public static async asyncTimeout(ms: number) {
-        return new Promise(resolve => {
+        return await new Promise((resolve) => {
             setTimeout(resolve, ms);
         });
     }
 
     public static async generateStickerMessageLocale(
-        client: RedisSingleton,
         ctx: Context,
-        chatID: number | string
+        chatID: number | string,
     ) {
-        const [customText, stickerMessageMention] =
-            await RedisSingleton.getInstance().getHashMultipleData(chatID, [
+        const [customText, stickerMessageMention] = await RedisSingleton
+            .getInstance().getHashMultipleData(chatID, [
                 'stickerMessageLocale',
-                'stickerMessageMention'
+                'stickerMessageMention',
             ]);
         const [verifiedCustomText, verifiedStickerMessageMentionStatus] =
             RegularUtils.verifyStickerMessageLocale(
                 customText,
-                stickerMessageMention
+                stickerMessageMention,
             );
         const userMention = RegularUtils.getUserMention(
-            ctx.update.message?.from!
+            ctx.update.message?.from!,
         );
         return RegularUtils.getStickerMessageLocale(
             verifiedCustomText,
             verifiedStickerMessageMentionStatus,
-            userMention
+            userMention,
         );
     }
 
     public static async isCommandIgnored(
         ctx: Context,
-        redisInstance: RedisSingleton
+        redisInstance: RedisSingleton,
     ): Promise<boolean> {
         const whiteListIDs = await redisInstance.getList(ListsNames.WHITELIST);
         const chatID = RegularUtils.getChatID(ctx);
@@ -189,28 +188,28 @@ export default class AsyncUtils {
     public static async newChatJoinHandler(
         ctx: Context,
         creatorID: string | undefined,
-        isIgnored: boolean
+        isIgnored: boolean,
     ) {
         const chatID = RegularUtils.getChatID(ctx);
 
         if (isIgnored) {
             const ignoredMessage = ignoreListMessages.chatMessage.replace(
                 /xxx/i,
-                `<code>${chatID}</code>`
+                `<code>${chatID}</code>`,
             );
             await ctx.reply(ignoredMessage, {
-                parse_mode: 'HTML'
+                parse_mode: 'HTML',
             });
             return await ctx.leaveChat();
         }
 
         const whiteListMessage = whiteListMessages.chatMessage.replace(
             /xxx/i,
-            `<code>${chatID}</code>`
+            `<code>${chatID}</code>`,
         );
 
         await ctx.reply(whiteListMessage, {
-            parse_mode: 'HTML'
+            parse_mode: 'HTML',
         });
 
         if (creatorID === undefined) return;
@@ -219,13 +218,12 @@ export default class AsyncUtils {
         const chatLink = RegularUtils.getChatLink(chatUsername);
         const chatLinkMessage = chatLink !== undefined ? chatLink : chatName;
         const userInfo = RegularUtils.getUser(ctx);
-        const userMention =
-            userInfo !== undefined
-                ? RegularUtils.getUserMention(userInfo)
-                : undefined;
+        const userMention = userInfo !== undefined
+            ? RegularUtils.getUserMention(userInfo)
+            : undefined;
         const messageText = RegularUtils.getWhiteListLocale(
             userMention,
-            `${chatLinkMessage} (<code>${chatID}</code>)`
+            `${chatLinkMessage} (<code>${chatID}</code>)`,
         );
         const keyboard = new InlineKeyboard()
             .text(keyboardMessages.buttonYes, `${chatID}|accept`)
@@ -235,52 +233,52 @@ export default class AsyncUtils {
 
         await ctx.api.sendMessage(Number(creatorID), messageText, {
             reply_markup: keyboard,
-            parse_mode: 'HTML'
+            parse_mode: 'HTML',
         });
     }
 
     public static async sendAccessGrantedMessage(
         ctx: Context,
-        chatID: string | number
+        chatID: string | number,
     ) {
         await ctx.api.sendMessage(chatID, whiteListMessages.accessGranted);
     }
 
     public static async sendAccessRemovedMessage(
         ctx: Context,
-        chatID: string | number
+        chatID: string | number,
     ) {
         await ctx.api.sendMessage(
             chatID,
             whiteListMessages.alreadyRemoved.replace(
                 /xxx/i,
-                `<code>${chatID}</code>`
+                `<code>${chatID}</code>`,
             ),
             {
-                parse_mode: 'HTML'
-            }
+                parse_mode: 'HTML',
+            },
         );
     }
 
     public static async sendIgnoredMessage(
         ctx: Context,
-        chatID: string | number
+        chatID: string | number,
     ) {
         await ctx.api.sendMessage(
             chatID,
             ignoreListMessages.chatMessage.replace(
                 /xxx/i,
-                `<code>${chatID}</code>`
+                `<code>${chatID}</code>`,
             ),
             {
-                parse_mode: 'HTML'
-            }
+                parse_mode: 'HTML',
+            },
         );
     }
 
     public static async leaveFromIgnoredChat(
         ctx: Context,
-        chatID: string | number
+        chatID: string | number,
     ) {
         await AsyncUtils.sendIgnoredMessage(ctx, chatID);
         await ctx.api.leaveChat(chatID);
@@ -290,14 +288,13 @@ export default class AsyncUtils {
      * @deprecated Function is not used anymore. Will be deleted is later versions.
      */
     public static async addIDToLists(
-        client: RedisClientType,
         chatID: string | number,
         listName: string,
-        IDsList: string[]
+        IDsList: string[],
     ): Promise<string[]> {
         await RedisSingleton.getInstance().pushValueToList(
             listName,
-            String(chatID)
+            String(chatID),
         );
         return [...IDsList, String(chatID)];
     }
@@ -306,15 +303,14 @@ export default class AsyncUtils {
      * @deprecated Function is not used anymore. Will be deleted is later versions.
      */
     public static async removeIDFromLists(
-        client: RedisClientType,
         chatID: string | number,
         listName: string,
-        IDsList: string[]
+        IDsList: string[],
     ): Promise<string[]> {
         await RedisSingleton.getInstance().removeValueFromList(
             listName,
-            String(chatID)
+            String(chatID),
         );
-        return IDsList.filter(id => id !== String(chatID));
+        return IDsList.filter((id) => id !== String(chatID));
     }
 }

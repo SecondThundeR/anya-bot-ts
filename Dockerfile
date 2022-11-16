@@ -1,11 +1,8 @@
-FROM node:18
+FROM denoland/deno:1.28.0
 
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-RUN npm install
+WORKDIR /app
 
 COPY . .
+RUN deno install -qAn vr https://deno.land/x/velociraptor@1.5.0/cli.ts
 
-CMD ["npm", "start"]
+CMD ["vr", "start"]
