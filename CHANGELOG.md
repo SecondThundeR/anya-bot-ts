@@ -5,16 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Unreleased] (Deno version)
 
 ### Added
 
-- New dependencies: `ts-node` and `ts-node-dev`
-
-### Changed
-
-- Switch from `module-alias` to `tsconfig-paths` (See [commit description](https://github.com/SecondThundeR/anya-bot-ts/commit/9a160230783f86c22780fe3c3ae018e4bce6466e) for more info)
-- Update dependencies
+- Full support for Deno and Velociraptor
 
 ## [2.0.3] - 2022-11-06
 
