@@ -6,17 +6,17 @@
   "importMap": "import_map.json",
   "lint": {
     "files": {
-      "include": ["src/"]
+      "include": ["src/", "./bot.ts", "./deps.ts"]
     },
     "rules": {
       "tags": ["recommended"],
       "include": ["ban-untagged-todo"],
-      "exclude": ["no-unused-vars"]
+      "exclude": ["ban-ts-comment"]
     }
   },
   "fmt": {
     "files": {
-      "include": ["src/"]
+      "include": ["src/", "./bot.ts", "./deps.ts"]
     },
     "options": {
       "useTabs": false,
