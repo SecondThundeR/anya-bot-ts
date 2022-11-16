@@ -22,7 +22,7 @@ const changeAidenSilentStatusDB = async (
 ) => {
     if (!aidenStatus)
         return await client.deleteHashData(chatID, ['isAidenSilent']);
-    await client.setHashData(chatID, ['isAidenSilent', String(aidenStatus)]);
+    await client.setHashData(chatID, { isAidenSilent: String(aidenStatus) });
 };
 
 export const updateAidenSilentData = async (

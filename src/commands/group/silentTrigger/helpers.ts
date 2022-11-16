@@ -21,7 +21,7 @@ const changeSilentStatusInDB = async (
     silentStatus: boolean
 ) => {
     if (!silentStatus) return await client.deleteHashData(chatID, ['isSilent']);
-    await client.setHashData(chatID, ['isSilent', String(silentStatus)]);
+    await client.setHashData(chatID, { isSilent: String(silentStatus) });
 };
 
 export const updateSilentData = async (

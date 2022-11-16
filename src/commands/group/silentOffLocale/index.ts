@@ -25,10 +25,9 @@ silentOffLocale.command('silentofflocale', async ctx => {
     if (RegularUtils.isStringEmpty(newLocaleString))
         return await ctx.reply(otherMessages.stringIsEmpty);
 
-    await redisInstance.setHashData(chatID, [
-        'silentOffLocale',
-        newLocaleString
-    ]);
+    await redisInstance.setHashData(chatID, {
+        silentOffLocale: newLocaleString
+    });
 
     await ctx.reply(silentMessages.disabledMessageChange);
 });

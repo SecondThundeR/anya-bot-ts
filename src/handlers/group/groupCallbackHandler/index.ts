@@ -34,10 +34,9 @@ groupCallbackHandler.on('callback_query:data', async ctx => {
 
     const mentionModeBoolean = mentionMode === 'yes';
 
-    await redisSingleton.setHashData(chatID, [
-        'stickerMessageMention',
-        String(mentionModeBoolean)
-    ]);
+    await redisSingleton.setHashData(chatID, {
+        stickerMessageMention: String(mentionModeBoolean)
+    });
 
     await ctx.answerCallbackQuery();
 

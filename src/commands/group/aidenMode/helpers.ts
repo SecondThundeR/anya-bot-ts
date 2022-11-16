@@ -23,7 +23,7 @@ const changeAidenStatusDB = async (
     aidenStatus: boolean
 ) => {
     if (!aidenStatus) return await client.deleteHashData(chatID, ['aidenMode']);
-    await client.setHashData(chatID, ['aidenMode', String(aidenStatus)]);
+    await client.setHashData(chatID, { aidenMode: String(aidenStatus) });
 };
 
 export const updateAidenData = async (ctx: Context) => {

@@ -25,10 +25,9 @@ noCustomEmoji.command('noemoji', async ctx => {
     if (!newStrictEmojiRemovalBoolean)
         await redisInstance.deleteHashData(chatID, ['strictEmojiRemoval']);
     else
-        await redisInstance.setHashData(chatID, [
-            'strictEmojiRemoval',
-            String(newStrictEmojiRemovalBoolean)
-        ]);
+        await redisInstance.setHashData(chatID, {
+            strictEmojiRemoval: String(newStrictEmojiRemovalBoolean)
+        });
 
     await ctx.reply(
         newStrictEmojiRemovalBoolean

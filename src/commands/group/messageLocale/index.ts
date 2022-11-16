@@ -58,10 +58,9 @@ messageLocale.command('messagelocale', async ctx => {
         reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
     });
 
-    await redisInstance.setHashData(chatID, [
-        'stickerMessageLocale',
-        newLocaleString
-    ]);
+    await redisInstance.setHashData(chatID, {
+        stickerMessageLocale: newLocaleString
+    });
 
     let messageExists = true;
 

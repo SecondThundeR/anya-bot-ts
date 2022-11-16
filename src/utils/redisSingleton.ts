@@ -34,13 +34,6 @@ class RedisSingleton {
         return RedisSingleton.instance;
     }
 
-    /**
-     * @deprecated This method can be deleted in the future updates.
-     */
-    public getRedisClient(): RedisClientType {
-        return this.redisClient;
-    }
-
     public async connectToServer(): Promise<void> {
         await this.redisClient.connect();
         this.redisClient.on('error', err =>
@@ -96,12 +89,15 @@ class RedisSingleton {
 
     public async setHashData(
         chatID: number | string,
-        hashData: string[]
+        hashData: { [key: string]: string }
     ): Promise<void> {
-        await this.redisClient.hSet(
-            `${this.chatsConfigTableName}:${chatID}`,
-            hashData
-        );
+        for (const [key, value] of Object.entries(hashData)) {
+            await this.redisClient.hSet(
+                `${this.chatsConfigTableName}:${chatID}`,
+                key,
+                value
+            );
+        }
     }
 
     public async incrementFieldBy(
@@ -127,13 +123,6 @@ class RedisSingleton {
             `${this.chatsConfigTableName}:${chatID}`,
             fieldsName
         );
-    }
-
-    /**
-     * @deprecated This method is not used anymore. Maybe it will be deleted in the future updates.
-     */
-    public async deleteHashTable(chatID: number | string): Promise<void> {
-        await this.redisClient.del(`${this.chatsConfigTableName}:${chatID}`);
     }
 
     public async removeValueFromList(

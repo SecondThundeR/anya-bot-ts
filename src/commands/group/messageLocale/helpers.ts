@@ -21,8 +21,7 @@ export const setLocaleChangingStatus = async (
     client: RedisSingleton,
     chatID: number
 ) => {
-    return await client.setHashData(chatID, [
-        'isMessageLocaleChanging',
-        'true'
-    ]);
+    return await client.setHashData(chatID, {
+        isMessageLocaleChanging: 'true'
+    });
 };

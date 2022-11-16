@@ -20,7 +20,7 @@ const changeAllowValueInDB = async (
 ) => {
     if (!silentStatus)
         return await client.deleteHashData(chatID, ['adminPower']);
-    await client.setHashData(chatID, ['adminPower', String(silentStatus)]);
+    await client.setHashData(chatID, { adminPower: String(silentStatus) });
 };
 
 export const updateAllowData = async (
