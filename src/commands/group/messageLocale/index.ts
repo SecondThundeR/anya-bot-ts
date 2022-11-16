@@ -62,13 +62,7 @@ messageLocale.command('messagelocale', async ctx => {
         stickerMessageLocale: newLocaleString
     });
 
-    let messageExists = true;
-
     await AsyncUtils.asyncTimeout(messageLocaleWaitTime * 1000);
-    await ctx.api
-        .deleteMessage(chatID, message.message_id)
-        .then()
-        .catch(_ => (messageExists = false));
 
     messageLocaleChangeStatus = await getLocaleChangingStatus(
         redisInstance,
@@ -77,16 +71,23 @@ messageLocale.command('messagelocale', async ctx => {
 
     if (!messageLocaleChangeStatus) return;
 
+    try {
+        await ctx.api.deleteMessage(chatID, message.message_id);
+    } catch {
+        console.log('Locale changing message was already deleted');
+    }
+
     await deleteLocaleChangingStatus(redisInstance, chatID);
     await redisInstance.deleteHashData(chatID, [
         'stickerMessageLocale',
         'stickerMessageMention'
     ]);
+
     try {
         await ctx.reply(stickerMessages.timeoutError, {
             reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
         });
-    } catch (e) {
+    } catch {
         await ctx.reply(stickerMessages.timeoutError);
     }
 });
