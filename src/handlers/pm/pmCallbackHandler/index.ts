@@ -36,7 +36,7 @@ pmCallbackHandler.on('callback_query:data', async (ctx) => {
 
     try {
         botData = await ctx.api.getChatMember(chatID, ctx.me.id);
-    } catch (e) {
+    } catch {
         return await ctx.reply(keyboardMessages.keyboardError, {
             reply_to_message_id: RegularUtils.getMessageID(originalMessage),
         });

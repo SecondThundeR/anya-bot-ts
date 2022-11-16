@@ -1,4 +1,13 @@
-import { Bot, GrammyError, HttpError, session, run, sequentialize, dotenv, process } from '@/deps.ts';
+import {
+    Bot,
+    dotenv,
+    GrammyError,
+    HttpError,
+    process,
+    run,
+    sequentialize,
+    session,
+} from '@/deps.ts';
 
 import adminPowerTrigger from '@/groupCommands/adminPowerTrigger/index.ts';
 import aidenMode from '@/groupCommands/aidenMode/index.ts';
@@ -38,22 +47,22 @@ import RegularUtils from '@/utils/regularUtils.ts';
 
 await dotenv({ export: true });
 
-const BOT_TOKEN = Deno.env.get("BOT_TOKEN");
+const BOT_TOKEN = Deno.env.get('BOT_TOKEN');
 
 if (!BOT_TOKEN) {
-  console.error(
-    "WARNING: Token for bot is not provided. Please set the BOT_TOKEN environment variable."
-  );
-  Deno.exit(1);
+    console.error(
+        'WARNING: Token for bot is not provided. Please set the BOT_TOKEN environment variable.',
+    );
+    Deno.exit(1);
 }
 
 const bot = new Bot(BOT_TOKEN);
 const runner = run(bot);
 const client = RedisSingleton.getInstance();
 
-const pm = bot.filter(ctx => ctx.chat?.type === 'private');
+const pm = bot.filter((ctx) => ctx.chat?.type === 'private');
 const group = bot.filter(
-    ctx => ctx.chat?.type !== 'private' && ctx.chat?.type !== 'channel'
+    (ctx) => ctx.chat?.type !== 'private' && ctx.chat?.type !== 'channel',
 );
 
 const getSessionKeyFunc = RegularUtils.getSessionKey;
@@ -106,14 +115,16 @@ pm.use(getCommandsUsage);
 // PM Handlers
 pm.use(pmCallbackHandler);
 
-bot.catch(err => {
+bot.catch((err) => {
     const ctx = err.ctx;
     console.error(`Error while handling update ${ctx.update.update_id}:`);
     const e = err.error;
-    if (e instanceof GrammyError)
+    if (e instanceof GrammyError) {
         return console.error('Error in request:', e.description);
-    if (e instanceof HttpError)
+    }
+    if (e instanceof HttpError) {
         return console.error('Could not contact Telegram:', e);
+    }
     return console.error('Unknown error:', e);
 });
 

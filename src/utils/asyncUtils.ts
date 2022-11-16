@@ -128,7 +128,7 @@ export default class AsyncUtils {
             return await ctx.deleteMessage();
         }
 
-        await RedisSingleton.getInstance().deleteHashData(chatID, fieldsArray);
+        await client.deleteHashData(chatID, fieldsArray);
 
         await ctx.reply(localeResetMessage);
     }
