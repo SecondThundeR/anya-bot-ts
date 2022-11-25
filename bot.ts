@@ -108,7 +108,7 @@ pm.use(getCommandsUsage);
 // PM Handlers
 pm.use(pmCallbackHandler);
 
-bot.catch(err => {
+bot.catch(async err => {
     const ctx = err.ctx;
     console.error(`Error while handling update ${ctx.update.update_id}:`);
     const e = err.error;
@@ -116,7 +116,9 @@ bot.catch(err => {
         return console.error('Error in request:', e.description);
     if (e instanceof HttpError)
         return console.error('Could not contact Telegram:', e);
-    return console.error('Unknown error:', e);
+    const unknownErrorMsg = 'Unknown error: ' + e;
+    await bot.api.sendMessage(Number(process.env.CREATOR_ID), unknownErrorMsg);
+    return console.error(unknownErrorMsg);
 });
 
 process.once('SIGINT', stopOnTerm);
@@ -129,6 +131,5 @@ process.once('SIGTERM', stopOnTerm);
     } catch (e: any) {
         console.log(e);
         await client.disconnectFromServer();
-        await bot.api.sendMessage(Number(process.env.CREATOR_ID), String(e));
     }
 })();
