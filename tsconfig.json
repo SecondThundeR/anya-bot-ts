@@ -33,7 +33,5 @@
                 "handlers/pm/*"
             ]
         },
-        // Enable when need to debug in WebStorm/VSCode
-        "sourceMap": false
     }
 }
