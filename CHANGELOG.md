@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - New dependencies: `ts-node` and `ts-node-dev`
+- New command: `/dice`
+  > Input: `/dice {number} {text}`
+  > 
+  > Output: `Если падает {number}, то {text}`, then send animated dice
 - Support for placeholder formatting for locale strings
 
 ### Changed

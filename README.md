@@ -63,6 +63,7 @@ While doing step 3, go to [Heroku Docker Docs](https://devcenter.heroku.com/arti
 - `help` - send help message
 - `aidenmode` - enables "Aiden Pierce" mode _(Removes voice/video messages)_
 - `aidensilent` - manage "Aiden Pierce" silent mode
+- `dice` - send message with a dice
 - `noemoji` - triggers emoji strictness removal _(Currently works like on/off switch. Custom rules will be added later)_
 - `adminpower` - triggers ignoring of restricted messages from admins
 - `silentonlocale` - change message when silent mode is enabled
