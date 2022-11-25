@@ -37,6 +37,11 @@ diceGame.command('dice', async ctx => {
             reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
         });
     }
+    if (Number(gameData.number) < 1 || Number(gameData.number) > 6) {
+        return await ctx.reply(diceGameMessages.wrongNumber, {
+            reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
+        });
+    }
 
     const finalMessage = RegularUtils.setPlaceholderData(
         diceGameMessages.message,
