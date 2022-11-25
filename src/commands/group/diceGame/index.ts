@@ -27,7 +27,7 @@ diceGame.command('dice', async ctx => {
             reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
         });
 
-    const diceNumber = parseInt(diceData[1]);
+    const diceNumber = parseInt(diceData[0]);
     if (isNaN(diceNumber)) {
         return await ctx.reply(diceGameMessages.notANumber, {
             reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
