@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - New dependencies: `ts-node` and `ts-node-dev`
+- Support for placeholder formatting for locale strings
 
 ### Changed
 

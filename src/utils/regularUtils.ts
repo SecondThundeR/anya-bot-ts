@@ -8,6 +8,9 @@ import stickerMessages from '@locale/stickerMessages';
 import whiteListMessages from '@locale/whiteListMessages';
 
 type ChatInfoTuple = [string | undefined, string | undefined];
+type ReplacementObjectType = {
+    [key: string]: string;
+};
 
 export default class RegularUtils {
     public static getSessionKey(ctx: Context): string | undefined {
@@ -161,5 +164,18 @@ export default class RegularUtils {
                 ? 'true'
                 : stickerMessageMention;
         return [verifiedStickerMessage, mentionStatus];
+    }
+
+    public static setPlaceholderData(
+        placeholder: string,
+        replacements: ReplacementObjectType
+    ): string {
+        return placeholder.replace(
+            /{(\w+)}/g,
+            (placeholderWithDelimiters, placeholderWithoutDelimiters) =>
+                replacements.hasOwnProperty(placeholderWithoutDelimiters)
+                    ? replacements[placeholderWithoutDelimiters]
+                    : placeholderWithDelimiters
+        );
     }
 }
