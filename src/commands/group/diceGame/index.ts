@@ -27,16 +27,14 @@ diceGame.command('dice', async ctx => {
             reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
         });
 
-    const diceNumber = Number(diceData[1]);
-
+    const diceNumber = parseInt(diceData[1]);
     if (isNaN(diceNumber)) {
         return await ctx.reply(diceGameMessages.notANumber, {
             reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
         });
     }
 
-    const convertedNumber = Math.round(diceNumber);
-    if (Number(convertedNumber) < 1 || Number(convertedNumber) > 6) {
+    if (Number(diceNumber) < 1 || Number(diceNumber) > 6) {
         return await ctx.reply(diceGameMessages.wrongNumber, {
             reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
         });
@@ -45,7 +43,7 @@ diceGame.command('dice', async ctx => {
     const finalMessage = RegularUtils.setPlaceholderData(
         diceGameMessages.message,
         {
-            number: String(convertedNumber),
+            number: String(diceNumber),
             text: diceData.slice(1).join(' ')
         }
     );
