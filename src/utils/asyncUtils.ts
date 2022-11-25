@@ -164,6 +164,16 @@ export default class AsyncUtils {
         );
     }
 
+    public static async isChatWhitelisted(
+        ctx: Context,
+        redisInstance: RedisSingleton
+    ): Promise<boolean> {
+        const chatID = RegularUtils.getChatID(ctx);
+        const whiteListIDs = await redisInstance.getList(ListsNames.WHITELIST);
+
+        return RegularUtils.isItemInList(chatID, whiteListIDs);
+    }
+
     public static async isCommandIgnored(
         ctx: Context,
         redisInstance: RedisSingleton

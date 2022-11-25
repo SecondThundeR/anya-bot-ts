@@ -12,7 +12,7 @@ diceGame.command('dice', async ctx => {
     const redisInstance = RedisSingleton.getInstance();
     await AsyncUtils.incrementCommandUsageCounter(redisInstance, 'dice');
 
-    if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
+    if (!(await AsyncUtils.isChatWhitelisted(ctx, redisInstance))) return;
 
     const diceText = ctx.match;
     const diceData = diceText.split(' ');
@@ -46,7 +46,9 @@ diceGame.command('dice', async ctx => {
     await ctx.reply(finalMessage, {
         reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
     });
-    await ctx.replyWithDice(diceGameMessages.diceEmoji);
+    await ctx.replyWithDice(diceGameMessages.diceEmoji, {
+        reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
+    });
 });
 
 export default diceGame;
