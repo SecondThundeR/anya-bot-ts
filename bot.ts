@@ -4,6 +4,7 @@ import { Bot, GrammyError, HttpError, session } from 'grammy';
 import adminPowerTrigger from '@groupCommands/adminPowerTrigger';
 import aidenMode from '@groupCommands/aidenMode';
 import aidenSilentTrigger from '@groupCommands/aidenSilentTrigger';
+import diceGame from '@groupCommands/diceGame';
 import helpGroupMessage from '@groupCommands/helpGroupMessage';
 import messageLocale from '@groupCommands/messageLocale';
 import messageLocaleReset from '@groupCommands/messageLocaleReset';
@@ -75,6 +76,7 @@ group.use(helpGroupMessage);
 group.use(aidenMode);
 group.use(silentTrigger);
 group.use(aidenSilentTrigger);
+group.use(diceGame);
 group.use(adminPowerTrigger);
 group.use(silentOnLocale);
 group.use(silentOnLocaleReset);
@@ -124,8 +126,9 @@ process.once('SIGTERM', stopOnTerm);
     try {
         await client.connectToServer();
         await AsyncUtils.logBotInfo(bot.api);
-    } catch (e) {
+    } catch (e: any) {
         console.log(e);
         await client.disconnectFromServer();
+        await bot.api.sendMessage(Number(process.env.CREATOR_ID), String(e));
     }
 })();
