@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New dependencies: `ts-node` and `ts-node-dev`
 - New command: `/dice`
   > Input: `/dice {number} {text}`
-  > 
+  >
   > Output: `Если падает {number}, то {text}`, then send animated dice
 - Support for placeholder formatting for locale strings
 
@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Custom paths in TSConfig
-- Support for Module-alias package for correct custom paths usage 
+- Support for Module-alias package for correct custom paths usage
 - Custom paths to importOrder option in .prettierrc.js
 - Prettier format script in package.json
 
