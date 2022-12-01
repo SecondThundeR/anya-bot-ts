@@ -19,10 +19,10 @@
     "devDependencies": {
         "@grammyjs/types": "^2.10.2",
         "@trivago/prettier-plugin-sort-imports": "^4.0.0",
-        "@types/node": "^18.11.9",
+        "@types/node": "^18.11.10",
         "prettier": "^2.8.0",
         "ts-node": "^10.9.1",
-        "tsconfig-paths": "^4.1.0",
+        "tsconfig-paths": "^4.1.1",
         "typescript": "^4.9.3"
     }
 }
