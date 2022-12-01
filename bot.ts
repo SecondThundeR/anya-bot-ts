@@ -34,6 +34,8 @@ import voiceAndVideoHandler from '@groupHandlers/voiceAndVideoHandler';
 
 import pmCallbackHandler from '@pmHandlers/pmCallbackHandler';
 
+import otherMessages from '@locale/otherMessages';
+
 import AsyncUtils from '@utils/asyncUtils';
 import RedisSingleton from '@utils/redisSingleton';
 import RegularUtils from '@utils/regularUtils';
@@ -116,9 +118,18 @@ bot.catch(async err => {
         return console.error('Error in request:', e.description);
     if (e instanceof HttpError)
         return console.error('Could not contact Telegram:', e);
-    const unknownErrorMsg = 'Unknown error: ' + e;
-    await bot.api.sendMessage(Number(process.env.CREATOR_ID), unknownErrorMsg);
-    return console.error(unknownErrorMsg);
+    if (err.ctx.message)
+        await bot.api.sendMessage(
+            err.ctx.message?.chat.id,
+            RegularUtils.setPlaceholderData(otherMessages.unknownError, {
+                error: String(e)
+            }),
+            {
+                reply_to_message_id: RegularUtils.getMessageID(err.ctx.message),
+                parse_mode: 'HTML'
+            }
+        );
+    return console.error('Unknown error occurred:', e);
 });
 
 process.once('SIGINT', stopOnTerm);
