@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Switch from `module-alias` to `tsconfig-paths` (See [commit description](https://github.com/SecondThundeR/anya-bot-ts/commit/9a160230783f86c22780fe3c3ae018e4bce6466e) for more info)
+- Move lists names from enums to readonly consts (`const as const`)
 - Update dependencies
 
 ## [2.0.3] - 2022-11-06

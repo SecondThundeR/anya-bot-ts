@@ -1,6 +1,6 @@
 import { Composer } from 'grammy';
 
-import ListsNames from '@enums/listsNames';
+import ListsNames from '@data/listsNames';
 
 import otherMessages from '@locale/otherMessages';
 

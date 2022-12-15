@@ -22,7 +22,7 @@ module.exports = {
         '^@pmCommands/(.*)$',
         '^@groupHandlers/(.*)$',
         '^@pmHandlers/(.*)$',
-        '^@enums/(.*)$',
+        '^@data/(.*)$',
         '^@locale/(.*)$',
         '^@utils/(.*)$',
         '^[./]'

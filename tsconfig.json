@@ -14,8 +14,8 @@
             "@utils/*": [
                 "utils/*"
             ],
-            "@enums/*": [
-                "enums/*"
+            "@data/*": [
+                "data/*"
             ],
             "@locale/*": [
                 "locale/*"

@@ -1,6 +1,6 @@
 import { Context } from 'grammy';
 
-import ListsNames from '@enums/listsNames';
+import ListsNames from '@data/listsNames';
 
 import whiteListMessages from '@locale/whiteListMessages';
 

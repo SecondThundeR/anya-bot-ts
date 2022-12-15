@@ -1,5 +1,7 @@
 import { RedisClientType, createClient } from 'redis';
 
+import type { ListsNamesType } from '@data/listsNames';
+
 interface ListsObject {
     [key: string]: string[];
 }
@@ -75,11 +77,11 @@ class RedisSingleton {
         );
     }
 
-    public async getList(listName: string): Promise<string[]> {
+    public async getList(listName: ListsNamesType): Promise<string[]> {
         return await this.redisClient.lRange(listName, 0, -1);
     }
 
-    public async getLists(listNames: string[]): Promise<ListsObject> {
+    public async getLists(listNames: ListsNamesType[]): Promise<ListsObject> {
         const listsData: ListsObject = {};
         for (const listName of listNames) {
             listsData[listName] = await this.getList(listName);

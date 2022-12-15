@@ -1,7 +1,7 @@
 import { Composer } from 'grammy';
 import { ChatMember, Message, Update } from 'grammy/types';
 
-import ListsNames from '@enums/listsNames';
+import ListsNames from '@data/listsNames';
 
 import keyboardMessages from '@locale/keyboardMessages';
 import otherMessages from '@locale/otherMessages';
