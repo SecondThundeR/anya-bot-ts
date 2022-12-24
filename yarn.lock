@@ -241,11 +241,6 @@
   dependencies:
     abort-controller "^3.0.0"
 
-"@grammyjs/types@^2.10.0":
-  version "2.10.2"
-  resolved "https://registry.yarnpkg.com/@grammyjs/types/-/types-2.10.2.tgz#c72d9379518aa191ce030e14756954949bef771f"
-  integrity sha512-YhOQEkl4KwZvHH2BSvSkN27R5s5MGVLnK8W3bh8h3OMwA1ZlrqNPsnTyvenrmv6sKk62CZlDlFJpPb3MFUWXUA==
-
 "@grammyjs/types@^2.10.3":
   version "2.10.3"
   resolved "https://registry.yarnpkg.com/@grammyjs/types/-/types-2.10.3.tgz#4f944003ba87ac54dfd3ee36daf68bd44ccb685e"
@@ -366,10 +361,10 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.3.tgz#472eaab5f15c1ffdd7f8628bd4c4f753995ec79e"
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
 
-"@types/node@^18.11.15":
-  version "18.11.15"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.15.tgz#de0e1fbd2b22b962d45971431e2ae696643d3f5d"
-  integrity sha512-VkhBbVo2+2oozlkdHXLrb3zjsRkpdnaU2bXmX8Wgle3PUi569eLRaHGlgETQHR7lLL1w7GiG3h9SnePhxNDecw==
+"@types/node@^18.11.17":
+  version "18.11.17"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.17.tgz#5c009e1d9c38f4a2a9d45c0b0c493fe6cdb4bcb5"
+  integrity sha512-HJSUJmni4BeDHhfzn6nF0sVmd1SMezP7/4F0Lq+aXzmp2xm9O7WXrUtHW/CHlYVtZUbByEvWidHqRtcJXGF2Ng==
 
 "@types/strip-bom@^3.0.0":
   version "3.0.0"
@@ -619,12 +614,12 @@ globals@^11.1.0:
   resolved "https://registry.yarnpkg.com/globals/-/globals-11.12.0.tgz#ab8795338868a0babd8525758018c2a7eb95c42e"
   integrity sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==
 
-grammy@^1.12.0:
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/grammy/-/grammy-1.12.0.tgz#fffb80109731cbd56ccd592cec5aff9dd5e682b6"
-  integrity sha512-/2Mi4MyVPeFXjTd4v3pRK8gb/YdWFbZrj/8HTp5daQyTOx4/U95XFL0Ao+e9hf4XbL7RCOpanXaTL8+UXXcNqw==
+grammy@^1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/grammy/-/grammy-1.12.1.tgz#196bc103869221b82920b035161f2210644a678c"
+  integrity sha512-pnAVs5ZqA4Dfby+JUDIzcq5xgRZm1qDKveU/kQyt31Ln19NF0PgUooczQ1AiTUTC8Yv/et9Ok8R2BiQcskoJew==
   dependencies:
-    "@grammyjs/types" "^2.10.0"
+    "@grammyjs/types" "^2.10.3"
     abort-controller "^3.0.0"
     debug "^4.3.4"
     node-fetch "^2.6.7"
