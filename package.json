@@ -1,6 +1,6 @@
 {
     "name": "anya-bot-ts",
-    "version": "2.0.4",
+    "version": "2.0.5",
     "description": "Some random TypeScript bot with interesting features",
     "main": "bot.js",
     "scripts": {
@@ -13,12 +13,12 @@
     "dependencies": {
         "@grammyjs/runner": "^1.0.4",
         "dotenv": "^16.0.3",
-        "grammy": "^1.12.5",
+        "grammy": "^1.13.0",
         "redis": "^4.5.1",
         "ts-node": "^10.9.1"
     },
     "devDependencies": {
-        "@grammyjs/types": "^2.10.3",
+        "@grammyjs/types": "^2.11.0",
         "@trivago/prettier-plugin-sort-imports": "^4.0.0",
         "@types/node": "^18.11.18",
         "prettier": "^2.8.1",
