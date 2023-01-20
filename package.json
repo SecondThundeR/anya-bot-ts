@@ -21,6 +21,7 @@
         "@grammyjs/types": "^2.11.2",
         "@trivago/prettier-plugin-sort-imports": "^4.0.0",
         "@types/node": "^18.11.18",
+        "@vue/compiler-sfc": "3.2.45",
         "prettier": "^2.8.3",
         "ts-node-dev": "^2.0.0",
         "tsconfig-paths": "^4.1.2",
