@@ -12,11 +12,6 @@ import RedisSingleton from './redisSingleton';
 import RegularUtils from './regularUtils';
 
 export default class AsyncUtils {
-    /**
-     * Gets the name and username of the currently running bot
-     * and logs the information to the console, as well as send message to creator
-     * @param api - Telegram Bot API instance
-     */
     public static async logBotInfo(api: Api) {
         const botBasicInfo = await api.getMe();
         if (botBasicInfo === undefined) return;
@@ -29,12 +24,6 @@ export default class AsyncUtils {
         );
     }
 
-    /**
-     * Checks that the bot is in chat
-     * @param ctx - Context object
-     * @param chatID - ID of chat to check
-     * @returns - true if bot is in chat, false if not
-     */
     public static async isBotInChat(
         ctx: Context,
         chatID: string | number
