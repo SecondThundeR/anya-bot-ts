@@ -14,11 +14,8 @@ import RegularUtils from './regularUtils';
 
 export default class AsyncUtils {
     public static async logBotInfo(api: Api) {
-        const botBasicInfo = await api.getMe();
-        if (botBasicInfo === undefined) return;
-        console.log(
-            `Started as ${botBasicInfo.first_name} (@${botBasicInfo.username})`
-        );
+        const botInfo = await api.getMe();
+        console.log(`Started as ${botInfo.first_name} (@${botInfo.username})`);
         await api.sendMessage(
             String(process.env.CREATOR_ID),
             otherMessages.creatorMsg
