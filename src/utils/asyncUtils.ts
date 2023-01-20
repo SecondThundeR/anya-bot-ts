@@ -282,36 +282,4 @@ export default class AsyncUtils {
         await AsyncUtils.sendIgnoredMessage(ctx, chatID);
         await ctx.api.leaveChat(chatID);
     }
-
-    /**
-     * @deprecated Function is not used anymore. Will be deleted is later versions.
-     */
-    public static async addIDToLists(
-        client: RedisClientType,
-        chatID: string | number,
-        listName: string,
-        IDsList: string[]
-    ): Promise<string[]> {
-        await RedisSingleton.getInstance().pushValueToList(
-            listName,
-            String(chatID)
-        );
-        return [...IDsList, String(chatID)];
-    }
-
-    /**
-     * @deprecated Function is not used anymore. Will be deleted is later versions.
-     */
-    public static async removeIDFromLists(
-        client: RedisClientType,
-        chatID: string | number,
-        listName: string,
-        IDsList: string[]
-    ): Promise<string[]> {
-        await RedisSingleton.getInstance().removeValueFromList(
-            listName,
-            String(chatID)
-        );
-        return IDsList.filter(id => id !== String(chatID));
-    }
 }
