@@ -6,6 +6,7 @@ import ListsNames from '@data/listsNames';
 
 import ignoreListMessages from '@locale/ignoreListMessages';
 import keyboardMessages from '@locale/keyboardMessages';
+import otherMessages from '@locale/otherMessages';
 import whiteListMessages from '@locale/whiteListMessages';
 
 import RedisSingleton from './redisSingleton';
@@ -20,7 +21,7 @@ export default class AsyncUtils {
         );
         await api.sendMessage(
             String(process.env.CREATOR_ID),
-            'Бот запущен и готов к работе!'
+            otherMessages.creatorMsg
         );
     }
 

@@ -16,7 +16,8 @@ const otherMessages = {
         'Еще вижу, у меня нет прав на удаление сообщений! Дайте мне их пожалуйста :(',
     uptimeMessage: 'Текущее время работы:',
     unknownError: `<b>Произошла неизвестная ошибка!</b> Детали: <code>{error}</code>`,
-    creatorLink: '@someusername' // TODO: Change this username, because it used in noAccess message
+    creatorLink: '@someusername', // TODO: Change this username, because it used in noAccess message
+    creatorMsg: 'Бот запущен и готов к работе!'
 };
 
 export default otherMessages;
