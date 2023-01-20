@@ -1,4 +1,3 @@
-import { RedisClientType } from '@redis/client';
 import { Api, Context, InlineKeyboard } from 'grammy';
 import { ChatFromGetChat, ChatMember } from 'grammy/types';
 
