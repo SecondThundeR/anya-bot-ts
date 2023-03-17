@@ -77,8 +77,8 @@ export default class RegularUtils {
     public static getChatInfo(ctx: Context): ChatInfoTuple {
         const chat = ctx.update.message?.chat;
         return [
-            (chat as Chat.TitleChat).title,
-            (chat as Chat.UserNameChat).username
+            (chat as Chat.GroupChat).title,
+            (chat as Chat.PrivateChat).username
         ];
     }
 
@@ -95,9 +95,9 @@ export default class RegularUtils {
     public static getListOfChats(chats: ChatFromGetChat[]): string[] {
         return chats.map(chat => {
             const chatID = chat.id;
-            const chatName = (chat as Chat.TitleChat).title;
+            const chatName = (chat as Chat.GroupChat).title;
             const chatLink = RegularUtils.getChatLink(
-                (chat as Chat.UserNameChat).username
+                (chat as Chat.PrivateChat).username
             );
             return `${
                 chatLink === undefined ? chatName : chatLink
