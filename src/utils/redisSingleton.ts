@@ -7,11 +7,11 @@ interface ListsObject {
 class RedisSingleton {
     private static instance: RedisSingleton;
     private readonly redisClient: Redis;
-    private redisUser?: string = Deno.env.get('REDIS_USER');
-    private redisPass?: string = Deno.env.get('REDIS_PASS');
-    private redisHost: string = Deno.env.get('REDIS_URL') || '127.0.0.1';
-    private redisPort: string = Deno.env.get('REDIS_PORT') || '6379';
-    private chatsConfigTableName?: string = Deno.env.get('CHATS_TABLE_NAME');
+    private redisUser = Deno.env.get('REDIS_USER') || undefined;
+    private redisPass = Deno.env.get('REDIS_PASS') || undefined;
+    private redisHost = Deno.env.get('REDIS_URL') || '127.0.0.1';
+    private redisPort = Deno.env.get('REDIS_PORT') || '6379';
+    private chatsConfigTableName = Deno.env.get('CHATS_TABLE_NAME');
 
     private constructor() {
         this.redisClient = createLazyClient({
@@ -22,7 +22,7 @@ class RedisSingleton {
         });
     }
 
-    public static getInstance(): RedisSingleton {
+    public static getInstance() {
         if (!RedisSingleton.instance) {
             RedisSingleton.instance = new RedisSingleton();
         }
@@ -37,7 +37,7 @@ class RedisSingleton {
         chatID: number | string,
         hashName: string,
         defaultData = '',
-    ): Promise<string> {
+    ) {
         return (
             (await this.redisClient.hget(
                 `${this.chatsConfigTableName}:${chatID}`,
@@ -48,25 +48,25 @@ class RedisSingleton {
 
     public async getAllHashData(
         hashName: string,
-    ): Promise<string[]> {
+    ) {
         return await this.redisClient.hgetall(hashName);
     }
 
     public async getHashMultipleData(
         chatID: number | string,
         hashNames: string[],
-    ): Promise<(string | null)[]> {
+    ) {
         return await this.redisClient.hmget(
             `${this.chatsConfigTableName}:${chatID}`,
             ...hashNames,
-        );
+        ) as (string | null)[];
     }
 
-    public async getList(listName: string): Promise<string[]> {
+    public async getList(listName: string) {
         return await this.redisClient.lrange(listName, 0, -1);
     }
 
-    public async getLists(listNames: string[]): Promise<ListsObject> {
+    public async getLists(listNames: string[]) {
         const listsData: ListsObject = {};
         for (const listName of listNames) {
             listsData[listName] = await this.getList(listName);
@@ -77,7 +77,7 @@ class RedisSingleton {
     public async setHashData(
         chatID: number | string,
         hashData: { [key: string]: string },
-    ): Promise<void> {
+    ) {
         for (const [key, value] of Object.entries(hashData)) {
             await this.redisClient.hset(
                 `${this.chatsConfigTableName}:${chatID}`,
@@ -91,21 +91,21 @@ class RedisSingleton {
         hashName: string,
         field: string,
         value: number,
-    ): Promise<void> {
+    ) {
         await this.redisClient.hincrby(hashName, field, value);
     }
 
     public async pushValueToList(
         listName: string,
         value: string,
-    ): Promise<void> {
+    ) {
         await this.redisClient.rpush(listName, value);
     }
 
     public async deleteHashData(
         chatID: number | string,
         hashNames: string[],
-    ): Promise<void> {
+    ) {
         await this.redisClient.hdel(
             `${this.chatsConfigTableName}:${chatID}`,
             ...hashNames,
@@ -115,7 +115,7 @@ class RedisSingleton {
     public async removeValueFromList(
         listName: string,
         value: string,
-    ): Promise<void> {
+    ) {
         await this.redisClient.lrem(listName, 1, value);
     }
 }
