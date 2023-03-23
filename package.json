@@ -11,7 +11,7 @@
     "author": "SecondThundeR",
     "license": "MIT",
     "dependencies": {
-        "@grammyjs/runner": "^1.0.4",
+        "@grammyjs/runner": "^2.0.3",
         "dotenv": "^16.0.3",
         "grammy": "^1.15.3",
         "redis": "^4.6.5",
@@ -20,9 +20,9 @@
     "devDependencies": {
         "@grammyjs/types": "^3.0.3",
         "@trivago/prettier-plugin-sort-imports": "^4.1.1",
-        "@types/node": "^18.15.3",
+        "@types/node": "^18.15.5",
         "@vue/compiler-sfc": "3.2.47",
-        "prettier": "^2.8.4",
+        "prettier": "^2.8.6",
         "ts-node-dev": "^2.0.0",
         "tsconfig-paths": "^4.1.2",
         "typescript": "^5.0.2"
