@@ -3,11 +3,11 @@ import {
     dotenv,
     GrammyError,
     HttpError,
-    process,
     run,
     sequentialize,
     session,
 } from '@/deps.ts';
+import process from 'node:process';
 
 import adminPowerTrigger from '@/groupCommands/adminPowerTrigger/index.ts';
 import aidenMode from '@/groupCommands/aidenMode/index.ts';
@@ -45,7 +45,7 @@ import AsyncUtils from '@/utils/asyncUtils.ts';
 import RedisSingleton from '@/utils/redisSingleton.ts';
 import RegularUtils from '@/utils/regularUtils.ts';
 
-await dotenv({ export: true });
+await dotenv({ export: true, allowEmptyValues: true });
 
 const BOT_TOKEN = Deno.env.get('BOT_TOKEN');
 

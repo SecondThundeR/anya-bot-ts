@@ -1,4 +1,4 @@
-import { process } from '@/deps.ts';
+import process from 'node:process';
 
 import otherMessages from '@/locale/otherMessages.ts';
 
