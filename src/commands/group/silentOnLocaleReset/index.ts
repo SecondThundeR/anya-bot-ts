@@ -1,6 +1,6 @@
 import { Composer } from '@/deps.ts';
 
-import ListsNames from '@/enums/listsNames.ts';
+import ListsNames from '@/data/listsNames.ts';
 
 import silentMessages from '@/locale/silentMessages.ts';
 

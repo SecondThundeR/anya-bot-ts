@@ -9,9 +9,12 @@ import {
 } from '@/deps.ts';
 import process from 'node:process';
 
+import otherMessages from '@/locale/otherMessages.ts';
+
 import adminPowerTrigger from '@/groupCommands/adminPowerTrigger/index.ts';
 import aidenMode from '@/groupCommands/aidenMode/index.ts';
 import aidenSilentTrigger from '@/groupCommands/aidenSilentTrigger/index.ts';
+import diceGame from '@/groupCommands/diceGame/index.ts';
 import helpGroupMessage from '@/groupCommands/helpGroupMessage/index.ts';
 import messageLocale from '@/groupCommands/messageLocale/index.ts';
 import messageLocaleReset from '@/groupCommands/messageLocaleReset/index.ts';
@@ -84,6 +87,7 @@ group.use(helpGroupMessage);
 group.use(aidenMode);
 group.use(silentTrigger);
 group.use(aidenSilentTrigger);
+group.use(diceGame);
 group.use(adminPowerTrigger);
 group.use(silentOnLocale);
 group.use(silentOnLocaleReset);
@@ -115,7 +119,7 @@ pm.use(getCommandsUsage);
 // PM Handlers
 pm.use(pmCallbackHandler);
 
-bot.catch((err) => {
+bot.catch(async (err) => {
     const ctx = err.ctx;
     console.error(`Error while handling update ${ctx.update.update_id}:`);
     const e = err.error;
@@ -125,7 +129,19 @@ bot.catch((err) => {
     if (e instanceof HttpError) {
         return console.error('Could not contact Telegram:', e);
     }
-    return console.error('Unknown error:', e);
+    if (err.ctx.message) {
+        await bot.api.sendMessage(
+            err.ctx.message?.chat.id,
+            RegularUtils.setPlaceholderData(otherMessages.unknownError, {
+                error: String(e),
+            }),
+            {
+                reply_to_message_id: RegularUtils.getMessageID(err.ctx.message),
+                parse_mode: 'HTML',
+            },
+        );
+    }
+    return console.error('Unknown error occurred:', e);
 });
 
 process.once('SIGINT', stopOnTerm);

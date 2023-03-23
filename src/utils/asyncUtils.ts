@@ -1,39 +1,26 @@
 import { Api, Context, InlineKeyboard } from '@/deps.ts';
 import type { ChatFromGetChat, ChatMember } from '@/deps.ts';
 
-import ListsNames from '@/enums/listsNames.ts';
+import ListsNames from '@/data/listsNames.ts';
 
 import ignoreListMessages from '@/locale/ignoreListMessages.ts';
 import keyboardMessages from '@/locale/keyboardMessages.ts';
+import otherMessages from '@/locale/otherMessages.ts';
 import whiteListMessages from '@/locale/whiteListMessages.ts';
 
 import RedisSingleton from './redisSingleton.ts';
 import RegularUtils from './regularUtils.ts';
 
 export default class AsyncUtils {
-    /**
-     * Gets the name and username of the currently running bot
-     * and logs the information to the console, as well as send message to creator
-     * @param api - Telegram Bot API instance
-     */
     public static async logBotInfo(api: Api) {
-        const botBasicInfo = await api.getMe();
-        if (botBasicInfo === undefined) return;
-        console.log(
-            `Started as ${botBasicInfo.first_name} (@${botBasicInfo.username})`,
-        );
+        const botInfo = await api.getMe();
+        console.log(`Started as ${botInfo.first_name} (@${botInfo.username})`);
         await api.sendMessage(
             String(Deno.env.get('CREATOR_ID')),
-            'Бот запущен и готов к работе!',
+            otherMessages.creatorMsg,
         );
     }
 
-    /**
-     * Checks that the bot is in chat
-     * @param ctx - Context object
-     * @param chatID - ID of chat to check
-     * @returns - true if bot is in chat, false if not
-     */
     public static async isBotInChat(
         ctx: Context,
         chatID: string | number,
@@ -163,6 +150,16 @@ export default class AsyncUtils {
         );
     }
 
+    public static async isChatWhitelisted(
+        ctx: Context,
+        redisInstance: RedisSingleton,
+    ) {
+        const chatID = RegularUtils.getChatID(ctx);
+        const whiteListIDs = await redisInstance.getList(ListsNames.WHITELIST);
+
+        return RegularUtils.isItemInList(chatID, whiteListIDs);
+    }
+
     public static async isCommandIgnored(
         ctx: Context,
         redisInstance: RedisSingleton,
@@ -282,35 +279,5 @@ export default class AsyncUtils {
     ) {
         await AsyncUtils.sendIgnoredMessage(ctx, chatID);
         await ctx.api.leaveChat(chatID);
-    }
-
-    /**
-     * @deprecated Function is not used anymore. Will be deleted is later versions.
-     */
-    public static async addIDToLists(
-        chatID: string | number,
-        listName: string,
-        IDsList: string[],
-    ): Promise<string[]> {
-        await RedisSingleton.getInstance().pushValueToList(
-            listName,
-            String(chatID),
-        );
-        return [...IDsList, String(chatID)];
-    }
-
-    /**
-     * @deprecated Function is not used anymore. Will be deleted is later versions.
-     */
-    public static async removeIDFromLists(
-        chatID: string | number,
-        listName: string,
-        IDsList: string[],
-    ): Promise<string[]> {
-        await RedisSingleton.getInstance().removeValueFromList(
-            listName,
-            String(chatID),
-        );
-        return IDsList.filter((id) => id !== String(chatID));
     }
 }

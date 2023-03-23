@@ -6,7 +6,7 @@
     "redis/": "https://deno.land/x/redis@v0.29.2/",
     "@/": "./",
     "@/utils/": "./src/utils/",
-    "@/enums/": "./src/enums/",
+    "@/data/": "./src/data/",
     "@/locale/": "./src/locale/",
     "@/groupCommands/": "./src/commands/group/",
     "@/pmCommands/": "./src/commands/pm/",
