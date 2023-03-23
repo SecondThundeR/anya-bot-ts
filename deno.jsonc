@@ -1,5 +1,18 @@
 {
-  "importMap": "import_map.json",
+  "imports": {
+    "grammy/": "https://deno.land/x/grammy@v1.15.3/",
+    "grammy_runner/": "https://deno.land/x/grammy_runner@v2.0.3/",
+    "dotenv/": "https://deno.land/std@v0.181.0/dotenv/",
+    "redis/": "https://deno.land/x/redis@v0.29.2/",
+    "@/": "./",
+    "@/utils/": "./src/utils/",
+    "@/enums/": "./src/enums/",
+    "@/locale/": "./src/locale/",
+    "@/groupCommands/": "./src/commands/group/",
+    "@/pmCommands/": "./src/commands/pm/",
+    "@/groupHandlers/": "./src/handlers/group/",
+    "@/pmHandlers/": "./src/handlers/pm/"
+  },
   "lint": {
     "files": {
       "include": ["src/", "./bot.ts", "./deps.ts"]
