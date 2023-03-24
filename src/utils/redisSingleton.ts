@@ -10,11 +10,11 @@ interface ListsObject {
 class RedisSingleton {
     private static instance: RedisSingleton;
     private readonly redisClient: RedisClientType;
-    private redisUser = process.env.REDIS_USER;
-    private redisPass = process.env.REDIS_PASS;
-    private redisURL = process.env.REDIS_URL;
-    private redisPort = process.env.REDIS_PORT;
-    private chatsConfigTableName = process.env.CHATS_TABLE_NAME;
+    private redisUser = process.env.REDIS_USER || undefined;
+    private redisPass = process.env.REDIS_PASS || undefined;
+    private redisURL = process.env.REDIS_URL || undefined;
+    private redisPort = process.env.REDIS_PORT || undefined;
+    private chatsConfigTableName = process.env.CHATS_TABLE_NAME || undefined;
 
     private constructor() {
         if (
