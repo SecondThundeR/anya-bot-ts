@@ -22,12 +22,12 @@ Some random TypeScript bot with interesting features based on the grammY library
    > Note: Don't forget to disable [privacy mode](https://core.telegram.org/bots#privacy-mode) for your bot.
    >
    > For more information about how this does not violate the privacy of users conversations, read the [FAQ section](#faq)
-2. Install `redis-cli`, `deno` and [`velociraptor`](https://velociraptor.run/)
+2. Install `redis-cli` and `deno`
 3. Clone this repository
 4. Open an `.env` file in the root of the folder and change variables into it:
     - `BOT_TOKEN` - bot token
     - `CREATOR_ID` - your ID for working with the bot whitelist/ignored list from the DM
-5. Run `vr dev`
+5. Run `deno task dev`
     > If you want to get all debug data, run `export DEBUG="grammy*"` before launching bot
 6. Wait for `Started as @...` message and/or message in PM from bot
 7. Bot is ready to go!
@@ -58,8 +58,8 @@ While doing step 3, go to [Heroku Docker Docs](https://devcenter.heroku.com/arti
 
 **Group commands:**
 
-- `silent` - manage bot silent mode
 - `help` - send help message
+- `silent` - manage bot silent mode
 - `aidenmode` - enables "Aiden Pierce" mode _(Removes voice/video messages)_
 - `aidensilent` - manage "Aiden Pierce" silent mode
 - `noemoji` - triggers emoji strictness removal _(Currently works like on/off switch. Custom rules will be added later)_
@@ -73,6 +73,7 @@ While doing step 3, go to [Heroku Docker Docs](https://devcenter.heroku.com/arti
 
 **DM commands:**
 
+- `help` - send DM help message
 - `addwhitelist` - add group ID to white list
 - `removewhitelist` - remove group ID from white list
 - `getwhitelist` - get all groups info from white list

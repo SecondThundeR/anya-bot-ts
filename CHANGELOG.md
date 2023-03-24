@@ -9,7 +9,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Full support for Deno and Velociraptor
+- Full support for Deno
+
+## [2.0.6] - 2023-03-24
+
+### Changed
+
+- Update dependencies
+- Update locale
+- Rename `.env` to `.env.example`
+- Minor refactor
+
+### Removed
+
+- Docstrings for some methods
+- Deprecated utils methods
+
+### Fixed
+
+- Type annotation for chat object
+
+## [2.0.5] - 2022-12-31
+
+### Changed
+
+- Update dependencies
+
+## [2.0.4] - 2022-12-16
+
+### Added
+
+- New dependencies: `ts-node` and `ts-node-dev`
+- New command: `/dice`
+  > Input: `/dice {number} {text}`
+  >
+  > Output: `Если падает {number}, то {text}`, then send animated dice
+- Support for placeholder formatting for locale strings
+
+### Changed
+
+- Switch from `module-alias` to `tsconfig-paths` (See [commit description](https://github.com/SecondThundeR/anya-bot-ts/commit/9a160230783f86c22780fe3c3ae018e4bce6466e) for more info)
+- Move lists names from enums to readonly consts (`const as const`)
+- Update dependencies
 
 ## [2.0.3] - 2022-11-06
 
@@ -26,7 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Custom paths in TSConfig
-- Support for Module-alias package for correct custom paths usage 
+- Support for Module-alias package for correct custom paths usage
 - Custom paths to importOrder option in .prettierrc.js
 - Prettier format script in package.json
 
@@ -166,7 +207,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ability to change some localization strings via commands
 - A placeholder when trying to write a private message to a bot by a non-creator
 
-[Unreleased]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.3...HEAD
+[Unreleased]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.6...HEAD
+[2.0.6]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.5...v2.0.6
+[2.0.5]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.4...v2.0.5
+[2.0.4]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.3...v2.0.4
 [2.0.3]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.2...v2.0.3
 [2.0.2]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.0...v2.0.1
