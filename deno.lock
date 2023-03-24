@@ -109,5 +109,16 @@
     "https://deno.land/x/redis@v0.29.2/vendor/https/deno.land/std/async/delay.ts": "07bb8709c87bf457da6a7460668aa63afcda738719f5941237cb74ef795f49a8",
     "https://deno.land/x/redis@v0.29.2/vendor/https/deno.land/std/io/buf_reader.ts": "b8cd05912ca54ebebc77bddbd38612bfff585ca7f053d94038b8c644e6a17e0b",
     "https://deno.land/x/redis@v0.29.2/vendor/https/deno.land/std/io/buf_writer.ts": "2137f495110ebfa615bf9ab684ffc5af902a41ab3911cdd997eefc1ae529c54a"
+  },
+  "npm": {
+    "specifiers": {
+      "@types/node": "@types/node@18.11.18"
+    },
+    "packages": {
+      "@types/node@18.11.18": {
+        "integrity": "sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==",
+        "dependencies": {}
+      }
+    }
   }
 }
