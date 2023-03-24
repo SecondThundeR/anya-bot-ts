@@ -12,7 +12,3 @@ scripts:
     desc: Starts the bot in watch mode
     cmd: bot.ts
     watch: true
-
-  upgrade:
-    desc: Upgrades dependencies
-    cmd: deno cache --reload --lock=lock.json ./deps.ts

@@ -1,5 +1,5 @@
 import { Api, Context, InlineKeyboard } from '@/deps.ts';
-import type { ChatFromGetChat, ChatMember } from '@/deps.ts';
+import type { ChatFromGetChat } from '@/deps.ts';
 
 import ListsNames from '@/data/listsNames.ts';
 
@@ -24,7 +24,7 @@ export default class AsyncUtils {
     public static async isBotInChat(
         ctx: Context,
         chatID: string | number,
-    ): Promise<boolean> {
+    ) {
         try {
             await ctx.api.getChat(chatID);
             return true;
@@ -35,7 +35,7 @@ export default class AsyncUtils {
 
     public static async isMessageAlreadyDeleted(
         ctx: Context,
-    ): Promise<boolean> {
+    ) {
         let isMessageDeleted = false;
         await ctx
             .deleteMessage()
@@ -46,7 +46,7 @@ export default class AsyncUtils {
         return isMessageDeleted;
     }
 
-    public static async getAuthorStatus(ctx: Context): Promise<string> {
+    public static async getAuthorStatus(ctx: Context) {
         const chatID = RegularUtils.getChatID(ctx);
         const authorData = await ctx.getAuthor();
         const isAnonBot = ctx.update.message?.sender_chat?.id === chatID;
@@ -56,7 +56,7 @@ export default class AsyncUtils {
     public static async getChatsByIDs(
         ctx: Context,
         chatsIDs: string[],
-    ): Promise<[ChatFromGetChat[], string[]]> {
+    ) {
         const chatObjectArray: ChatFromGetChat[] = [];
         const chatIDArray: string[] = [];
         await Promise.all(
@@ -76,7 +76,7 @@ export default class AsyncUtils {
 
     public static async extractContextData(
         ctx: Context,
-    ): Promise<[number, ChatMember, string]> {
+    ) {
         const chatID = RegularUtils.getChatID(ctx);
         const botData = await ctx.getChatMember(ctx.me.id);
         const messageText = String(ctx.match) || '';
@@ -86,13 +86,13 @@ export default class AsyncUtils {
     public static async incrementCommandUsageCounter(
         client: RedisSingleton,
         command: string,
-    ): Promise<void> {
+    ) {
         await client.incrementFieldBy('commandsUsage', command, 1);
     }
 
     public static async getCommandsUsage(
         client: RedisSingleton,
-    ): Promise<string[]> {
+    ) {
         return await client.getAllHashData('commandsUsage');
     }
 
@@ -163,7 +163,7 @@ export default class AsyncUtils {
     public static async isCommandIgnored(
         ctx: Context,
         redisInstance: RedisSingleton,
-    ): Promise<boolean> {
+    ) {
         const whiteListIDs = await redisInstance.getList(ListsNames.WHITELIST);
         const chatID = RegularUtils.getChatID(ctx);
 
@@ -173,7 +173,7 @@ export default class AsyncUtils {
         );
     }
 
-    public static async isGroupAdmin(ctx: Context): Promise<boolean> {
+    public static async isGroupAdmin(ctx: Context) {
         const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
         return (
             authorStatus === 'administrator' ||

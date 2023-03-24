@@ -2,7 +2,7 @@ import { Composer } from '@/deps.ts';
 
 import RegularUtils from '@/utils/regularUtils.ts';
 
-import { getUptimeMessage } from './helpers.ts';
+import { getUptimeMessage } from '@/pmCommands/uptimeMessage/helpers.ts';
 
 const uptimeMessage = new Composer();
 

@@ -5,28 +5,28 @@ import aidenPierceMessages from '@/locale/aidenPierceMessages.ts';
 import RedisSingleton from '@/utils/redisSingleton.ts';
 import RegularUtils from '@/utils/regularUtils.ts';
 
-const getAidenModeWord = (currentStatus: boolean): string => {
+function getAidenModeWord(currentStatus: boolean) {
     return currentStatus
         ? aidenPierceMessages.enabled
         : aidenPierceMessages.disabled;
-};
+}
 
-const parseAidenValueFromDB = (currentStatus: string | null): boolean => {
+function parseAidenValueFromDB(currentStatus: string | null) {
     return currentStatus === null
         ? false
         : RegularUtils.getBoolean(currentStatus);
-};
+}
 
-const changeAidenStatusDB = async (
+async function changeAidenStatusDB(
     client: RedisSingleton,
     chatID: number,
     aidenStatus: boolean,
-) => {
+) {
     if (!aidenStatus) return await client.deleteHashData(chatID, ['aidenMode']);
     await client.setHashData(chatID, { aidenMode: String(aidenStatus) });
-};
+}
 
-export const updateAidenData = async (ctx: Context) => {
+export async function updateAidenData(ctx: Context) {
     const chatID = RegularUtils.getChatID(ctx);
     const redisInstance = RedisSingleton.getInstance();
 
@@ -36,4 +36,4 @@ export const updateAidenData = async (ctx: Context) => {
 
     await changeAidenStatusDB(redisInstance, chatID, isAidenEnabledReverse);
     return getAidenModeWord(isAidenEnabledReverse);
-};
+}

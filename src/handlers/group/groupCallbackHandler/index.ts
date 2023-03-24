@@ -6,7 +6,7 @@ import stickerMessages from '@/locale/stickerMessages.ts';
 import RedisSingleton from '@/utils/redisSingleton.ts';
 import RegularUtils from '@/utils/regularUtils.ts';
 
-import { deleteLocaleChangingStatus } from './helpers.ts';
+import { deleteLocaleChangingStatus } from '@/groupHandlers/groupCallbackHandler/helpers.ts';
 
 const groupCallbackHandler = new Composer();
 

@@ -1,4 +1,4 @@
-import otherMessages from './otherMessages.ts';
+import otherMessages from '@/locale/otherMessages.ts';
 
 const whiteListMessages = {
     added: 'Ура, теперь я могу работать в этом чате!',

@@ -4,7 +4,7 @@ import AsyncUtils from '@/utils/asyncUtils.ts';
 import RedisSingleton from '@/utils/redisSingleton.ts';
 import RegularUtils from '@/utils/regularUtils.ts';
 
-import { updateAidenData } from './helpers.ts';
+import { updateAidenData } from '@/groupCommands/aidenMode/helpers.ts';
 
 const aidenMode = new Composer();
 

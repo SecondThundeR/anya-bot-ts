@@ -1,27 +1,27 @@
 import RedisSingleton from '@/utils/redisSingleton.ts';
 import RegularUtils from '@/utils/regularUtils.ts';
 
-export const getLocaleChangingStatus = async (
+export async function getLocaleChangingStatus(
     client: RedisSingleton,
     chatID: number,
-): Promise<boolean> => {
+) {
     return RegularUtils.getBoolean(
         await client.getHashData(chatID, 'isMessageLocaleChanging'),
     );
-};
+}
 
-export const deleteLocaleChangingStatus = async (
+export async function deleteLocaleChangingStatus(
     client: RedisSingleton,
     chatID: number,
-) => {
+) {
     return await client.deleteHashData(chatID, ['isMessageLocaleChanging']);
-};
+}
 
-export const setLocaleChangingStatus = async (
+export async function setLocaleChangingStatus(
     client: RedisSingleton,
     chatID: number,
-) => {
+) {
     return await client.setHashData(chatID, {
         isMessageLocaleChanging: 'true',
     });
-};
+}

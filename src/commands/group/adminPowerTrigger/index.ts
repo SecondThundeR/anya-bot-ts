@@ -4,7 +4,7 @@ import AsyncUtils from '@/utils/asyncUtils.ts';
 import RedisSingleton from '@/utils/redisSingleton.ts';
 import RegularUtils from '@/utils/regularUtils.ts';
 
-import { updateAllowData } from './helpers.ts';
+import { updateAllowData } from '@/groupCommands/adminPowerTrigger/helpers.ts';
 
 const adminPowerTrigger = new Composer();
 

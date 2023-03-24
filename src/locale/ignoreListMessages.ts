@@ -1,4 +1,4 @@
-import otherMessages from './otherMessages.ts';
+import otherMessages from '@/locale/otherMessages.ts';
 
 const ignoreListMessages = {
     added: 'Хорошо, теперь я буду игнорировать этот чат!',

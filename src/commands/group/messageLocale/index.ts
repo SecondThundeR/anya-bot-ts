@@ -11,7 +11,7 @@ import {
     deleteLocaleChangingStatus,
     getLocaleChangingStatus,
     setLocaleChangingStatus,
-} from './helpers.ts';
+} from '@/groupCommands/messageLocale/helpers.ts';
 
 const messageLocale = new Composer();
 const messageLocaleWaitTime = 10;

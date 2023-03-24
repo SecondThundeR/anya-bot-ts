@@ -7,6 +7,7 @@ import {
     sequentialize,
     session,
 } from '@/deps.ts';
+// @deno-types="npm:@types/node"
 import process from 'node:process';
 
 import otherMessages from '@/locale/otherMessages.ts';

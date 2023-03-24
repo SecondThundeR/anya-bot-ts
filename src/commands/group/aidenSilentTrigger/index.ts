@@ -4,7 +4,7 @@ import AsyncUtils from '@/utils/asyncUtils.ts';
 import RedisSingleton from '@/utils/redisSingleton.ts';
 import RegularUtils from '@/utils/regularUtils.ts';
 
-import { updateAidenSilentData } from './helpers.ts';
+import { updateAidenSilentData } from '@/groupCommands/aidenSilentTrigger/helpers.ts';
 
 const aidenSilentTrigger = new Composer();
 

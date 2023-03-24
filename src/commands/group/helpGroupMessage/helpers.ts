@@ -8,19 +8,19 @@ import AsyncUtils from '@/utils/asyncUtils.ts';
 import RedisSingleton from '@/utils/redisSingleton.ts';
 import RegularUtils from '@/utils/regularUtils.ts';
 
-const sendNoAccessMessage = async (ctx: Context, chatID: number) => {
+async function sendNoAccessMessage(ctx: Context, chatID: number) {
     return await ctx.reply(
         whiteListMessages.chatMessage.replace(/xxx/i, `<code>${chatID}</code>`),
         {
             parse_mode: 'HTML',
         },
     );
-};
+}
 
-export const isHelpIgnored = async (
+export async function isHelpIgnored(
     ctx: Context,
     redisInstance: RedisSingleton,
-): Promise<boolean> => {
+) {
     const whiteListIDs = await redisInstance.getList(ListsNames.WHITELIST);
     const chatID = RegularUtils.getChatID(ctx);
 
@@ -30,4 +30,4 @@ export const isHelpIgnored = async (
     }
 
     return !(await AsyncUtils.isGroupAdmin(ctx));
-};
+}
