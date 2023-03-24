@@ -1,16 +1,16 @@
-import { Composer } from 'grammy';
+import { Composer } from "grammy";
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from "@utils/asyncUtils";
+import RedisSingleton from "@utils/redisSingleton";
+import RegularUtils from "@utils/regularUtils";
 
-import { updateAllowData } from './helpers';
+import { updateAllowData } from "./helpers";
 
 const adminPowerTrigger = new Composer();
 
-adminPowerTrigger.command('adminpower', async ctx => {
+adminPowerTrigger.command("adminpower", async ctx => {
     const redisInstance = RedisSingleton.getInstance();
-    await AsyncUtils.incrementCommandUsageCounter(redisInstance, 'adminpower');
+    await AsyncUtils.incrementCommandUsageCounter(redisInstance, "adminpower");
 
     if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
 

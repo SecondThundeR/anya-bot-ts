@@ -1,17 +1,17 @@
-import { Composer } from 'grammy';
+import { Composer } from "grammy";
 
-import helpMessages from '@locale/helpMessages';
+import helpMessages from "@locale/helpMessages";
 
-import RegularUtils from '@utils/regularUtils';
+import RegularUtils from "@utils/regularUtils";
 
 const helpPMMessage = new Composer();
 
-helpPMMessage.command('help', async ctx => {
+helpPMMessage.command("help", async ctx => {
     if (RegularUtils.isBotCreator(ctx))
         return await ctx.reply(
             RegularUtils.convertHelpMessageToHTMLFormat(helpMessages.pmMessage),
             {
-                parse_mode: 'HTML'
+                parse_mode: "HTML"
             }
         );
 });

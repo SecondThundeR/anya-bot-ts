@@ -1,16 +1,16 @@
-import { Composer } from 'grammy';
+import { Composer } from "grammy";
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from "@utils/asyncUtils";
+import RedisSingleton from "@utils/redisSingleton";
+import RegularUtils from "@utils/regularUtils";
 
-import { updateSilentData } from './helpers';
+import { updateSilentData } from "./helpers";
 
 const silentTrigger = new Composer();
 
-silentTrigger.command('silent', async ctx => {
+silentTrigger.command("silent", async ctx => {
     const redisInstance = RedisSingleton.getInstance();
-    await AsyncUtils.incrementCommandUsageCounter(redisInstance, 'silent');
+    await AsyncUtils.incrementCommandUsageCounter(redisInstance, "silent");
 
     if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
 

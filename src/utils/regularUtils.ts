@@ -1,11 +1,11 @@
-import { Context, InlineKeyboard } from 'grammy';
-import { Chat, ChatFromGetChat, ChatMember, Message, User } from 'grammy/types';
+import { Context, InlineKeyboard } from "grammy";
+import { Chat, ChatFromGetChat, ChatMember, Message, User } from "grammy/types";
 
-import ignoreListMessages from '@locale/ignoreListMessages';
-import keyboardMessages from '@locale/keyboardMessages';
-import otherMessages from '@locale/otherMessages';
-import stickerMessages from '@locale/stickerMessages';
-import whiteListMessages from '@locale/whiteListMessages';
+import ignoreListMessages from "@locale/ignoreListMessages";
+import keyboardMessages from "@locale/keyboardMessages";
+import otherMessages from "@locale/otherMessages";
+import stickerMessages from "@locale/stickerMessages";
+import whiteListMessages from "@locale/whiteListMessages";
 
 type ChatInfoTuple = [string | undefined, string | undefined];
 type ReplacementObjectType = {
@@ -23,7 +23,7 @@ export default class RegularUtils {
 
     public static isBotCanDelete(botData: ChatMember): boolean {
         return (
-            botData.status === 'administrator' && botData.can_delete_messages
+            botData.status === "administrator" && botData.can_delete_messages
         );
     }
 
@@ -34,7 +34,7 @@ export default class RegularUtils {
     }
 
     public static isStringEmpty(str: string): boolean {
-        return str === '';
+        return str === "";
     }
 
     public static isItemInList(item: number | string, list: string[]): boolean {
@@ -43,7 +43,7 @@ export default class RegularUtils {
 
     public static getBoolean(str: string | null): boolean {
         if (str === null) return false;
-        return str === 'true';
+        return str === "true";
     }
 
     public static getChatID(ctx: Context): number {
@@ -57,7 +57,7 @@ export default class RegularUtils {
     }
 
     public static convertHelpMessageToHTMLFormat(helpMessage: string): string {
-        return helpMessage.replace(/\[/g, '<code>').replace(/]/g, '</code>');
+        return helpMessage.replace(/\[/g, "<code>").replace(/]/g, "</code>");
     }
 
     public static getMessageID(msg: Message | undefined): number | undefined {
@@ -65,7 +65,7 @@ export default class RegularUtils {
     }
 
     public static getCallbackData(ctx: Context): string {
-        return ctx.update.callback_query?.data || '';
+        return ctx.update.callback_query?.data || "";
     }
 
     public static getUserMention(user: User): string {
@@ -148,7 +148,7 @@ export default class RegularUtils {
         word: string | null,
         defaultWord: string
     ): string {
-        return word === null || word === '' ? defaultWord : word;
+        return word === null || word === "" ? defaultWord : word;
     }
 
     public static verifyStickerMessageLocale(
@@ -161,7 +161,7 @@ export default class RegularUtils {
         );
         const mentionStatus =
             verifiedStickerMessage === stickerMessages.messageDefault
-                ? 'true'
+                ? "true"
                 : stickerMessageMention;
         return [verifiedStickerMessage, mentionStatus];
     }

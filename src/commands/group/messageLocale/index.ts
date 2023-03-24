@@ -1,26 +1,26 @@
-import { Composer } from 'grammy';
+import { Composer } from "grammy";
 
-import otherMessages from '@locale/otherMessages';
-import stickerMessages from '@locale/stickerMessages';
+import otherMessages from "@locale/otherMessages";
+import stickerMessages from "@locale/stickerMessages";
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from "@utils/asyncUtils";
+import RedisSingleton from "@utils/redisSingleton";
+import RegularUtils from "@utils/regularUtils";
 
 import {
     deleteLocaleChangingStatus,
     getLocaleChangingStatus,
     setLocaleChangingStatus
-} from './helpers';
+} from "./helpers";
 
 const messageLocale = new Composer();
 const messageLocaleWaitTime = 10;
 
-messageLocale.command('messagelocale', async ctx => {
+messageLocale.command("messagelocale", async ctx => {
     const redisInstance = RedisSingleton.getInstance();
     await AsyncUtils.incrementCommandUsageCounter(
         redisInstance,
-        'messagelocale'
+        "messagelocale"
     );
 
     if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
@@ -74,13 +74,13 @@ messageLocale.command('messagelocale', async ctx => {
     try {
         await ctx.api.deleteMessage(chatID, message.message_id);
     } catch {
-        console.log('Locale changing message was already deleted');
+        console.log("Locale changing message was already deleted");
     }
 
     await deleteLocaleChangingStatus(redisInstance, chatID);
     await redisInstance.deleteHashData(chatID, [
-        'stickerMessageLocale',
-        'stickerMessageMention'
+        "stickerMessageLocale",
+        "stickerMessageMention"
     ]);
 
     try {

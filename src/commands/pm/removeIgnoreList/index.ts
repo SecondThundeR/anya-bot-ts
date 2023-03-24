@@ -1,16 +1,16 @@
-import { Composer } from 'grammy';
+import { Composer } from "grammy";
 
-import ListsNames from '@data/listsNames';
+import ListsNames from "@data/listsNames";
 
-import ignoreListMessages from '@locale/ignoreListMessages';
-import otherMessages from '@locale/otherMessages';
+import ignoreListMessages from "@locale/ignoreListMessages";
+import otherMessages from "@locale/otherMessages";
 
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import RedisSingleton from "@utils/redisSingleton";
+import RegularUtils from "@utils/regularUtils";
 
 const removeIgnoreList = new Composer();
 
-removeIgnoreList.command('removeignorelist', async ctx => {
+removeIgnoreList.command("removeignorelist", async ctx => {
     const redisInstance = RedisSingleton.getInstance();
     const chatID = ctx.match;
     const ignoreListIDs = await redisInstance.getList(ListsNames.IGNORELIST);

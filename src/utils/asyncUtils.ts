@@ -1,15 +1,15 @@
-import { Api, Context, InlineKeyboard } from 'grammy';
-import { ChatFromGetChat, ChatMember } from 'grammy/types';
+import { Api, Context, InlineKeyboard } from "grammy";
+import { ChatFromGetChat, ChatMember } from "grammy/types";
 
-import ListsNames from '@data/listsNames';
+import ListsNames from "@data/listsNames";
 
-import ignoreListMessages from '@locale/ignoreListMessages';
-import keyboardMessages from '@locale/keyboardMessages';
-import otherMessages from '@locale/otherMessages';
-import whiteListMessages from '@locale/whiteListMessages';
+import ignoreListMessages from "@locale/ignoreListMessages";
+import keyboardMessages from "@locale/keyboardMessages";
+import otherMessages from "@locale/otherMessages";
+import whiteListMessages from "@locale/whiteListMessages";
 
-import RedisSingleton from './redisSingleton';
-import RegularUtils from './regularUtils';
+import RedisSingleton from "./redisSingleton";
+import RegularUtils from "./regularUtils";
 
 export default class AsyncUtils {
     public static async logBotInfo(api: Api) {
@@ -50,7 +50,7 @@ export default class AsyncUtils {
         const chatID = RegularUtils.getChatID(ctx);
         const authorData = await ctx.getAuthor();
         const isAnonBot = ctx.update.message?.sender_chat?.id === chatID;
-        return isAnonBot ? 'anon' : authorData.status;
+        return isAnonBot ? "anon" : authorData.status;
     }
 
     public static async getChatsByIDs(
@@ -79,7 +79,7 @@ export default class AsyncUtils {
     ): Promise<[number, ChatMember, string]> {
         const chatID = RegularUtils.getChatID(ctx);
         const botData = await ctx.getChatMember(ctx.me.id);
-        const messageText = String(ctx.match) || '';
+        const messageText = String(ctx.match) || "";
         return [chatID, botData, messageText];
     }
 
@@ -87,13 +87,13 @@ export default class AsyncUtils {
         client: RedisSingleton,
         command: string
     ): Promise<void> {
-        await client.incrementFieldBy('commandsUsage', command, 1);
+        await client.incrementFieldBy("commandsUsage", command, 1);
     }
 
     public static async getCommandsUsage(
         client: RedisSingleton
     ): Promise<{ [key: string]: string }> {
-        return await client.getAllHashData('commandsUsage');
+        return await client.getAllHashData("commandsUsage");
     }
 
     public static async resetLocaleHandler(
@@ -132,8 +132,8 @@ export default class AsyncUtils {
     ) {
         const [customText, stickerMessageMention] =
             await RedisSingleton.getInstance().getHashMultipleData(chatID, [
-                'stickerMessageLocale',
-                'stickerMessageMention'
+                "stickerMessageLocale",
+                "stickerMessageMention"
             ]);
         const [verifiedCustomText, verifiedStickerMessageMentionStatus] =
             RegularUtils.verifyStickerMessageLocale(
@@ -176,9 +176,9 @@ export default class AsyncUtils {
     public static async isGroupAdmin(ctx: Context): Promise<boolean> {
         const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
         return (
-            authorStatus === 'administrator' ||
-            authorStatus === 'creator' ||
-            authorStatus === 'anon'
+            authorStatus === "administrator" ||
+            authorStatus === "creator" ||
+            authorStatus === "anon"
         );
     }
 
@@ -195,7 +195,7 @@ export default class AsyncUtils {
                 `<code>${chatID}</code>`
             );
             await ctx.reply(ignoredMessage, {
-                parse_mode: 'HTML'
+                parse_mode: "HTML"
             });
             return await ctx.leaveChat();
         }
@@ -206,7 +206,7 @@ export default class AsyncUtils {
         );
 
         await ctx.reply(whiteListMessage, {
-            parse_mode: 'HTML'
+            parse_mode: "HTML"
         });
 
         if (creatorID === undefined) return;
@@ -231,7 +231,7 @@ export default class AsyncUtils {
 
         await ctx.api.sendMessage(Number(creatorID), messageText, {
             reply_markup: keyboard,
-            parse_mode: 'HTML'
+            parse_mode: "HTML"
         });
     }
 
@@ -253,7 +253,7 @@ export default class AsyncUtils {
                 `<code>${chatID}</code>`
             ),
             {
-                parse_mode: 'HTML'
+                parse_mode: "HTML"
             }
         );
     }
@@ -269,7 +269,7 @@ export default class AsyncUtils {
                 `<code>${chatID}</code>`
             ),
             {
-                parse_mode: 'HTML'
+                parse_mode: "HTML"
             }
         );
     }

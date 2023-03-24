@@ -1,19 +1,19 @@
-import { Composer } from 'grammy';
+import { Composer } from "grammy";
 
-import otherMessages from '@locale/otherMessages';
-import silentMessages from '@locale/silentMessages';
+import otherMessages from "@locale/otherMessages";
+import silentMessages from "@locale/silentMessages";
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from "@utils/asyncUtils";
+import RedisSingleton from "@utils/redisSingleton";
+import RegularUtils from "@utils/regularUtils";
 
 const silentOffLocale = new Composer();
 
-silentOffLocale.command('silentofflocale', async ctx => {
+silentOffLocale.command("silentofflocale", async ctx => {
     const redisInstance = RedisSingleton.getInstance();
     await AsyncUtils.incrementCommandUsageCounter(
         redisInstance,
-        'silentofflocale'
+        "silentofflocale"
     );
 
     if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;

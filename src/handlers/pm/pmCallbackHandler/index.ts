@@ -1,19 +1,19 @@
-import { Composer } from 'grammy';
-import { ChatMember, Message, Update } from 'grammy/types';
+import { Composer } from "grammy";
+import { ChatMember, Message, Update } from "grammy/types";
 
-import ListsNames from '@data/listsNames';
+import ListsNames from "@data/listsNames";
 
-import keyboardMessages from '@locale/keyboardMessages';
-import otherMessages from '@locale/otherMessages';
+import keyboardMessages from "@locale/keyboardMessages";
+import otherMessages from "@locale/otherMessages";
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from "@utils/asyncUtils";
+import RedisSingleton from "@utils/redisSingleton";
+import RegularUtils from "@utils/regularUtils";
 
 const pmCallbackHandler = new Composer();
 
-pmCallbackHandler.on('callback_query:data', async ctx => {
-    const splitData = RegularUtils.getCallbackData(ctx).split('|');
+pmCallbackHandler.on("callback_query:data", async ctx => {
+    const splitData = RegularUtils.getCallbackData(ctx).split("|");
     const redisInstance = RedisSingleton.getInstance();
     const idsLists = await redisInstance.getLists([
         ListsNames.WHITELIST,
@@ -29,8 +29,8 @@ pmCallbackHandler.on('callback_query:data', async ctx => {
         reply_markup: undefined
     })) as Update.Edited & Message;
     const [chatID, listMode] = splitData;
-    const whiteListAccept = listMode === 'accept';
-    const ignoreListIgnore = listMode === 'ignore';
+    const whiteListAccept = listMode === "accept";
+    const ignoreListIgnore = listMode === "ignore";
     let botData: ChatMember | undefined = undefined;
 
     try {

@@ -1,9 +1,9 @@
-import { Context } from 'grammy';
+import { Context } from "grammy";
 
-import aidenPierceMessages from '@locale/aidenPierceMessages';
+import aidenPierceMessages from "@locale/aidenPierceMessages";
 
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import RedisSingleton from "@utils/redisSingleton";
+import RegularUtils from "@utils/regularUtils";
 
 const getAidenModeWord = (currentStatus: boolean): string => {
     return currentStatus
@@ -22,7 +22,7 @@ const changeAidenStatusDB = async (
     chatID: number,
     aidenStatus: boolean
 ) => {
-    if (!aidenStatus) return await client.deleteHashData(chatID, ['aidenMode']);
+    if (!aidenStatus) return await client.deleteHashData(chatID, ["aidenMode"]);
     await client.setHashData(chatID, { aidenMode: String(aidenStatus) });
 };
 
@@ -31,7 +31,7 @@ export const updateAidenData = async (ctx: Context) => {
     const redisInstance = RedisSingleton.getInstance();
 
     const isAidenEnabledString =
-        (await redisInstance.getHashData(chatID, 'aidenMode')) || null;
+        (await redisInstance.getHashData(chatID, "aidenMode")) || null;
     const isAidenEnabledReverse = !parseAidenValueFromDB(isAidenEnabledString);
 
     await changeAidenStatusDB(redisInstance, chatID, isAidenEnabledReverse);

@@ -1,22 +1,22 @@
-import { Composer } from 'grammy';
+import { Composer } from "grammy";
 
-import ListsNames from '@data/listsNames';
+import ListsNames from "@data/listsNames";
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from "@utils/asyncUtils";
+import RedisSingleton from "@utils/redisSingleton";
+import RegularUtils from "@utils/regularUtils";
 
 const premiumStickersHandler = new Composer();
 
-premiumStickersHandler.on('message:sticker', async ctx => {
+premiumStickersHandler.on("message:sticker", async ctx => {
     const redisSingleton = RedisSingleton.getInstance();
     const chatID = RegularUtils.getChatID(ctx);
     const botData = await ctx.getChatMember(ctx.me.id);
     const whiteListIDs = await redisSingleton.getList(ListsNames.WHITELIST);
     const isAdminPowerEnabled = await redisSingleton.getHashData(
         chatID,
-        'adminPower',
-        'false'
+        "adminPower",
+        "false"
     );
 
     if (
@@ -33,8 +33,8 @@ premiumStickersHandler.on('message:sticker', async ctx => {
 
     const silentStatus = await redisSingleton.getHashData(
         chatID,
-        'isSilent',
-        'false'
+        "isSilent",
+        "false"
     );
     if (RegularUtils.getBoolean(silentStatus)) return;
 

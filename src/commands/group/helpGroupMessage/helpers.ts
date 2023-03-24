@@ -1,18 +1,18 @@
-import { Context } from 'grammy';
+import { Context } from "grammy";
 
-import ListsNames from '@data/listsNames';
+import ListsNames from "@data/listsNames";
 
-import whiteListMessages from '@locale/whiteListMessages';
+import whiteListMessages from "@locale/whiteListMessages";
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from "@utils/asyncUtils";
+import RedisSingleton from "@utils/redisSingleton";
+import RegularUtils from "@utils/regularUtils";
 
 const sendNoAccessMessage = async (ctx: Context, chatID: number) => {
     return await ctx.reply(
         whiteListMessages.chatMessage.replace(/xxx/i, `<code>${chatID}</code>`),
         {
-            parse_mode: 'HTML'
+            parse_mode: "HTML"
         }
     );
 };

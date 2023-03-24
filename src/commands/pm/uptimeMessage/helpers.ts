@@ -1,6 +1,6 @@
-import process from 'node:process';
+import process from "node:process";
 
-import otherMessages from '@locale/otherMessages';
+import otherMessages from "@locale/otherMessages";
 
 const zeroAppender = (time: number): string => {
     if (time < 10) return `0${time}`;

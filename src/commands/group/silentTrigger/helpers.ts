@@ -1,7 +1,7 @@
-import silentMessages from '@locale/silentMessages';
+import silentMessages from "@locale/silentMessages";
 
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import RedisSingleton from "@utils/redisSingleton";
+import RegularUtils from "@utils/regularUtils";
 
 const getDefaultSilentWord = (currentStatus: boolean): string => {
     return currentStatus
@@ -20,7 +20,7 @@ const changeSilentStatusInDB = async (
     chatID: number,
     silentStatus: boolean
 ) => {
-    if (!silentStatus) return await client.deleteHashData(chatID, ['isSilent']);
+    if (!silentStatus) return await client.deleteHashData(chatID, ["isSilent"]);
     await client.setHashData(chatID, { isSilent: String(silentStatus) });
 };
 
@@ -30,9 +30,9 @@ export const updateSilentData = async (
 ): Promise<string> => {
     const [isSilentString, silentOnLocale, silentOffLocale] =
         await client.getHashMultipleData(chatID, [
-            'isSilent',
-            'silentOnLocale',
-            'silentOffLocale'
+            "isSilent",
+            "silentOnLocale",
+            "silentOffLocale"
         ]);
     const isSilentReversed = !parseSilentValueFromDB(isSilentString);
     await changeSilentStatusInDB(client, chatID, isSilentReversed);

@@ -1,6 +1,6 @@
-import { RedisClientType, createClient } from 'redis';
+import { RedisClientType, createClient } from "redis";
 
-import type { ListsNamesType } from '@data/listsNames';
+import type { ListsNamesType } from "@data/listsNames";
 
 interface ListsObject {
     [key: string]: string[];
@@ -38,8 +38,8 @@ class RedisSingleton {
 
     public async connectToServer(): Promise<void> {
         await this.redisClient.connect();
-        this.redisClient.on('error', err =>
-            console.log('Redis Client Error', err)
+        this.redisClient.on("error", err =>
+            console.log("Redis Client Error", err)
         );
     }
 
@@ -51,7 +51,7 @@ class RedisSingleton {
     public async getHashData(
         chatID: number | string,
         hashName: string,
-        defaultData: string = ''
+        defaultData: string = ""
     ): Promise<string> {
         return (
             (await this.redisClient.hGet(

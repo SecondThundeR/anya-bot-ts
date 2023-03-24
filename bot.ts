@@ -1,47 +1,47 @@
-import { run, sequentialize } from '@grammyjs/runner';
-import { Bot, GrammyError, HttpError, session } from 'grammy';
+import { run, sequentialize } from "@grammyjs/runner";
+import { Bot, GrammyError, HttpError, session } from "grammy";
 
-import adminPowerTrigger from '@groupCommands/adminPowerTrigger';
-import aidenMode from '@groupCommands/aidenMode';
-import aidenSilentTrigger from '@groupCommands/aidenSilentTrigger';
-import diceGame from '@groupCommands/diceGame';
-import helpGroupMessage from '@groupCommands/helpGroupMessage';
-import messageLocale from '@groupCommands/messageLocale';
-import messageLocaleReset from '@groupCommands/messageLocaleReset';
-import noCustomEmoji from '@groupCommands/noCustomEmoji';
-import silentOffLocale from '@groupCommands/silentOffLocale';
-import silentOffLocaleReset from '@groupCommands/silentOffLocaleReset';
-import silentOnLocale from '@groupCommands/silentOnLocale';
-import silentOnLocaleReset from '@groupCommands/silentOnLocaleReset';
-import silentTrigger from '@groupCommands/silentTrigger';
+import adminPowerTrigger from "@groupCommands/adminPowerTrigger";
+import aidenMode from "@groupCommands/aidenMode";
+import aidenSilentTrigger from "@groupCommands/aidenSilentTrigger";
+import diceGame from "@groupCommands/diceGame";
+import helpGroupMessage from "@groupCommands/helpGroupMessage";
+import messageLocale from "@groupCommands/messageLocale";
+import messageLocaleReset from "@groupCommands/messageLocaleReset";
+import noCustomEmoji from "@groupCommands/noCustomEmoji";
+import silentOffLocale from "@groupCommands/silentOffLocale";
+import silentOffLocaleReset from "@groupCommands/silentOffLocaleReset";
+import silentOnLocale from "@groupCommands/silentOnLocale";
+import silentOnLocaleReset from "@groupCommands/silentOnLocaleReset";
+import silentTrigger from "@groupCommands/silentTrigger";
 
-import addIgnoreList from '@pmCommands/addIgnoreList';
-import addWhiteList from '@pmCommands/addWhiteList';
-import getCommandsUsage from '@pmCommands/getCommandsUsage';
-import getIgnoreList from '@pmCommands/getIgnoreList';
-import getWhiteList from '@pmCommands/getWhiteList';
-import helpPMMessage from '@pmCommands/helpPMMessage';
-import removeIgnoreList from '@pmCommands/removeIgnoreList';
-import removeWhiteList from '@pmCommands/removeWhiteList';
-import startMessage from '@pmCommands/startMessage';
-import uptimeMessage from '@pmCommands/uptimeMessage';
+import addIgnoreList from "@pmCommands/addIgnoreList";
+import addWhiteList from "@pmCommands/addWhiteList";
+import getCommandsUsage from "@pmCommands/getCommandsUsage";
+import getIgnoreList from "@pmCommands/getIgnoreList";
+import getWhiteList from "@pmCommands/getWhiteList";
+import helpPMMessage from "@pmCommands/helpPMMessage";
+import removeIgnoreList from "@pmCommands/removeIgnoreList";
+import removeWhiteList from "@pmCommands/removeWhiteList";
+import startMessage from "@pmCommands/startMessage";
+import uptimeMessage from "@pmCommands/uptimeMessage";
 
-import customEmojisHandler from '@groupHandlers/customEmojisHandler';
-import groupCallbackHandler from '@groupHandlers/groupCallbackHandler';
-import newChatHandler from '@groupHandlers/newChatHandler';
-import premiumStickersHandler from '@groupHandlers/premiumStickersHandler';
-import voiceAndVideoHandler from '@groupHandlers/voiceAndVideoHandler';
+import customEmojisHandler from "@groupHandlers/customEmojisHandler";
+import groupCallbackHandler from "@groupHandlers/groupCallbackHandler";
+import newChatHandler from "@groupHandlers/newChatHandler";
+import premiumStickersHandler from "@groupHandlers/premiumStickersHandler";
+import voiceAndVideoHandler from "@groupHandlers/voiceAndVideoHandler";
 
-import pmCallbackHandler from '@pmHandlers/pmCallbackHandler';
+import pmCallbackHandler from "@pmHandlers/pmCallbackHandler";
 
-import otherMessages from '@locale/otherMessages';
+import otherMessages from "@locale/otherMessages";
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from "@utils/asyncUtils";
+import RedisSingleton from "@utils/redisSingleton";
+import RegularUtils from "@utils/regularUtils";
 
-if (process.env.NODE_ENV === 'local') {
-    require('dotenv').config();
+if (process.env.NODE_ENV === "local") {
+    require("dotenv").config();
 }
 
 const botToken = process.env.BOT_TOKEN;
@@ -54,9 +54,9 @@ const bot = new Bot(botToken);
 const runner = run(bot);
 const client = RedisSingleton.getInstance();
 
-const pm = bot.filter(ctx => ctx.chat?.type === 'private');
+const pm = bot.filter(ctx => ctx.chat?.type === "private");
 const group = bot.filter(
-    ctx => ctx.chat?.type !== 'private' && ctx.chat?.type !== 'channel'
+    ctx => ctx.chat?.type !== "private" && ctx.chat?.type !== "channel"
 );
 
 const getSessionKeyFunc = RegularUtils.getSessionKey;
@@ -115,9 +115,9 @@ bot.catch(async err => {
     console.error(`Error while handling update ${ctx.update.update_id}:`);
     const e = err.error;
     if (e instanceof GrammyError)
-        return console.error('Error in request:', e.description);
+        return console.error("Error in request:", e.description);
     if (e instanceof HttpError)
-        return console.error('Could not contact Telegram:', e);
+        return console.error("Could not contact Telegram:", e);
     if (err.ctx.message)
         await bot.api.sendMessage(
             err.ctx.message?.chat.id,
@@ -126,14 +126,14 @@ bot.catch(async err => {
             }),
             {
                 reply_to_message_id: RegularUtils.getMessageID(err.ctx.message),
-                parse_mode: 'HTML'
+                parse_mode: "HTML"
             }
         );
-    return console.error('Unknown error occurred:', e);
+    return console.error("Unknown error occurred:", e);
 });
 
-process.once('SIGINT', stopOnTerm);
-process.once('SIGTERM', stopOnTerm);
+process.once("SIGINT", stopOnTerm);
+process.once("SIGTERM", stopOnTerm);
 
 (async () => {
     try {

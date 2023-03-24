@@ -1,16 +1,16 @@
-import { Composer } from 'grammy';
+import { Composer } from "grammy";
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from "@utils/asyncUtils";
+import RedisSingleton from "@utils/redisSingleton";
+import RegularUtils from "@utils/regularUtils";
 
-import { updateAidenData } from './helpers';
+import { updateAidenData } from "./helpers";
 
 const aidenMode = new Composer();
 
-aidenMode.command('aidenmode', async ctx => {
+aidenMode.command("aidenmode", async ctx => {
     const redisInstance = RedisSingleton.getInstance();
-    await AsyncUtils.incrementCommandUsageCounter(redisInstance, 'aidenmode');
+    await AsyncUtils.incrementCommandUsageCounter(redisInstance, "aidenmode");
 
     if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
 

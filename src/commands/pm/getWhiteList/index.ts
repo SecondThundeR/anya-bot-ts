@@ -1,16 +1,16 @@
-import { Composer } from 'grammy';
+import { Composer } from "grammy";
 
-import ListsNames from '@data/listsNames';
+import ListsNames from "@data/listsNames";
 
-import whiteListMessages from '@locale/whiteListMessages';
+import whiteListMessages from "@locale/whiteListMessages";
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from "@utils/asyncUtils";
+import RedisSingleton from "@utils/redisSingleton";
+import RegularUtils from "@utils/regularUtils";
 
 const getWhiteList = new Composer();
 
-getWhiteList.command('getwhitelist', async ctx => {
+getWhiteList.command("getwhitelist", async ctx => {
     const whiteListIDs = await RedisSingleton.getInstance().getList(
         ListsNames.WHITELIST
     );
@@ -26,7 +26,7 @@ getWhiteList.command('getwhitelist', async ctx => {
 
     if (chats.length > 0)
         messageData.push(
-            `${whiteListMessages.chatsListHeader}${chatList.join('\n')}`
+            `${whiteListMessages.chatsListHeader}${chatList.join("\n")}`
         );
 
     if (ids.length > 0)
@@ -35,11 +35,11 @@ getWhiteList.command('getwhitelist', async ctx => {
                 .map(id => {
                     return `<code>${id}</code>`;
                 })
-                .join('\n')}`
+                .join("\n")}`
         );
 
-    await ctx.reply(messageData.join('\n\n'), {
-        parse_mode: 'HTML'
+    await ctx.reply(messageData.join("\n\n"), {
+        parse_mode: "HTML"
     });
 });
 

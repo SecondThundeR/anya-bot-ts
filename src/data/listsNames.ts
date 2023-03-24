@@ -1,6 +1,6 @@
 const ListsNames = {
-    WHITELIST: 'whiteListIDs',
-    IGNORELIST: 'ignoreListIDs'
+    WHITELIST: "whiteListIDs",
+    IGNORELIST: "ignoreListIDs"
 } as const;
 
 type ListsNamesType = (typeof ListsNames)[keyof typeof ListsNames];

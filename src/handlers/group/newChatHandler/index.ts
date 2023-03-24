@@ -1,16 +1,16 @@
-import { Composer } from 'grammy';
+import { Composer } from "grammy";
 
-import ListsNames from '@data/listsNames';
+import ListsNames from "@data/listsNames";
 
-import otherMessages from '@locale/otherMessages';
+import otherMessages from "@locale/otherMessages";
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from "@utils/asyncUtils";
+import RedisSingleton from "@utils/redisSingleton";
+import RegularUtils from "@utils/regularUtils";
 
 const newChatHandler = new Composer();
 
-newChatHandler.on('msg:new_chat_members:me', async ctx => {
+newChatHandler.on("msg:new_chat_members:me", async ctx => {
     const creatorID = process.env.CREATOR_ID;
     const redisInstance = RedisSingleton.getInstance();
     const chatID = RegularUtils.getChatID(ctx);

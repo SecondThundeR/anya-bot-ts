@@ -1,17 +1,17 @@
-import { Composer } from 'grammy';
+import { Composer } from "grammy";
 
-import ListsNames from '@data/listsNames';
+import ListsNames from "@data/listsNames";
 
-import otherMessages from '@locale/otherMessages';
-import whiteListMessages from '@locale/whiteListMessages';
+import otherMessages from "@locale/otherMessages";
+import whiteListMessages from "@locale/whiteListMessages";
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
-import RegularUtils from '@utils/regularUtils';
+import AsyncUtils from "@utils/asyncUtils";
+import RedisSingleton from "@utils/redisSingleton";
+import RegularUtils from "@utils/regularUtils";
 
 const removeWhiteList = new Composer();
 
-removeWhiteList.command('removewhitelist', async ctx => {
+removeWhiteList.command("removewhitelist", async ctx => {
     const redisInstance = RedisSingleton.getInstance();
     const chatID = ctx.match;
     const whiteListIDs = await redisInstance.getList(ListsNames.WHITELIST);

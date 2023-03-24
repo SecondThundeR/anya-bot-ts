@@ -1,19 +1,19 @@
-import { Composer } from 'grammy';
+import { Composer } from "grammy";
 
-import ListsNames from '@data/listsNames';
+import ListsNames from "@data/listsNames";
 
-import stickerMessages from '@locale/stickerMessages';
+import stickerMessages from "@locale/stickerMessages";
 
-import AsyncUtils from '@utils/asyncUtils';
-import RedisSingleton from '@utils/redisSingleton';
+import AsyncUtils from "@utils/asyncUtils";
+import RedisSingleton from "@utils/redisSingleton";
 
 const messageLocaleReset = new Composer();
 
-messageLocaleReset.command('messagelocalereset', async ctx => {
+messageLocaleReset.command("messagelocalereset", async ctx => {
     const redisInstance = RedisSingleton.getInstance();
     await AsyncUtils.incrementCommandUsageCounter(
         redisInstance,
-        'messagelocalereset'
+        "messagelocalereset"
     );
 
     if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
@@ -24,7 +24,7 @@ messageLocaleReset.command('messagelocalereset', async ctx => {
         ctx,
         redisInstance,
         whiteListIDs,
-        ['stickerMessageLocale', 'stickerMessageMention'],
+        ["stickerMessageLocale", "stickerMessageMention"],
         stickerMessages.messageReset
     );
 });
