@@ -1,17 +1,17 @@
-import { Composer } from '@/deps.ts';
+import { Composer } from "@/deps.ts";
 
-import AsyncUtils from '@/utils/asyncUtils.ts';
-import RedisSingleton from '@/utils/redisSingleton.ts';
-import RegularUtils from '@/utils/regularUtils.ts';
+import AsyncUtils from "@/utils/asyncUtils.ts";
+import RedisSingleton from "@/utils/redisSingleton.ts";
+import RegularUtils from "@/utils/regularUtils.ts";
 
 const customEmojisHandler = new Composer();
 
 customEmojisHandler.on(
     [
-        'message:entities:custom_emoji',
-        'edited_message:entities:custom_emoji',
-        'message:caption_entities:custom_emoji',
-        'edited_message:caption_entities:custom_emoji',
+        "message:entities:custom_emoji",
+        "edited_message:entities:custom_emoji",
+        "message:caption_entities:custom_emoji",
+        "edited_message:caption_entities:custom_emoji",
     ],
     async (ctx) => {
         const chatID = RegularUtils.getChatID(ctx);
@@ -19,8 +19,8 @@ customEmojisHandler.on(
         const isAdminPowerEnabled = await RedisSingleton.getInstance()
             .getHashData(
                 chatID,
-                'adminPower',
-                'false',
+                "adminPower",
+                "false",
             );
 
         if (
@@ -34,8 +34,8 @@ customEmojisHandler.on(
         const strictEmojiRemovalRule = await RedisSingleton.getInstance()
             .getHashData(
                 chatID,
-                'strictEmojiRemoval',
-                'false',
+                "strictEmojiRemoval",
+                "false",
             );
         if (!RegularUtils.getBoolean(strictEmojiRemovalRule)) return;
 

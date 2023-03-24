@@ -1,17 +1,17 @@
-import { Composer } from '@/deps.ts';
+import { Composer } from "@/deps.ts";
 
-import ListsNames from '@/data/listsNames.ts';
+import ListsNames from "@/data/listsNames.ts";
 
-import ignoreListMessages from '@/locale/ignoreListMessages.ts';
-import otherMessages from '@/locale/otherMessages.ts';
+import ignoreListMessages from "@/locale/ignoreListMessages.ts";
+import otherMessages from "@/locale/otherMessages.ts";
 
-import AsyncUtils from '@/utils/asyncUtils.ts';
-import RedisSingleton from '@/utils/redisSingleton.ts';
-import RegularUtils from '@/utils/regularUtils.ts';
+import AsyncUtils from "@/utils/asyncUtils.ts";
+import RedisSingleton from "@/utils/redisSingleton.ts";
+import RegularUtils from "@/utils/regularUtils.ts";
 
 const addIgnoreList = new Composer();
 
-addIgnoreList.command('addignorelist', async (ctx) => {
+addIgnoreList.command("addignorelist", async (ctx) => {
     const chatID = ctx.match;
     const redisInstance = RedisSingleton.getInstance();
     const idsLists = await redisInstance.getLists([

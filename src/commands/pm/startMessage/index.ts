@@ -1,12 +1,12 @@
-import { Composer } from '@/deps.ts';
+import { Composer } from "@/deps.ts";
 
-import otherMessages from '@/locale/otherMessages.ts';
+import otherMessages from "@/locale/otherMessages.ts";
 
-import RegularUtils from '@/utils/regularUtils.ts';
+import RegularUtils from "@/utils/regularUtils.ts";
 
 const startMessage = new Composer();
 
-startMessage.command('start', async (ctx) => {
+startMessage.command("start", async (ctx) => {
     if (!RegularUtils.isBotCreator(ctx)) {
         return await ctx.reply(otherMessages.noPMHint);
     }

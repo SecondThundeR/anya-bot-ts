@@ -1,16 +1,16 @@
-import { Composer } from '@/deps.ts';
+import { Composer } from "@/deps.ts";
 
-import AsyncUtils from '@/utils/asyncUtils.ts';
-import RedisSingleton from '@/utils/redisSingleton.ts';
-import RegularUtils from '@/utils/regularUtils.ts';
+import AsyncUtils from "@/utils/asyncUtils.ts";
+import RedisSingleton from "@/utils/redisSingleton.ts";
+import RegularUtils from "@/utils/regularUtils.ts";
 
-import { updateSilentData } from '@/groupCommands/silentTrigger/helpers.ts';
+import { updateSilentData } from "@/groupCommands/silentTrigger/helpers.ts";
 
 const silentTrigger = new Composer();
 
-silentTrigger.command('silent', async (ctx) => {
+silentTrigger.command("silent", async (ctx) => {
     const redisInstance = RedisSingleton.getInstance();
-    await AsyncUtils.incrementCommandUsageCounter(redisInstance, 'silent');
+    await AsyncUtils.incrementCommandUsageCounter(redisInstance, "silent");
 
     if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
 

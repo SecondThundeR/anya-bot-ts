@@ -1,19 +1,19 @@
-import { Composer } from '@/deps.ts';
+import { Composer } from "@/deps.ts";
 
-import ListsNames from '@/data/listsNames.ts';
+import ListsNames from "@/data/listsNames.ts";
 
-import silentMessages from '@/locale/silentMessages.ts';
+import silentMessages from "@/locale/silentMessages.ts";
 
-import AsyncUtils from '@/utils/asyncUtils.ts';
-import RedisSingleton from '@/utils/redisSingleton.ts';
+import AsyncUtils from "@/utils/asyncUtils.ts";
+import RedisSingleton from "@/utils/redisSingleton.ts";
 
 const silentOnLocaleReset = new Composer();
 
-silentOnLocaleReset.command('silentonlocalereset', async (ctx) => {
+silentOnLocaleReset.command("silentonlocalereset", async (ctx) => {
     const redisInstance = RedisSingleton.getInstance();
     await AsyncUtils.incrementCommandUsageCounter(
         redisInstance,
-        'silentonlocalereset',
+        "silentonlocalereset",
     );
 
     if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
@@ -24,7 +24,7 @@ silentOnLocaleReset.command('silentonlocalereset', async (ctx) => {
         ctx,
         redisInstance,
         whiteListIDs,
-        ['silentOnLocale'],
+        ["silentOnLocale"],
         silentMessages.enabledMessageReset,
     );
 });

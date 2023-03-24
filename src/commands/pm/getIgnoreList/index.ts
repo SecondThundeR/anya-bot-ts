@@ -1,15 +1,15 @@
-import { Composer } from '@/deps.ts';
+import { Composer } from "@/deps.ts";
 
-import ListsNames from '@/data/listsNames.ts';
+import ListsNames from "@/data/listsNames.ts";
 
-import ignoreListMessages from '@/locale/ignoreListMessages.ts';
+import ignoreListMessages from "@/locale/ignoreListMessages.ts";
 
-import RedisSingleton from '@/utils/redisSingleton.ts';
-import RegularUtils from '@/utils/regularUtils.ts';
+import RedisSingleton from "@/utils/redisSingleton.ts";
+import RegularUtils from "@/utils/regularUtils.ts";
 
 const getIgnoreList = new Composer();
 
-getIgnoreList.command('getignorelist', async (ctx) => {
+getIgnoreList.command("getignorelist", async (ctx) => {
     const redisInstance = RedisSingleton.getInstance();
     const ignoreListIDs = await redisInstance.getList(ListsNames.IGNORELIST);
 
@@ -20,7 +20,7 @@ getIgnoreList.command('getignorelist', async (ctx) => {
     }
 
     await ctx.reply(
-        `${ignoreListMessages.idsListHeader}${ignoreListIDs.join('\n')}`,
+        `${ignoreListMessages.idsListHeader}${ignoreListIDs.join("\n")}`,
     );
 });
 

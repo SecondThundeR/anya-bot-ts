@@ -1,26 +1,26 @@
-import { Composer } from '@/deps.ts';
+import { Composer } from "@/deps.ts";
 
-import otherMessages from '@/locale/otherMessages.ts';
-import stickerMessages from '@/locale/stickerMessages.ts';
+import otherMessages from "@/locale/otherMessages.ts";
+import stickerMessages from "@/locale/stickerMessages.ts";
 
-import AsyncUtils from '@/utils/asyncUtils.ts';
-import RedisSingleton from '@/utils/redisSingleton.ts';
-import RegularUtils from '@/utils/regularUtils.ts';
+import AsyncUtils from "@/utils/asyncUtils.ts";
+import RedisSingleton from "@/utils/redisSingleton.ts";
+import RegularUtils from "@/utils/regularUtils.ts";
 
 import {
     deleteLocaleChangingStatus,
     getLocaleChangingStatus,
     setLocaleChangingStatus,
-} from '@/groupCommands/messageLocale/helpers.ts';
+} from "@/groupCommands/messageLocale/helpers.ts";
 
 const messageLocale = new Composer();
 const messageLocaleWaitTime = 10;
 
-messageLocale.command('messagelocale', async (ctx) => {
+messageLocale.command("messagelocale", async (ctx) => {
     const redisInstance = RedisSingleton.getInstance();
     await AsyncUtils.incrementCommandUsageCounter(
         redisInstance,
-        'messagelocale',
+        "messagelocale",
     );
 
     if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;
@@ -76,13 +76,13 @@ messageLocale.command('messagelocale', async (ctx) => {
     try {
         await ctx.api.deleteMessage(chatID, message.message_id);
     } catch {
-        console.log('Locale changing message was already deleted');
+        console.log("Locale changing message was already deleted");
     }
 
     await deleteLocaleChangingStatus(redisInstance, chatID);
     await redisInstance.deleteHashData(chatID, [
-        'stickerMessageLocale',
-        'stickerMessageMention',
+        "stickerMessageLocale",
+        "stickerMessageMention",
     ]);
 
     try {

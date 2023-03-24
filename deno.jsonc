@@ -32,11 +32,7 @@
       "include": ["src/", "./bot.ts", "./deps.ts"]
     },
     "options": {
-      "useTabs": false,
-      "lineWidth": 80,
-      "indentWidth": 4,
-      "singleQuote": true,
-      "proseWrap": "always"
+      "indentWidth": 4
     }
   }
 }

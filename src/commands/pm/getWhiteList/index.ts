@@ -1,16 +1,16 @@
-import { Composer } from '@/deps.ts';
+import { Composer } from "@/deps.ts";
 
-import ListsNames from '@/data/listsNames.ts';
+import ListsNames from "@/data/listsNames.ts";
 
-import whiteListMessages from '@/locale/whiteListMessages.ts';
+import whiteListMessages from "@/locale/whiteListMessages.ts";
 
-import AsyncUtils from '@/utils/asyncUtils.ts';
-import RedisSingleton from '@/utils/redisSingleton.ts';
-import RegularUtils from '@/utils/regularUtils.ts';
+import AsyncUtils from "@/utils/asyncUtils.ts";
+import RedisSingleton from "@/utils/redisSingleton.ts";
+import RegularUtils from "@/utils/regularUtils.ts";
 
 const getWhiteList = new Composer();
 
-getWhiteList.command('getwhitelist', async (ctx) => {
+getWhiteList.command("getwhitelist", async (ctx) => {
     const whiteListIDs = await RedisSingleton.getInstance().getList(
         ListsNames.WHITELIST,
     );
@@ -27,7 +27,7 @@ getWhiteList.command('getwhitelist', async (ctx) => {
 
     if (chats.length > 0) {
         messageData.push(
-            `${whiteListMessages.chatsListHeader}${chatList.join('\n')}`,
+            `${whiteListMessages.chatsListHeader}${chatList.join("\n")}`,
         );
     }
 
@@ -38,13 +38,13 @@ getWhiteList.command('getwhitelist', async (ctx) => {
                     .map((id) => {
                         return `<code>${id}</code>`;
                     })
-                    .join('\n')
+                    .join("\n")
             }`,
         );
     }
 
-    await ctx.reply(messageData.join('\n\n'), {
-        parse_mode: 'HTML',
+    await ctx.reply(messageData.join("\n\n"), {
+        parse_mode: "HTML",
     });
 });
 

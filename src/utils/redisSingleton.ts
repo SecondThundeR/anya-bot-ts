@@ -1,6 +1,6 @@
-import { createLazyClient, Redis } from '@/deps.ts';
+import { createLazyClient, Redis } from "@/deps.ts";
 
-import type { ListsNamesType } from '@/data/listsNames.ts';
+import type { ListsNamesType } from "@/data/listsNames.ts";
 
 interface ListsObject {
     [key: string]: string[];
@@ -9,11 +9,11 @@ interface ListsObject {
 class RedisSingleton {
     private static instance: RedisSingleton;
     private readonly redisClient: Redis;
-    private redisUser = Deno.env.get('REDIS_USER') || undefined;
-    private redisPass = Deno.env.get('REDIS_PASS') || undefined;
-    private redisHost = Deno.env.get('REDIS_URL') || '127.0.0.1';
-    private redisPort = Deno.env.get('REDIS_PORT') || '6379';
-    private chatsConfigTableName = Deno.env.get('CHATS_TABLE_NAME');
+    private redisUser = Deno.env.get("REDIS_USER") || undefined;
+    private redisPass = Deno.env.get("REDIS_PASS") || undefined;
+    private redisHost = Deno.env.get("REDIS_URL") || "127.0.0.1";
+    private redisPort = Deno.env.get("REDIS_PORT") || "6379";
+    private chatsConfigTableName = Deno.env.get("CHATS_TABLE_NAME");
 
     private constructor() {
         this.redisClient = createLazyClient({
@@ -38,7 +38,7 @@ class RedisSingleton {
     public async getHashData(
         chatID: number | string,
         hashName: string,
-        defaultData = '',
+        defaultData = "",
     ) {
         return (
             (await this.redisClient.hget(

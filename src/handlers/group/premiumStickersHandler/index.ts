@@ -1,22 +1,22 @@
-import { Composer } from '@/deps.ts';
+import { Composer } from "@/deps.ts";
 
-import ListsNames from '@/data/listsNames.ts';
+import ListsNames from "@/data/listsNames.ts";
 
-import AsyncUtils from '@/utils/asyncUtils.ts';
-import RedisSingleton from '@/utils/redisSingleton.ts';
-import RegularUtils from '@/utils/regularUtils.ts';
+import AsyncUtils from "@/utils/asyncUtils.ts";
+import RedisSingleton from "@/utils/redisSingleton.ts";
+import RegularUtils from "@/utils/regularUtils.ts";
 
 const premiumStickersHandler = new Composer();
 
-premiumStickersHandler.on('message:sticker', async (ctx) => {
+premiumStickersHandler.on("message:sticker", async (ctx) => {
     const redisSingleton = RedisSingleton.getInstance();
     const chatID = RegularUtils.getChatID(ctx);
     const botData = await ctx.getChatMember(ctx.me.id);
     const whiteListIDs = await redisSingleton.getList(ListsNames.WHITELIST);
     const isAdminPowerEnabled = await redisSingleton.getHashData(
         chatID,
-        'adminPower',
-        'false',
+        "adminPower",
+        "false",
     );
 
     if (
@@ -34,8 +34,8 @@ premiumStickersHandler.on('message:sticker', async (ctx) => {
 
     const silentStatus = await redisSingleton.getHashData(
         chatID,
-        'isSilent',
-        'false',
+        "isSilent",
+        "false",
     );
     if (RegularUtils.getBoolean(silentStatus)) return;
 

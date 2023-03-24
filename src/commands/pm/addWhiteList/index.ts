@@ -1,17 +1,17 @@
-import { Composer } from '@/deps.ts';
+import { Composer } from "@/deps.ts";
 
-import ListsNames from '@/data/listsNames.ts';
+import ListsNames from "@/data/listsNames.ts";
 
-import otherMessages from '@/locale/otherMessages.ts';
-import whiteListMessages from '@/locale/whiteListMessages.ts';
+import otherMessages from "@/locale/otherMessages.ts";
+import whiteListMessages from "@/locale/whiteListMessages.ts";
 
-import AsyncUtils from '@/utils/asyncUtils.ts';
-import RedisSingleton from '@/utils/redisSingleton.ts';
-import RegularUtils from '@/utils/regularUtils.ts';
+import AsyncUtils from "@/utils/asyncUtils.ts";
+import RedisSingleton from "@/utils/redisSingleton.ts";
+import RegularUtils from "@/utils/regularUtils.ts";
 
 const addWhiteList = new Composer();
 
-addWhiteList.command('addwhitelist', async (ctx) => {
+addWhiteList.command("addwhitelist", async (ctx) => {
     const redisInstance = RedisSingleton.getInstance();
     const chatID = ctx.match;
     const idsLists = await redisInstance.getLists([

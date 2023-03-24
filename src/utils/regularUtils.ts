@@ -1,17 +1,17 @@
-import { Context, InlineKeyboard } from '@/deps.ts';
+import { Context, InlineKeyboard } from "@/deps.ts";
 import type {
     Chat,
     ChatFromGetChat,
     ChatMember,
     Message,
     User,
-} from '@/deps.ts';
+} from "@/deps.ts";
 
-import ignoreListMessages from '@/locale/ignoreListMessages.ts';
-import keyboardMessages from '@/locale/keyboardMessages.ts';
-import otherMessages from '@/locale/otherMessages.ts';
-import stickerMessages from '@/locale/stickerMessages.ts';
-import whiteListMessages from '@/locale/whiteListMessages.ts';
+import ignoreListMessages from "@/locale/ignoreListMessages.ts";
+import keyboardMessages from "@/locale/keyboardMessages.ts";
+import otherMessages from "@/locale/otherMessages.ts";
+import stickerMessages from "@/locale/stickerMessages.ts";
+import whiteListMessages from "@/locale/whiteListMessages.ts";
 
 type ReplacementObjectType = {
     [key: string]: string;
@@ -28,18 +28,18 @@ export default class RegularUtils {
 
     public static isBotCanDelete(botData: ChatMember) {
         return (
-            botData.status === 'administrator' && botData.can_delete_messages
+            botData.status === "administrator" && botData.can_delete_messages
         );
     }
 
     public static isBotCreator(ctx: Context) {
-        const botCreatorID = Deno.env.get('CREATOR_ID');
+        const botCreatorID = Deno.env.get("CREATOR_ID");
         const userID = RegularUtils.getUserID(ctx);
         return botCreatorID !== undefined && String(userID) === botCreatorID;
     }
 
     public static isStringEmpty(str: string) {
-        return str === '';
+        return str === "";
     }
 
     public static isItemInList(item: number | string, list: string[]) {
@@ -48,7 +48,7 @@ export default class RegularUtils {
 
     public static getBoolean(str: string | null) {
         if (str === null) return false;
-        return str === 'true';
+        return str === "true";
     }
 
     public static getChatID(ctx: Context) {
@@ -62,7 +62,7 @@ export default class RegularUtils {
     }
 
     public static convertHelpMessageToHTMLFormat(helpMessage: string) {
-        return helpMessage.replace(/\[/g, '<code>').replace(/]/g, '</code>');
+        return helpMessage.replace(/\[/g, "<code>").replace(/]/g, "</code>");
     }
 
     public static getMessageID(msg: Message | undefined) {
@@ -70,7 +70,7 @@ export default class RegularUtils {
     }
 
     public static getCallbackData(ctx: Context) {
-        return ctx.update.callback_query?.data || '';
+        return ctx.update.callback_query?.data || "";
     }
 
     public static getUserMention(user: User) {
@@ -156,7 +156,7 @@ export default class RegularUtils {
         word: string | null,
         defaultWord: string,
     ) {
-        return word === null || word === '' ? defaultWord : word;
+        return word === null || word === "" ? defaultWord : word;
     }
 
     public static verifyStickerMessageLocale(
@@ -169,7 +169,7 @@ export default class RegularUtils {
         );
         const mentionStatus =
             verifiedStickerMessage === stickerMessages.messageDefault
-                ? 'true'
+                ? "true"
                 : stickerMessageMention;
         return [verifiedStickerMessage, mentionStatus];
     }

@@ -1,33 +1,33 @@
-import { Composer } from '@/deps.ts';
+import { Composer } from "@/deps.ts";
 
-import aidenPierceMessages from '@/locale/aidenPierceMessages.ts';
+import aidenPierceMessages from "@/locale/aidenPierceMessages.ts";
 
-import AsyncUtils from '@/utils/asyncUtils.ts';
-import RedisSingleton from '@/utils/redisSingleton.ts';
-import RegularUtils from '@/utils/regularUtils.ts';
+import AsyncUtils from "@/utils/asyncUtils.ts";
+import RedisSingleton from "@/utils/redisSingleton.ts";
+import RegularUtils from "@/utils/regularUtils.ts";
 
 const voiceAndVideoHandler = new Composer();
 
 voiceAndVideoHandler.on(
-    ['message:voice', 'message:video_note'],
+    ["message:voice", "message:video_note"],
     async (ctx) => {
         const redisInstance = RedisSingleton.getInstance();
         const chatID = RegularUtils.getChatID(ctx);
         const isAdminPowerEnabled = await redisInstance.getHashData(
             chatID,
-            'adminPower',
-            'false',
+            "adminPower",
+            "false",
         );
 
         const [aidenPierceMode, aidenPierceSilent] = await redisInstance
             .getHashMultipleData(chatID, [
-                'aidenMode',
-                'isAidenSilent',
+                "aidenMode",
+                "isAidenSilent",
             ]);
 
         if (
-            !RegularUtils.getBoolean(aidenPierceMode || 'false') ||
-            RegularUtils.getBoolean(aidenPierceSilent || 'false') ||
+            !RegularUtils.getBoolean(aidenPierceMode || "false") ||
+            RegularUtils.getBoolean(aidenPierceSilent || "false") ||
             ((await AsyncUtils.isGroupAdmin(ctx)) &&
                 RegularUtils.getBoolean(isAdminPowerEnabled))
         ) {

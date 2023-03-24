@@ -1,19 +1,19 @@
-import { Composer } from '@/deps.ts';
+import { Composer } from "@/deps.ts";
 
-import otherMessages from '@/locale/otherMessages.ts';
-import silentMessages from '@/locale/silentMessages.ts';
+import otherMessages from "@/locale/otherMessages.ts";
+import silentMessages from "@/locale/silentMessages.ts";
 
-import AsyncUtils from '@/utils/asyncUtils.ts';
-import RedisSingleton from '@/utils/redisSingleton.ts';
-import RegularUtils from '@/utils/regularUtils.ts';
+import AsyncUtils from "@/utils/asyncUtils.ts";
+import RedisSingleton from "@/utils/redisSingleton.ts";
+import RegularUtils from "@/utils/regularUtils.ts";
 
 const silentOnLocale = new Composer();
 
-silentOnLocale.command('silentonlocale', async (ctx) => {
+silentOnLocale.command("silentonlocale", async (ctx) => {
     const redisInstance = RedisSingleton.getInstance();
     await AsyncUtils.incrementCommandUsageCounter(
         redisInstance,
-        'silentonlocale',
+        "silentonlocale",
     );
 
     if (await AsyncUtils.isCommandIgnored(ctx, redisInstance)) return;

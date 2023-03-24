@@ -1,18 +1,18 @@
-import { Context } from '@/deps.ts';
+import { Context } from "@/deps.ts";
 
-import ListsNames from '@/data/listsNames.ts';
+import ListsNames from "@/data/listsNames.ts";
 
-import whiteListMessages from '@/locale/whiteListMessages.ts';
+import whiteListMessages from "@/locale/whiteListMessages.ts";
 
-import AsyncUtils from '@/utils/asyncUtils.ts';
-import RedisSingleton from '@/utils/redisSingleton.ts';
-import RegularUtils from '@/utils/regularUtils.ts';
+import AsyncUtils from "@/utils/asyncUtils.ts";
+import RedisSingleton from "@/utils/redisSingleton.ts";
+import RegularUtils from "@/utils/regularUtils.ts";
 
 async function sendNoAccessMessage(ctx: Context, chatID: number) {
     return await ctx.reply(
         whiteListMessages.chatMessage.replace(/xxx/i, `<code>${chatID}</code>`),
         {
-            parse_mode: 'HTML',
+            parse_mode: "HTML",
         },
     );
 }

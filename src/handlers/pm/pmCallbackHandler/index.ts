@@ -1,19 +1,19 @@
-import { Composer } from '@/deps.ts';
-import { ChatMember, Message, Update } from '@/deps.ts';
+import { Composer } from "@/deps.ts";
+import { ChatMember, Message, Update } from "@/deps.ts";
 
-import ListsNames from '@/data/listsNames.ts';
+import ListsNames from "@/data/listsNames.ts";
 
-import keyboardMessages from '@/locale/keyboardMessages.ts';
-import otherMessages from '@/locale/otherMessages.ts';
+import keyboardMessages from "@/locale/keyboardMessages.ts";
+import otherMessages from "@/locale/otherMessages.ts";
 
-import AsyncUtils from '@/utils/asyncUtils.ts';
-import RedisSingleton from '@/utils/redisSingleton.ts';
-import RegularUtils from '@/utils/regularUtils.ts';
+import AsyncUtils from "@/utils/asyncUtils.ts";
+import RedisSingleton from "@/utils/redisSingleton.ts";
+import RegularUtils from "@/utils/regularUtils.ts";
 
 const pmCallbackHandler = new Composer();
 
-pmCallbackHandler.on('callback_query:data', async (ctx) => {
-    const splitData = RegularUtils.getCallbackData(ctx).split('|');
+pmCallbackHandler.on("callback_query:data", async (ctx) => {
+    const splitData = RegularUtils.getCallbackData(ctx).split("|");
     const redisInstance = RedisSingleton.getInstance();
     const idsLists = await redisInstance.getLists([
         ListsNames.WHITELIST,
@@ -30,8 +30,8 @@ pmCallbackHandler.on('callback_query:data', async (ctx) => {
         reply_markup: undefined,
     })) as Update.Edited & Message;
     const [chatID, listMode] = splitData;
-    const whiteListAccept = listMode === 'accept';
-    const ignoreListIgnore = listMode === 'ignore';
+    const whiteListAccept = listMode === "accept";
+    const ignoreListIgnore = listMode === "ignore";
     let botData: ChatMember | undefined = undefined;
 
     try {

@@ -1,23 +1,23 @@
-import { Composer } from '@/deps.ts';
+import { Composer } from "@/deps.ts";
 
-import diceGameMessages from '@/locale/diceGameMessages.ts';
+import diceGameMessages from "@/locale/diceGameMessages.ts";
 
-import AsyncUtils from '@/utils/asyncUtils.ts';
-import RedisSingleton from '@/utils/redisSingleton.ts';
-import RegularUtils from '@/utils/regularUtils.ts';
+import AsyncUtils from "@/utils/asyncUtils.ts";
+import RedisSingleton from "@/utils/redisSingleton.ts";
+import RegularUtils from "@/utils/regularUtils.ts";
 
 const diceGame = new Composer();
 
-diceGame.command('dice', async (ctx) => {
+diceGame.command("dice", async (ctx) => {
     const redisInstance = RedisSingleton.getInstance();
-    await AsyncUtils.incrementCommandUsageCounter(redisInstance, 'dice');
+    await AsyncUtils.incrementCommandUsageCounter(redisInstance, "dice");
 
     if (!(await AsyncUtils.isChatWhitelisted(ctx, redisInstance))) return;
 
     const diceText = ctx.match;
-    const diceData = diceText.split(' ');
+    const diceData = diceText.split(" ");
 
-    if (diceText === '') {
+    if (diceText === "") {
         return await ctx.reply(diceGameMessages.empty, {
             reply_to_message_id: RegularUtils.getMessageID(ctx.update.message),
         });
@@ -46,7 +46,7 @@ diceGame.command('dice', async (ctx) => {
         diceGameMessages.message,
         {
             number: String(diceNumber),
-            text: diceData.slice(1).join(' '),
+            text: diceData.slice(1).join(" "),
         },
     );
 

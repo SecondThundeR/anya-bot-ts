@@ -1,22 +1,22 @@
-import { Api, Context, InlineKeyboard } from '@/deps.ts';
-import type { ChatFromGetChat } from '@/deps.ts';
+import { Api, Context, InlineKeyboard } from "@/deps.ts";
+import type { ChatFromGetChat } from "@/deps.ts";
 
-import ListsNames from '@/data/listsNames.ts';
+import ListsNames from "@/data/listsNames.ts";
 
-import ignoreListMessages from '@/locale/ignoreListMessages.ts';
-import keyboardMessages from '@/locale/keyboardMessages.ts';
-import otherMessages from '@/locale/otherMessages.ts';
-import whiteListMessages from '@/locale/whiteListMessages.ts';
+import ignoreListMessages from "@/locale/ignoreListMessages.ts";
+import keyboardMessages from "@/locale/keyboardMessages.ts";
+import otherMessages from "@/locale/otherMessages.ts";
+import whiteListMessages from "@/locale/whiteListMessages.ts";
 
-import RedisSingleton from './redisSingleton.ts';
-import RegularUtils from './regularUtils.ts';
+import RedisSingleton from "./redisSingleton.ts";
+import RegularUtils from "./regularUtils.ts";
 
 export default class AsyncUtils {
     public static async logBotInfo(api: Api) {
         const botInfo = await api.getMe();
         console.log(`Started as ${botInfo.first_name} (@${botInfo.username})`);
         await api.sendMessage(
-            String(Deno.env.get('CREATOR_ID')),
+            String(Deno.env.get("CREATOR_ID")),
             otherMessages.creatorMsg,
         );
     }
@@ -50,7 +50,7 @@ export default class AsyncUtils {
         const chatID = RegularUtils.getChatID(ctx);
         const authorData = await ctx.getAuthor();
         const isAnonBot = ctx.update.message?.sender_chat?.id === chatID;
-        return isAnonBot ? 'anon' : authorData.status;
+        return isAnonBot ? "anon" : authorData.status;
     }
 
     public static async getChatsByIDs(
@@ -79,7 +79,7 @@ export default class AsyncUtils {
     ) {
         const chatID = RegularUtils.getChatID(ctx);
         const botData = await ctx.getChatMember(ctx.me.id);
-        const messageText = String(ctx.match) || '';
+        const messageText = String(ctx.match) || "";
         return [chatID, botData, messageText];
     }
 
@@ -87,13 +87,13 @@ export default class AsyncUtils {
         client: RedisSingleton,
         command: string,
     ) {
-        await client.incrementFieldBy('commandsUsage', command, 1);
+        await client.incrementFieldBy("commandsUsage", command, 1);
     }
 
     public static async getCommandsUsage(
         client: RedisSingleton,
     ) {
-        return await client.getAllHashData('commandsUsage');
+        return await client.getAllHashData("commandsUsage");
     }
 
     public static async resetLocaleHandler(
@@ -132,8 +132,8 @@ export default class AsyncUtils {
     ) {
         const [customText, stickerMessageMention] = await RedisSingleton
             .getInstance().getHashMultipleData(chatID, [
-                'stickerMessageLocale',
-                'stickerMessageMention',
+                "stickerMessageLocale",
+                "stickerMessageMention",
             ]);
         const [verifiedCustomText, verifiedStickerMessageMentionStatus] =
             RegularUtils.verifyStickerMessageLocale(
@@ -176,9 +176,9 @@ export default class AsyncUtils {
     public static async isGroupAdmin(ctx: Context) {
         const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
         return (
-            authorStatus === 'administrator' ||
-            authorStatus === 'creator' ||
-            authorStatus === 'anon'
+            authorStatus === "administrator" ||
+            authorStatus === "creator" ||
+            authorStatus === "anon"
         );
     }
 
@@ -195,7 +195,7 @@ export default class AsyncUtils {
                 `<code>${chatID}</code>`,
             );
             await ctx.reply(ignoredMessage, {
-                parse_mode: 'HTML',
+                parse_mode: "HTML",
             });
             return await ctx.leaveChat();
         }
@@ -206,7 +206,7 @@ export default class AsyncUtils {
         );
 
         await ctx.reply(whiteListMessage, {
-            parse_mode: 'HTML',
+            parse_mode: "HTML",
         });
 
         if (creatorID === undefined) return;
@@ -230,7 +230,7 @@ export default class AsyncUtils {
 
         await ctx.api.sendMessage(Number(creatorID), messageText, {
             reply_markup: keyboard,
-            parse_mode: 'HTML',
+            parse_mode: "HTML",
         });
     }
 
@@ -252,7 +252,7 @@ export default class AsyncUtils {
                 `<code>${chatID}</code>`,
             ),
             {
-                parse_mode: 'HTML',
+                parse_mode: "HTML",
             },
         );
     }
@@ -268,7 +268,7 @@ export default class AsyncUtils {
                 `<code>${chatID}</code>`,
             ),
             {
-                parse_mode: 'HTML',
+                parse_mode: "HTML",
             },
         );
     }

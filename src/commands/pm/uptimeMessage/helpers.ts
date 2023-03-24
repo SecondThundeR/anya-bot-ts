@@ -1,7 +1,7 @@
 // @deno-types="npm:@types/node"
-import process from 'node:process';
+import process from "node:process";
 
-import otherMessages from '@/locale/otherMessages.ts';
+import otherMessages from "@/locale/otherMessages.ts";
 
 function zeroAppender(time: number) {
     if (time < 10) return `0${time}`;

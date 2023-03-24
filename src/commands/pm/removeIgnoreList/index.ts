@@ -1,16 +1,16 @@
-import { Composer } from '@/deps.ts';
+import { Composer } from "@/deps.ts";
 
-import ListsNames from '@/data/listsNames.ts';
+import ListsNames from "@/data/listsNames.ts";
 
-import ignoreListMessages from '@/locale/ignoreListMessages.ts';
-import otherMessages from '@/locale/otherMessages.ts';
+import ignoreListMessages from "@/locale/ignoreListMessages.ts";
+import otherMessages from "@/locale/otherMessages.ts";
 
-import RedisSingleton from '@/utils/redisSingleton.ts';
-import RegularUtils from '@/utils/regularUtils.ts';
+import RedisSingleton from "@/utils/redisSingleton.ts";
+import RegularUtils from "@/utils/regularUtils.ts";
 
 const removeIgnoreList = new Composer();
 
-removeIgnoreList.command('removeignorelist', async (ctx) => {
+removeIgnoreList.command("removeignorelist", async (ctx) => {
     const redisInstance = RedisSingleton.getInstance();
     const chatID = ctx.match;
     const ignoreListIDs = await redisInstance.getList(ListsNames.IGNORELIST);
