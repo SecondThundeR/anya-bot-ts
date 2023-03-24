@@ -16,9 +16,9 @@ getCommandsUsage.command("getcommandsusage", async ctx => {
         return await ctx.reply("Нет данных по использованию команд");
 
     let formattedData = "";
-    Object.entries(data).forEach(([key, value]) => {
-        formattedData += `${key}: ${value} раз(а)\n`;
-    });
+    for (let i = 0; i < data.length / 2; i += 2) {
+        formattedData += `${data[i]}: ${data[i + 1]} раз(а)\n`;
+    }
 
     await ctx.reply("Данные по использованию команд:\n" + formattedData);
 });
