@@ -1,6 +1,6 @@
 {
     "name": "anya-bot-ts",
-    "version": "2.0.5",
+    "version": "2.0.6",
     "description": "Some random TypeScript bot with interesting features",
     "main": "bot.js",
     "scripts": {
@@ -20,7 +20,7 @@
     "devDependencies": {
         "@grammyjs/types": "^3.0.3",
         "@trivago/prettier-plugin-sort-imports": "^4.1.1",
-        "@types/node": "^18.15.5",
+        "@types/node": "^18.15.6",
         "@vue/compiler-sfc": "3.2.47",
         "prettier": "^2.8.6",
         "ts-node-dev": "^2.0.0",
