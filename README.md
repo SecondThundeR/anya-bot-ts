@@ -27,11 +27,11 @@ Some random TypeScript bot with interesting features based on the grammY library
 4. Open an `.env` file in the root of the folder and change variables into it:
     - `BOT_TOKEN` - bot token
     - `CREATOR_ID` - your ID for working with the bot whitelist/ignored list from the DM
-5. Run `npm i` and `npm run local`
+5. Run `yarn` and `yarn local`
 6. Wait for `Started as @...` message and/or message in PM from bot
 7. Bot is ready to go!
 
-> If you want to pass environment variables on your system, all you need to do is run `npm start` in step 5
+> If you want to pass environment variables on your system, all you need to do is run `yarn start` in step 5
 
 ### Heroku
 
@@ -59,8 +59,8 @@ While doing step 3, go to [Heroku Docker Docs](https://devcenter.heroku.com/arti
 
 **Group commands:**
 
-- `silent` - manage bot silent mode
 - `help` - send help message
+- `silent` - manage bot silent mode
 - `aidenmode` - enables "Aiden Pierce" mode _(Removes voice/video messages)_
 - `aidensilent` - manage "Aiden Pierce" silent mode
 - `dice` - send message with a dice
@@ -75,6 +75,7 @@ While doing step 3, go to [Heroku Docker Docs](https://devcenter.heroku.com/arti
 
 **DM commands:**
 
+- `help` - send DM help message
 - `addwhitelist` - add group ID to white list
 - `removewhitelist` - remove group ID from white list
 - `getwhitelist` - get all groups info from white list
