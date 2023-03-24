@@ -7,74 +7,75 @@ import otherMessages from "@locale/otherMessages";
 import stickerMessages from "@locale/stickerMessages";
 import whiteListMessages from "@locale/whiteListMessages";
 
-type ChatInfoTuple = [string | undefined, string | undefined];
 type ReplacementObjectType = {
     [key: string]: string;
 };
 
 export default class RegularUtils {
-    public static getSessionKey(ctx: Context): string | undefined {
+    public static getSessionKey(ctx: Context) {
         return ctx.chat?.id.toString();
     }
 
-    public static isPremiumSticker(ctx: Context): boolean {
+    public static isPremiumSticker(ctx: Context) {
         return ctx.update.message?.sticker?.premium_animation !== undefined;
     }
 
-    public static isBotCanDelete(botData: ChatMember): boolean {
+    public static isBotCanDelete(botData: ChatMember) {
         return (
             botData.status === "administrator" && botData.can_delete_messages
         );
     }
 
-    public static isBotCreator(ctx: Context): boolean {
+    public static isBotCreator(ctx: Context) {
         const botCreatorID = process.env.CREATOR_ID;
         const userID = RegularUtils.getUserID(ctx);
         return botCreatorID !== undefined && String(userID) === botCreatorID;
     }
 
-    public static isStringEmpty(str: string): boolean {
+    public static isStringEmpty(str: string) {
         return str === "";
     }
 
-    public static isItemInList(item: number | string, list: string[]): boolean {
+    public static isItemInList(item: number | string, list: string[]) {
         return list.includes(String(item));
     }
 
-    public static getBoolean(str: string | null): boolean {
+    public static getBoolean(str: string | null) {
         if (str === null) return false;
         return str === "true";
     }
 
-    public static getChatID(ctx: Context): number {
+    public static getChatID(ctx: Context) {
         return (
             ctx.update.message?.chat.id! || ctx.update.edited_message?.chat.id!
         );
     }
 
-    public static getUserID(ctx: Context): number {
+    public static getUserID(ctx: Context) {
         return ctx.update.message?.from?.id!;
     }
 
-    public static convertHelpMessageToHTMLFormat(helpMessage: string): string {
+    public static convertHelpMessageToHTMLFormat(helpMessage: string) {
         return helpMessage.replace(/\[/g, "<code>").replace(/]/g, "</code>");
     }
 
-    public static getMessageID(msg: Message | undefined): number | undefined {
+    public static getMessageID(msg: Message | undefined) {
         return msg?.message_id;
     }
 
-    public static getCallbackData(ctx: Context): string {
+    public static getCallbackData(ctx: Context) {
         return ctx.update.callback_query?.data || "";
     }
 
-    public static getUserMention(user: User): string {
+    public static getUserMention(user: User) {
         return user.username === undefined
             ? user.first_name
             : `@${user.username}`;
     }
 
-    public static getChatInfo(ctx: Context): ChatInfoTuple {
+    public static getChatInfo(
+        ctx: Context
+    ): [string | undefined, string | undefined] {
         const chat = ctx.update.message?.chat;
         return [
             (chat as Chat.GroupChat).title,
@@ -82,17 +83,15 @@ export default class RegularUtils {
         ];
     }
 
-    public static getUser(ctx: Context): User | undefined {
+    public static getUser(ctx: Context) {
         return ctx.update.message?.from;
     }
 
-    public static getChatLink(
-        chatLink: string | undefined
-    ): string | undefined {
+    public static getChatLink(chatLink: string | undefined) {
         return chatLink !== undefined ? `@${chatLink}` : undefined;
     }
 
-    public static getListOfChats(chats: ChatFromGetChat[]): string[] {
+    public static getListOfChats(chats: ChatFromGetChat[]) {
         return chats.map(chat => {
             const chatID = chat.id;
             const chatName = (chat as Chat.GroupChat).title;
@@ -119,7 +118,7 @@ export default class RegularUtils {
     public static getWhiteListLocale(
         inviteUser: string | undefined,
         chatData: string
-    ): string {
+    ) {
         if (inviteUser === undefined) inviteUser = otherMessages.unknownUser;
         return whiteListMessages.newChatInfo
             .replace(/xxx/i, inviteUser)
@@ -129,7 +128,7 @@ export default class RegularUtils {
     public static getWhiteListResponseLocale(
         isWhitelisted: boolean,
         isIgnored: boolean
-    ): string {
+    ) {
         if (isIgnored) return ignoreListMessages.keyboardAdded;
         if (isWhitelisted) return whiteListMessages.keyboardAdded;
         return whiteListMessages.keyboardRemoved;
@@ -138,16 +137,13 @@ export default class RegularUtils {
     public static getStickerMessageKeyboard(
         userID: string | number,
         chatID: string | number
-    ): InlineKeyboard {
+    ) {
         return new InlineKeyboard()
             .text(keyboardMessages.buttonYes, `${userID}|${chatID}|yes`)
             .text(keyboardMessages.buttonNo, `${userID}|${chatID}|no`);
     }
 
-    public static verifyLocaleWord(
-        word: string | null,
-        defaultWord: string
-    ): string {
+    public static verifyLocaleWord(word: string | null, defaultWord: string) {
         return word === null || word === "" ? defaultWord : word;
     }
 
@@ -169,11 +165,14 @@ export default class RegularUtils {
     public static setPlaceholderData(
         placeholder: string,
         replacements: ReplacementObjectType
-    ): string {
+    ) {
         return placeholder.replace(
             /{(\w+)}/g,
             (placeholderWithDelimiters, placeholderWithoutDelimiters) =>
-                replacements.hasOwnProperty(placeholderWithoutDelimiters)
+                Object.prototype.hasOwnProperty.call(
+                    replacements,
+                    placeholderWithDelimiters
+                )
                     ? replacements[placeholderWithoutDelimiters]
                     : placeholderWithDelimiters
         );

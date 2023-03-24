@@ -28,17 +28,15 @@ diceGame.command("dice", async ctx => {
         });
 
     const diceNumber = parseInt(diceData[0]);
-    if (isNaN(diceNumber)) {
+    if (isNaN(diceNumber))
         return await ctx.reply(diceGameMessages.notANumber, {
             reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
         });
-    }
 
-    if (Number(diceNumber) < 1 || Number(diceNumber) > 6) {
+    if (Number(diceNumber) < 1 || Number(diceNumber) > 6)
         return await ctx.reply(diceGameMessages.wrongNumber, {
             reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
         });
-    }
 
     const finalMessage = RegularUtils.setPlaceholderData(
         diceGameMessages.message,

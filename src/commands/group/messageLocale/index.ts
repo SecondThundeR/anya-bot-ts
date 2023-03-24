@@ -29,11 +29,10 @@ messageLocale.command("messagelocale", async ctx => {
         ctx
     );
 
-    if (!newLocaleString) {
+    if (!newLocaleString)
         return await ctx.reply(stickerMessages.noTextProvided, {
             reply_to_message_id: RegularUtils.getMessageID(ctx.update.message)
         });
-    }
 
     let messageLocaleChangeStatus = await getLocaleChangingStatus(
         redisInstance,

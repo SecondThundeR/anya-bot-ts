@@ -1,4 +1,5 @@
-import { RedisClientType, createClient } from "redis";
+import { createClient } from "redis";
+import type { RedisClientType } from "redis";
 
 import type { ListsNamesType } from "@data/listsNames";
 
@@ -9,11 +10,11 @@ interface ListsObject {
 class RedisSingleton {
     private static instance: RedisSingleton;
     private readonly redisClient: RedisClientType;
-    private redisUser?: string = process.env.REDIS_USER;
-    private redisPass?: string = process.env.REDIS_PASS;
-    private redisURL?: string = process.env.REDIS_URL;
-    private redisPort?: string = process.env.REDIS_PORT;
-    private chatsConfigTableName?: string = process.env.CHATS_TABLE_NAME;
+    private redisUser = process.env.REDIS_USER;
+    private redisPass = process.env.REDIS_PASS;
+    private redisURL = process.env.REDIS_URL;
+    private redisPort = process.env.REDIS_PORT;
+    private chatsConfigTableName = process.env.CHATS_TABLE_NAME;
 
     private constructor() {
         if (
@@ -30,20 +31,20 @@ class RedisSingleton {
         });
     }
 
-    public static getInstance(): RedisSingleton {
+    public static getInstance() {
         if (!RedisSingleton.instance)
             RedisSingleton.instance = new RedisSingleton();
         return RedisSingleton.instance;
     }
 
-    public async connectToServer(): Promise<void> {
+    public async connectToServer() {
         await this.redisClient.connect();
         this.redisClient.on("error", err =>
             console.log("Redis Client Error", err)
         );
     }
 
-    public async disconnectFromServer(): Promise<void> {
+    public async disconnectFromServer() {
         await this.redisClient.unsubscribe();
         await this.redisClient.quit();
     }
@@ -52,7 +53,7 @@ class RedisSingleton {
         chatID: number | string,
         hashName: string,
         defaultData: string = ""
-    ): Promise<string> {
+    ) {
         return (
             (await this.redisClient.hGet(
                 `${this.chatsConfigTableName}:${chatID}`,
@@ -61,27 +62,25 @@ class RedisSingleton {
         );
     }
 
-    public async getAllHashData(
-        hashName: string
-    ): Promise<{ [key: string]: string }> {
+    public async getAllHashData(hashName: string) {
         return await this.redisClient.hGetAll(hashName);
     }
 
     public async getHashMultipleData(
         chatID: number | string,
         hashNames: string[]
-    ): Promise<(string | null)[]> {
-        return await this.redisClient.hmGet(
+    ) {
+        return (await this.redisClient.hmGet(
             `${this.chatsConfigTableName}:${chatID}`,
             hashNames
-        );
+        )) as (string | null)[];
     }
 
-    public async getList(listName: ListsNamesType): Promise<string[]> {
+    public async getList(listName: ListsNamesType) {
         return await this.redisClient.lRange(listName, 0, -1);
     }
 
-    public async getLists(listNames: ListsNamesType[]): Promise<ListsObject> {
+    public async getLists(listNames: ListsNamesType[]) {
         const listsData: ListsObject = {};
         for (const listName of listNames) {
             listsData[listName] = await this.getList(listName);
@@ -92,7 +91,7 @@ class RedisSingleton {
     public async setHashData(
         chatID: number | string,
         hashData: { [key: string]: string }
-    ): Promise<void> {
+    ) {
         for (const [key, value] of Object.entries(hashData)) {
             await this.redisClient.hSet(
                 `${this.chatsConfigTableName}:${chatID}`,
@@ -106,31 +105,22 @@ class RedisSingleton {
         hashName: string,
         field: string,
         value: number
-    ): Promise<void> {
+    ) {
         await this.redisClient.hIncrBy(hashName, field, value);
     }
 
-    public async pushValueToList(
-        listName: string,
-        value: string
-    ): Promise<void> {
+    public async pushValueToList(listName: string, value: string) {
         await this.redisClient.rPush(listName, value);
     }
 
-    public async deleteHashData(
-        chatID: number | string,
-        fieldsName: string[]
-    ): Promise<void> {
+    public async deleteHashData(chatID: number | string, fieldsName: string[]) {
         await this.redisClient.hDel(
             `${this.chatsConfigTableName}:${chatID}`,
             fieldsName
         );
     }
 
-    public async removeValueFromList(
-        listName: string,
-        value: string
-    ): Promise<void> {
+    public async removeValueFromList(listName: string, value: string) {
         await this.redisClient.lRem(listName, 1, value);
     }
 }

@@ -1,8 +1,8 @@
 import RedisSingleton from "@utils/redisSingleton";
 
-export const deleteLocaleChangingStatus = async (
+export async function deleteLocaleChangingStatus(
     client: RedisSingleton,
     chatID: string
-) => {
+) {
     return await client.deleteHashData(chatID, ["isMessageLocaleChanging"]);
-};
+}

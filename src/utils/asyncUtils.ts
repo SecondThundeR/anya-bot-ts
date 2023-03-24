@@ -21,10 +21,7 @@ export default class AsyncUtils {
         );
     }
 
-    public static async isBotInChat(
-        ctx: Context,
-        chatID: string | number
-    ): Promise<boolean> {
+    public static async isBotInChat(ctx: Context, chatID: string | number) {
         try {
             await ctx.api.getChat(chatID);
             return true;
@@ -33,9 +30,7 @@ export default class AsyncUtils {
         }
     }
 
-    public static async isMessageAlreadyDeleted(
-        ctx: Context
-    ): Promise<boolean> {
+    public static async isMessageAlreadyDeleted(ctx: Context) {
         let isMessageDeleted = false;
         await ctx
             .deleteMessage()
@@ -114,7 +109,7 @@ export default class AsyncUtils {
         )
             return await ctx.deleteMessage();
 
-        await RedisSingleton.getInstance().deleteHashData(chatID, fieldsArray);
+        await client.deleteHashData(chatID, fieldsArray);
 
         await ctx.reply(localeResetMessage);
     }
@@ -131,7 +126,7 @@ export default class AsyncUtils {
         chatID: number | string
     ) {
         const [customText, stickerMessageMention] =
-            await RedisSingleton.getInstance().getHashMultipleData(chatID, [
+            await client.getHashMultipleData(chatID, [
                 "stickerMessageLocale",
                 "stickerMessageMention"
             ]);
@@ -153,7 +148,7 @@ export default class AsyncUtils {
     public static async isChatWhitelisted(
         ctx: Context,
         redisInstance: RedisSingleton
-    ): Promise<boolean> {
+    ) {
         const chatID = RegularUtils.getChatID(ctx);
         const whiteListIDs = await redisInstance.getList(ListsNames.WHITELIST);
 
@@ -163,7 +158,7 @@ export default class AsyncUtils {
     public static async isCommandIgnored(
         ctx: Context,
         redisInstance: RedisSingleton
-    ): Promise<boolean> {
+    ) {
         const whiteListIDs = await redisInstance.getList(ListsNames.WHITELIST);
         const chatID = RegularUtils.getChatID(ctx);
 
@@ -173,7 +168,7 @@ export default class AsyncUtils {
         );
     }
 
-    public static async isGroupAdmin(ctx: Context): Promise<boolean> {
+    public static async isGroupAdmin(ctx: Context) {
         const authorStatus = await AsyncUtils.getAuthorStatus(ctx);
         return (
             authorStatus === "administrator" ||

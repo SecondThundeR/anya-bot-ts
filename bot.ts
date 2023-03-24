@@ -139,7 +139,7 @@ process.once("SIGTERM", stopOnTerm);
     try {
         await client.connectToServer();
         await AsyncUtils.logBotInfo(bot.api);
-    } catch (e: any) {
+    } catch (e) {
         console.log(e);
         await client.disconnectFromServer();
     }
