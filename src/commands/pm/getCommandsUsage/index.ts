@@ -17,7 +17,7 @@ getCommandsUsage.command("getcommandsusage", async (ctx) => {
     }
 
     let formattedData = "";
-    for (let i = 0; i < data.length / 2; i += 2) {
+    for (let i = 0; i < data.length; i += 2) {
         formattedData += `${data[i]}: ${data[i + 1]} раз(а)\n`;
     }
 
