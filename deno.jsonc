@@ -13,6 +13,10 @@
     "@/groupHandlers/": "./src/handlers/group/",
     "@/pmHandlers/": "./src/handlers/pm/"
   },
+  "tasks": {
+    "start": "deno run --allow-net --allow-read --allow-env bot.ts",
+    "dev": "deno run --allow-net --allow-read --allow-env --watch bot.ts"
+  },
   "lint": {
     "files": {
       "include": ["src/", "./bot.ts", "./deps.ts"]
