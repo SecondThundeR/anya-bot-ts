@@ -41,19 +41,19 @@ addWhiteList.command("addwhitelist", async (ctx) => {
         );
         return await ctx.reply(whiteListMessages.addedAndUnignored);
     }
+    await ctx.reply(whiteListMessages.added);
 
     const isInChat = await AsyncUtils.isBotInChat(ctx, chatID);
-    if (isInChat) await AsyncUtils.sendAccessGrantedMessage(ctx, chatID);
+    if (!isInChat) return;
 
+    await AsyncUtils.sendAccessGrantedMessage(ctx, chatID);
     const botData = await ctx.api.getChatMember(chatID, ctx.me.id);
-    if (!RegularUtils.isBotCanDelete(botData)) {
-        await ctx.api.sendMessage(
-            chatID,
-            otherMessages.botAdminWhitelistedHint,
-        );
-    }
+    if (!RegularUtils.isBotCanDelete(botData)) return;
 
-    await ctx.reply(whiteListMessages.added);
+    await ctx.api.sendMessage(
+        chatID,
+        otherMessages.botAdminWhitelistedHint,
+    );
 });
 
 export default addWhiteList;
