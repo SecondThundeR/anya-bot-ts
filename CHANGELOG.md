@@ -5,11 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] (Deno version)
+## [Unreleased]
+
+## [2.1.0] - 2023-04-17
 
 ### Added
 
 - Full support for Deno
+
+### Changed
+
+- Update dependencies
 
 ## [2.0.6] - 2023-03-24
 
@@ -207,7 +213,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ability to change some localization strings via commands
 - A placeholder when trying to write a private message to a bot by a non-creator
 
-[Unreleased]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.6...HEAD
+[Unreleased]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.6...v2.1.0
 [2.0.6]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.5...v2.0.6
 [2.0.5]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.4...v2.0.5
 [2.0.4]: https://github.com/SecondThundeR/anti-premium-stickers-bot/compare/v2.0.3...v2.0.4
