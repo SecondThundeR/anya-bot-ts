@@ -1,21 +1,26 @@
 {
   "imports": {
-    "grammy/": "https://deno.land/x/grammy@v1.15.3/",
+    "grammy/": "https://deno.land/x/grammy@v1.16.2/",
     "grammy_runner/": "https://deno.land/x/grammy_runner@v2.0.3/",
-    "dotenv/": "https://deno.land/std@v0.182.0/dotenv/",
-    "redis/": "https://deno.land/x/redis@v0.29.2/",
+    "grammy_conversations/": "https://deno.land/x/grammy_conversations@v1.1.2/",
+    "dotenv/": "https://deno.land/std@v0.192.0/dotenv/",
+    "redis/": "https://deno.land/x/redis@v0.30.0/",
     "@/": "./",
-    "@/utils/": "./src/utils/",
-    "@/data/": "./src/data/",
-    "@/locale/": "./src/locale/",
     "@/groupCommands/": "./src/commands/group/",
     "@/pmCommands/": "./src/commands/pm/",
+    "@/constants/": "./src/constants/",
+    "@/conversations/": "./src/conversations/",
+    "@/database/": "./src/database/",
     "@/groupHandlers/": "./src/handlers/group/",
-    "@/pmHandlers/": "./src/handlers/pm/"
+    "@/pmHandlers/": "./src/handlers/pm/",
+    "@/locale/": "./src/locale/",
+    "@/middlewares/": "./src/middlewares/",
+    "@/types/": "./src/types/",
+    "@/utils/": "./src/utils/"
   },
   "tasks": {
-    "start": "deno run --allow-net --allow-read --allow-env bot.ts",
-    "dev": "deno run --allow-net --allow-read --allow-env --watch bot.ts"
+    "start": "deno run --allow-net --allow-read --allow-env --allow-write bot.ts",
+    "dev": "deno run --allow-net --allow-read --allow-env --allow-write --watch bot.ts"
   },
   "lint": {
     "files": {
