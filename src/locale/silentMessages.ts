@@ -9,6 +9,6 @@ const silentMessages = {
         "Теперь я буду говорить как раньше, когда мне не стоит говорить о стикерах!",
     disabledMessageReset:
         "Теперь я буду говорить как раньше, когда вы разрешите мне говорить о стикерах!",
-};
+} as const;
 
 export default silentMessages;

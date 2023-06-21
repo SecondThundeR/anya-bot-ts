@@ -12,6 +12,6 @@ const aidenPierceMessages = {
         "How's your memory now? Better?",
         "In my neighborhood, you stood up or you got beat down...So I stood up. I ran with an ugly crowd. Learned how to fight. How to shoot. I paid for it too. I took the hits so my family wouldn't have to. Mom always said we escaped Dad when we left him back in Belfast. She only wanted peace for us and he was always fighting for something. She saw that fire in me, too. She said her sweet little boy was gone - I'd turned into Dad. That should have stung, but it didn't. I was proud to hear it.",
     ],
-};
+} as const;
 
 export default aidenPierceMessages;

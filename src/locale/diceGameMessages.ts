@@ -5,6 +5,6 @@ const diceGameMessages = {
     wrongNumber: "Вы передали неверное число. Допустимые значения: от 1 до 6",
     message: "Если падает {number}, то {text}",
     diceEmoji: "🎲",
-};
+} as const;
 
 export default diceGameMessages;
