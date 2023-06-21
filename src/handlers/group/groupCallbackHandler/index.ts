@@ -1,18 +1,17 @@
 import { Composer } from "@/deps.ts";
 
+import redisClient from "@/database/redisClient.ts";
+
 import otherMessages from "@/locales/otherMessages.ts";
 import stickerMessages from "@/locales/stickerMessages.ts";
 
-import RedisSingleton from "@/database/redisSingleton.ts";
-import RegularUtils from "@/utils/regularUtils.ts";
-
-import { deleteLocaleChangingStatus } from "@/groupHandlers/groupCallbackHandler/helpers.ts";
+import { getCallbackData, isBotCanDelete } from "@/utils/apiUtils.ts";
+import { getBotInChatInfo } from "@/utils/asyncUtils.ts";
 
 const groupCallbackHandler = new Composer();
 
 groupCallbackHandler.on("callback_query:data", async (ctx) => {
-    const redisSingleton = RedisSingleton.getInstance();
-    const splitData = RegularUtils.getCallbackData(ctx).split("|");
+    const splitData = getCallbackData(ctx).split("|");
 
     if (splitData.length !== 3) {
         return await ctx.answerCallbackQuery({
@@ -29,14 +28,17 @@ groupCallbackHandler.on("callback_query:data", async (ctx) => {
         });
     }
 
-    await deleteLocaleChangingStatus(redisSingleton, chatID);
+    await redisClient.removeFieldsFromConfig(
+        chatID,
+        "isMessageLocaleChanging",
+    );
 
-    const botData = await ctx.api.getChatMember(chatID, ctx.me.id);
-    if (RegularUtils.isBotCanDelete(botData)) await ctx.deleteMessage();
+    const botData = await getBotInChatInfo(ctx, chatID);
+    if (isBotCanDelete(botData)) await ctx.deleteMessage();
 
     const mentionModeBoolean = mentionMode === "yes";
 
-    await redisSingleton.setHashData(chatID, {
+    await redisClient.setConfigData(chatID, {
         stickerMessageMention: String(mentionModeBoolean),
     });
 

@@ -1,33 +1,39 @@
 import { Composer } from "@/deps.ts";
 
-import ListsNames from "@/constants/listsNames.ts";
+import SetsNames from "@/constants/setsNames.ts";
+
+import redisClient from "@/database/redisClient.ts";
 
 import otherMessages from "@/locales/otherMessages.ts";
 
-import AsyncUtils from "@/utils/asyncUtils.ts";
-import RedisSingleton from "@/database/redisSingleton.ts";
-import RegularUtils from "@/utils/regularUtils.ts";
+import { getChatID, isBotCanDelete } from "@/utils/apiUtils.ts";
+import {
+    getBotInChatInfo,
+    isChatWhitelisted,
+    newChatJoinHandler,
+} from "@/utils/asyncUtils.ts";
 
 const newChatHandler = new Composer();
 
 newChatHandler.on("msg:new_chat_members:me", async (ctx) => {
-    const creatorID = Deno.env.get("CREATOR_ID");
-    const redisInstance = RedisSingleton.getInstance();
-    const chatID = RegularUtils.getChatID(ctx);
-    const idsLists = await redisInstance.getLists([
-        ListsNames.WHITELIST,
-        ListsNames.IGNORELIST,
-    ]);
-
-    if (!RegularUtils.isItemInList(chatID, idsLists[ListsNames.WHITELIST])) {
-        return await AsyncUtils.newChatJoinHandler(
+    const chatID = getChatID(ctx);
+    const isChatNotWhitelisted = !(await isChatWhitelisted(ctx));
+    if (isChatNotWhitelisted) {
+        return await newChatJoinHandler(
             ctx,
-            creatorID,
-            RegularUtils.isItemInList(chatID, idsLists[ListsNames.IGNORELIST]),
+            await redisClient.isValueInSet(
+                SetsNames.IGNORELIST,
+                chatID,
+            ),
         );
     }
 
-    return await ctx.reply(otherMessages.botAdminHint);
+    const botData = await getBotInChatInfo(ctx, chatID);
+    const isBotIsntAdmin = !isBotCanDelete(botData);
+    const greetingMsg = `${otherMessages.botGreeting} ${
+        isBotIsntAdmin ? otherMessages.botAdminHint : otherMessages.botAdminNote
+    }`;
+    return await ctx.reply(greetingMsg);
 });
 
 export default newChatHandler;

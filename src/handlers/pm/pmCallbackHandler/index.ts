@@ -1,24 +1,29 @@
-import { Composer } from "@/deps.ts";
-import { ChatMember, Message, Update } from "@/deps.ts";
+import { ChatMember, Composer } from "@/deps.ts";
 
-import ListsNames from "@/constants/listsNames.ts";
+import SetsNames from "@/constants/setsNames.ts";
+
+import redisClient from "@/database/redisClient.ts";
 
 import keyboardMessages from "@/locales/keyboardMessages.ts";
 import otherMessages from "@/locales/otherMessages.ts";
+import whiteListMessages from "@/locales/whiteListMessages.ts";
 
-import AsyncUtils from "@/utils/asyncUtils.ts";
-import RedisSingleton from "@/database/redisSingleton.ts";
-import RegularUtils from "@/utils/regularUtils.ts";
+import {
+    getCallbackData,
+    getMessageID,
+    isBotCanDelete,
+} from "@/utils/apiUtils.ts";
+import {
+    getBotInChatInfo,
+    leaveFromIgnoredChat,
+    sendMessageByChatID,
+} from "@/utils/asyncUtils.ts";
+import { getWhiteListResponseLocale } from "@/utils/generalUtils.ts";
 
 const pmCallbackHandler = new Composer();
 
 pmCallbackHandler.on("callback_query:data", async (ctx) => {
-    const splitData = RegularUtils.getCallbackData(ctx).split("|");
-    const redisInstance = RedisSingleton.getInstance();
-    const idsLists = await redisInstance.getLists([
-        ListsNames.WHITELIST,
-        ListsNames.IGNORELIST,
-    ]);
+    const splitData = getCallbackData(ctx).split("|");
 
     if (splitData.length !== 2) {
         return await ctx.answerCallbackQuery({
@@ -26,49 +31,55 @@ pmCallbackHandler.on("callback_query:data", async (ctx) => {
         });
     }
 
-    const originalMessage = (await ctx.editMessageReplyMarkup({
+    const messageWithoutMarkup = await ctx.editMessageReplyMarkup({
         reply_markup: undefined,
-    })) as Update.Edited & Message;
+    });
+    const msgWithoutMarkupID = messageWithoutMarkup !== true
+        ? getMessageID(messageWithoutMarkup)
+        : undefined;
+
     const [chatID, listMode] = splitData;
-    const whiteListAccept = listMode === "accept";
-    const ignoreListIgnore = listMode === "ignore";
-    let botData: ChatMember | undefined = undefined;
+    const isAcceptingChat = listMode === "accept";
+    const isIgnoringChat = listMode === "ignore";
+
+    let botData: ChatMember | undefined;
 
     try {
-        botData = await ctx.api.getChatMember(chatID, ctx.me.id);
+        botData = await getBotInChatInfo(ctx, chatID);
     } catch {
         return await ctx.reply(keyboardMessages.keyboardError, {
-            reply_to_message_id: RegularUtils.getMessageID(originalMessage),
+            reply_to_message_id: msgWithoutMarkupID,
         });
     }
 
     if (
-        ignoreListIgnore &&
-        !RegularUtils.isItemInList(chatID, idsLists[ListsNames.IGNORELIST])
+        isIgnoringChat &&
+        await redisClient.isValueNotInSet(SetsNames.IGNORELIST, chatID)
     ) {
-        await RedisSingleton.getInstance().pushValueToList(
-            ListsNames.IGNORELIST,
-            String(chatID),
+        await redisClient.addValuesToSet(
+            SetsNames.IGNORELIST,
+            chatID,
         );
-        await AsyncUtils.sendIgnoredMessage(ctx, chatID);
+        await leaveFromIgnoredChat(ctx, chatID);
     }
 
     if (
-        whiteListAccept &&
-        !RegularUtils.isItemInList(chatID, idsLists[ListsNames.WHITELIST])
+        isAcceptingChat &&
+        await redisClient.isValueNotInSet(SetsNames.WHITELIST, chatID)
     ) {
-        await RedisSingleton.getInstance().pushValueToList(
-            ListsNames.WHITELIST,
-            String(chatID),
-        );
-        await AsyncUtils.sendAccessGrantedMessage(ctx, chatID);
-    }
-
-    if (botData && !RegularUtils.isBotCanDelete(botData)) {
-        await ctx.api.sendMessage(
+        await redisClient.addValuesToSet(
+            SetsNames.WHITELIST,
             chatID,
-            otherMessages.botAdminWhitelistedHint,
         );
+        await sendMessageByChatID(ctx, chatID, whiteListMessages.accessGranted);
+
+        const isBotIsntAdmin = !isBotCanDelete(botData);
+        if (isBotIsntAdmin) {
+            await ctx.api.sendMessage(
+                chatID,
+                otherMessages.botAdminHint,
+            );
+        }
     }
 
     await ctx.answerCallbackQuery({
@@ -76,12 +87,12 @@ pmCallbackHandler.on("callback_query:data", async (ctx) => {
     });
 
     await ctx.reply(
-        RegularUtils.getWhiteListResponseLocale(
-            whiteListAccept,
-            ignoreListIgnore,
+        getWhiteListResponseLocale(
+            isAcceptingChat,
+            isIgnoringChat,
         ),
         {
-            reply_to_message_id: RegularUtils.getMessageID(originalMessage),
+            reply_to_message_id: msgWithoutMarkupID,
         },
     );
 });

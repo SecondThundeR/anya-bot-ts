@@ -1,53 +1,52 @@
 import { Composer } from "@/deps.ts";
 
+import redisClient from "@/database/redisClient.ts";
+
 import aidenPierceMessages from "@/locales/aidenPierceMessages.ts";
 
-import AsyncUtils from "@/utils/asyncUtils.ts";
-import RedisSingleton from "@/database/redisSingleton.ts";
-import RegularUtils from "@/utils/regularUtils.ts";
+import { getChatID, getUserMention, isBotCanDelete } from "@/utils/apiUtils.ts";
+import { deleteUserMessage, isGroupAdmin } from "@/utils/asyncUtils.ts";
+import { stringToBoolean } from "@/utils/generalUtils.ts";
 
 const voiceAndVideoHandler = new Composer();
 
 voiceAndVideoHandler.on(
     ["message:voice", "message:video_note"],
     async (ctx) => {
-        const redisInstance = RedisSingleton.getInstance();
-        const chatID = RegularUtils.getChatID(ctx);
-        const isAdminPowerEnabled = await redisInstance.getHashData(
-            chatID,
-            "adminPower",
-            "false",
+        const chatID = getChatID(ctx);
+        const [aidenPierceMode, aidenPierceSilent] = await redisClient
+            .getValuesFromConfig(chatID, "aidenMode", "isAidenSilent");
+
+        const isAdminPowerEnabled = stringToBoolean(
+            await redisClient.getValueFromConfig(
+                chatID,
+                "adminPower",
+                "false",
+            ),
         );
-
-        const [aidenPierceMode, aidenPierceSilent] = await redisInstance
-            .getHashMultipleData(chatID, [
-                "aidenMode",
-                "isAidenSilent",
-            ]);
-
-        if (
-            !RegularUtils.getBoolean(aidenPierceMode || "false") ||
-            RegularUtils.getBoolean(aidenPierceSilent || "false") ||
-            ((await AsyncUtils.isGroupAdmin(ctx)) &&
-                RegularUtils.getBoolean(isAdminPowerEnabled))
-        ) {
+        const isAidenModeDisabled = !stringToBoolean(
+            aidenPierceMode || "false",
+        );
+        const isAidenModeSilent = stringToBoolean(aidenPierceSilent || "false");
+        const isUserImmune = await isGroupAdmin(ctx) && isAdminPowerEnabled;
+        if (isAidenModeDisabled || isAidenModeSilent || isUserImmune) {
             return;
         }
 
         const botData = await ctx.getChatMember(ctx.me.id);
-        if (!RegularUtils.isBotCanDelete(botData)) return;
+        const isBotIsntAdmin = !isBotCanDelete(botData);
+        if (isBotIsntAdmin) return;
 
-        const deleteStatus = await AsyncUtils.isMessageAlreadyDeleted(ctx);
-        if (deleteStatus) return;
+        if (await deleteUserMessage(ctx)) return;
 
-        const randomMessage = aidenPierceMessages.quotesArray[
+        const randomAidenMessage = aidenPierceMessages.quotesArray[
             Math.floor(Math.random() * aidenPierceMessages.quotesArray.length)
         ];
-        const userMention = RegularUtils.getUserMention(
+        const userMention = getUserMention(
             ctx.update.message?.from!,
         );
 
-        await ctx.reply(`${userMention}, ${randomMessage}`);
+        await ctx.reply(`${userMention}, ${randomAidenMessage}`);
     },
 );
 

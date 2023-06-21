@@ -1,46 +1,54 @@
 import { Composer } from "@/deps.ts";
 
-import ListsNames from "@/constants/listsNames.ts";
+import SetsNames from "@/constants/setsNames.ts";
 
-import AsyncUtils from "@/utils/asyncUtils.ts";
-import RedisSingleton from "@/database/redisSingleton.ts";
-import RegularUtils from "@/utils/regularUtils.ts";
+import redisClient from "@/database/redisClient.ts";
+
+import {
+    getChatID,
+    isBotCanDelete,
+    isPremiumSticker,
+} from "@/utils/apiUtils.ts";
+import {
+    deleteUserMessage,
+    generateStickerMessageLocale,
+    isGroupAdmin,
+} from "@/utils/asyncUtils.ts";
+import { stringToBoolean } from "@/utils/generalUtils.ts";
 
 const premiumStickersHandler = new Composer();
 
 premiumStickersHandler.on("message:sticker", async (ctx) => {
-    const redisSingleton = RedisSingleton.getInstance();
-    const chatID = RegularUtils.getChatID(ctx);
+    const chatID = getChatID(ctx);
     const botData = await ctx.getChatMember(ctx.me.id);
-    const whiteListIDs = await redisSingleton.getList(ListsNames.WHITELIST);
-    const isAdminPowerEnabled = await redisSingleton.getHashData(
+    const isAdminPowerEnabled = await redisClient.getValueFromConfig(
         chatID,
         "adminPower",
         "false",
     );
 
     if (
-        !RegularUtils.isItemInList(chatID, whiteListIDs) ||
-        !RegularUtils.isPremiumSticker(ctx) ||
-        !RegularUtils.isBotCanDelete(botData) ||
-        ((await AsyncUtils.isGroupAdmin(ctx)) &&
-            RegularUtils.getBoolean(isAdminPowerEnabled))
+        !(await redisClient.isValueInSet(SetsNames.WHITELIST, chatID)) ||
+        !isPremiumSticker(ctx) ||
+        !isBotCanDelete(botData) ||
+        ((await isGroupAdmin(ctx)) &&
+            stringToBoolean(isAdminPowerEnabled))
     ) {
         return;
     }
 
-    const deleteStatus = await AsyncUtils.isMessageAlreadyDeleted(ctx);
+    const deleteStatus = await deleteUserMessage(ctx);
     if (deleteStatus) return;
 
-    const silentStatus = await redisSingleton.getHashData(
+    const silentStatus = await redisClient.getValueFromConfig(
         chatID,
         "isSilent",
         "false",
     );
-    if (RegularUtils.getBoolean(silentStatus)) return;
+    if (stringToBoolean(silentStatus)) return;
 
     await ctx.reply(
-        await AsyncUtils.generateStickerMessageLocale(
+        await generateStickerMessageLocale(
             ctx,
             chatID,
         ),
