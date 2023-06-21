@@ -32,6 +32,16 @@ Some random TypeScript bot with interesting features based on the grammY library
 6. Wait for `Started as @...` message and/or message in PM from bot
 7. Bot is ready to go!
 
+### Fly
+
+1. Create a new bot and get a bot token
+2. Create a new Redis database and get: Username, Password, Host and Port
+    > How to create a Redis database, create a user and get the necessary data to connect will not be written here
+3. Refer to [Fly for Dockerfile documentation](https://fly.io/docs/languages-and-frameworks/dockerfile/) for creating app, setting up secrets and deploying
+    > Which secrets need to be set can be found below in Heroku section, step 3
+4. Wait for `Started as @...` message in console and/or message in PM from bot
+5. Bot is ready to go!
+
 ### Heroku
 
 1. Create a new bot and get a bot token
@@ -40,17 +50,18 @@ Some random TypeScript bot with interesting features based on the grammY library
 3. Create a new pipeline in Heroku, the application in it and set neccessary config vars in the settings:
     - `BOT_TOKEN` - bot token
     - `CREATOR_ID` - your ID for working with the bot whitelist/ignored list from the DM (better to pass, as bot won't work correctly without it)
-    - `REDIS_USER` - name of Redis DB user
-    - `REDIS_PASS` - password of Redis DB user
-    - `REDIS_URL` - endpoint of Redis DB
-    - `REDIS_PORT` - port of Redis DB endpoint
+    - `CHATS_TABLE_NAME` - name of table with data in Redis DB
+    - `REDISUSER` - name of Redis DB user
+    - `REDISPASS` - password of Redis DB user
+    - `REDISHOST` - endpoint of Redis DB
+    - `REDISPORT` - port of Redis DB endpoint
 4. Push sources on Heroku _(or set up auto-deployment)_ and wait for build
 5. Wait for `Started as @...` message in console and/or message in PM from bot
 6. Bot is ready to go!
 
 #### Note about Heroku
 
-While doing step 3, go to [Heroku Docker Docs](https://devcenter.heroku.com/articles/build-docker-images-heroku-yml#getting-started) and convert the stack into a container.
+While doing step 3, refer to [Heroku Docker Docs](https://devcenter.heroku.com/articles/build-docker-images-heroku-yml#getting-started) for converting the stack into a container
 
 > If something doesn't work, check the application logs in Heroku or locally and try googling the problem. If nothing helps, open an Issue with a detailed description of the problem
 
@@ -62,7 +73,7 @@ While doing step 3, go to [Heroku Docker Docs](https://devcenter.heroku.com/arti
 - `silent` - manage bot silent mode
 - `aidenmode` - enables "Aiden Pierce" mode _(Removes voice/video messages)_
 - `aidensilent` - manage "Aiden Pierce" silent mode
-- `noemoji` - triggers emoji strictness removal _(Currently works like on/off switch. Custom rules will be added later)_
+- `noemoji` - triggers emoji strictness removal
 - `adminpower` - triggers ignoring of restricted messages from admins
 - `silentonlocale` - change message when silent mode is enabled
 - `silentonlocalereset` - reset message when silent mode is enabled
@@ -74,20 +85,21 @@ While doing step 3, go to [Heroku Docker Docs](https://devcenter.heroku.com/arti
 **DM commands:**
 
 - `help` - send DM help message
-- `addwhitelist` - add group ID to white list
-- `removewhitelist` - remove group ID from white list
-- `getwhitelist` - get all groups info from white list
-- `addignorelist` - add group ID to ignore list
-- `removeignorelist` - remove group ID from ignore list
-- `getignorelist` - get all groups ID from ignore list
-- `getcommandsusage` - get counters of commands usage
+- `addwl` - add group ID to white list
+- `remwl` - remove group ID from white list
+- `silentremwl` - remove group ID from white list without notification
+- `getwl` - get all groups info from white list
+- `addil` - add group ID to ignore list
+- `remil` - remove group ID from ignore list
+- `getil` - get all groups ID from ignore list
+- `getcmdusage` - get counters of commands usage
+- `import` - import database entries to the related Redis instance
+- `export` - export database entries from the related Redis instance
 - `uptime` - get current uptime of bot
 
 ## Bot locale configuration
 
-The entire locale strings are now stored in the `src/locale`. Some strings can be changed per chat using the commands above with `locale` substring in it.
-
-Remember to change `creatorLink` in `src/locales/otherMessages.ts`, which allows users to contact you for whitelist access
+The entire locale strings are now stored in the `src/locales`. Some strings can be changed per chat using the commands above with `locale` substring in it.
 
 ## Changelog
 
