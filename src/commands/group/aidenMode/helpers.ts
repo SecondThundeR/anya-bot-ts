@@ -1,6 +1,6 @@
 import { Context } from "@/deps.ts";
 
-import aidenPierceMessages from "@/locale/aidenPierceMessages.ts";
+import aidenPierceMessages from "@/locales/aidenPierceMessages.ts";
 
 import RedisSingleton from "@/database/redisSingleton.ts";
 import RegularUtils from "@/utils/regularUtils.ts";

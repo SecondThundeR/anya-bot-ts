@@ -3,10 +3,10 @@ import type { ChatFromGetChat } from "@/deps.ts";
 
 import ListsNames from "@/constants/listsNames.ts";
 
-import ignoreListMessages from "@/locale/ignoreListMessages.ts";
-import keyboardMessages from "@/locale/keyboardMessages.ts";
-import otherMessages from "@/locale/otherMessages.ts";
-import whiteListMessages from "@/locale/whiteListMessages.ts";
+import ignoreListMessages from "@/locales/ignoreListMessages.ts";
+import keyboardMessages from "@/locales/keyboardMessages.ts";
+import otherMessages from "@/locales/otherMessages.ts";
+import whiteListMessages from "@/locales/whiteListMessages.ts";
 
 import RedisSingleton from "./redisSingleton.ts";
 import RegularUtils from "./regularUtils.ts";

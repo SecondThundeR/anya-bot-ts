@@ -87,7 +87,7 @@ While doing step 3, go to [Heroku Docker Docs](https://devcenter.heroku.com/arti
 
 The entire locale strings are now stored in the `src/locale`. Some strings can be changed per chat using the commands above with `locale` substring in it.
 
-Remember to change `creatorLink` in `src/locale/otherMessages.ts`, which allows users to contact you for whitelist access
+Remember to change `creatorLink` in `src/locales/otherMessages.ts`, which allows users to contact you for whitelist access
 
 ## Changelog
 

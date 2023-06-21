@@ -1,7 +1,7 @@
 import { Composer } from "@/deps.ts";
 
-import otherMessages from "@/locale/otherMessages.ts";
-import stickerMessages from "@/locale/stickerMessages.ts";
+import otherMessages from "@/locales/otherMessages.ts";
+import stickerMessages from "@/locales/stickerMessages.ts";
 
 import AsyncUtils from "@/utils/asyncUtils.ts";
 import RedisSingleton from "@/database/redisSingleton.ts";

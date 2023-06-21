@@ -7,11 +7,11 @@ import type {
     User,
 } from "@/deps.ts";
 
-import ignoreListMessages from "@/locale/ignoreListMessages.ts";
-import keyboardMessages from "@/locale/keyboardMessages.ts";
-import otherMessages from "@/locale/otherMessages.ts";
-import stickerMessages from "@/locale/stickerMessages.ts";
-import whiteListMessages from "@/locale/whiteListMessages.ts";
+import ignoreListMessages from "@/locales/ignoreListMessages.ts";
+import keyboardMessages from "@/locales/keyboardMessages.ts";
+import otherMessages from "@/locales/otherMessages.ts";
+import stickerMessages from "@/locales/stickerMessages.ts";
+import whiteListMessages from "@/locales/whiteListMessages.ts";
 
 type ReplacementObjectType = {
     [key: string]: string;

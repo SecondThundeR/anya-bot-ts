@@ -2,7 +2,7 @@ import { Composer } from "@/deps.ts";
 
 import ListsNames from "@/constants/listsNames.ts";
 
-import silentMessages from "@/locale/silentMessages.ts";
+import silentMessages from "@/locales/silentMessages.ts";
 
 import AsyncUtils from "@/utils/asyncUtils.ts";
 import RedisSingleton from "@/database/redisSingleton.ts";

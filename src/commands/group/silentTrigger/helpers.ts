@@ -1,4 +1,4 @@
-import silentMessages from "@/locale/silentMessages.ts";
+import silentMessages from "@/locales/silentMessages.ts";
 
 import RedisSingleton from "@/database/redisSingleton.ts";
 import RegularUtils from "@/utils/regularUtils.ts";

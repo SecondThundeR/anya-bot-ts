@@ -2,7 +2,7 @@ import { Context } from "@/deps.ts";
 
 import ListsNames from "@/constants/listsNames.ts";
 
-import whiteListMessages from "@/locale/whiteListMessages.ts";
+import whiteListMessages from "@/locales/whiteListMessages.ts";
 
 import AsyncUtils from "@/utils/asyncUtils.ts";
 import RedisSingleton from "@/database/redisSingleton.ts";

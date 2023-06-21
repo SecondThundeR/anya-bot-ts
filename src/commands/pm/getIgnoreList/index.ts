@@ -2,7 +2,7 @@ import { Composer } from "@/deps.ts";
 
 import ListsNames from "@/constants/listsNames.ts";
 
-import ignoreListMessages from "@/locale/ignoreListMessages.ts";
+import ignoreListMessages from "@/locales/ignoreListMessages.ts";
 
 import RedisSingleton from "@/database/redisSingleton.ts";
 import RegularUtils from "@/utils/regularUtils.ts";

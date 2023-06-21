@@ -1,6 +1,6 @@
 import { Composer } from "@/deps.ts";
 
-import helpMessages from "@/locale/helpMessages.ts";
+import helpMessages from "@/locales/helpMessages.ts";
 
 import AsyncUtils from "@/utils/asyncUtils.ts";
 import RedisSingleton from "@/database/redisSingleton.ts";

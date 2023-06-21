@@ -1,6 +1,6 @@
 import { Context, NextFunction } from "@/deps.ts";
 
-import otherMessages from "@/locale/otherMessages.ts";
+import otherMessages from "@/locales/otherMessages.ts";
 
 import { isUserACreator } from "@/utils/apiUtils.ts";
 

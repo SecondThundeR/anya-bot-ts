@@ -1,6 +1,6 @@
 import { Context, NextFunction } from "@/deps.ts";
 
-import whiteListMessages from "@/locale/whiteListMessages.ts";
+import whiteListMessages from "@/locales/whiteListMessages.ts";
 
 import { getChatID } from "@/utils/apiUtils.ts";
 import { isChatWhitelisted } from "@/utils/asyncUtils.ts";

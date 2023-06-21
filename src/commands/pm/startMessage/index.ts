@@ -1,6 +1,6 @@
 import { Composer } from "@/deps.ts";
 
-import otherMessages from "@/locale/otherMessages.ts";
+import otherMessages from "@/locales/otherMessages.ts";
 
 import RegularUtils from "@/utils/regularUtils.ts";
 

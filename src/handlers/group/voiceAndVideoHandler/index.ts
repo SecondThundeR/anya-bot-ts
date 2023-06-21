@@ -1,6 +1,6 @@
 import { Composer } from "@/deps.ts";
 
-import aidenPierceMessages from "@/locale/aidenPierceMessages.ts";
+import aidenPierceMessages from "@/locales/aidenPierceMessages.ts";
 
 import AsyncUtils from "@/utils/asyncUtils.ts";
 import RedisSingleton from "@/database/redisSingleton.ts";

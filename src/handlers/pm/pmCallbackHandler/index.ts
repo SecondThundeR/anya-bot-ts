@@ -3,8 +3,8 @@ import { ChatMember, Message, Update } from "@/deps.ts";
 
 import ListsNames from "@/constants/listsNames.ts";
 
-import keyboardMessages from "@/locale/keyboardMessages.ts";
-import otherMessages from "@/locale/otherMessages.ts";
+import keyboardMessages from "@/locales/keyboardMessages.ts";
+import otherMessages from "@/locales/otherMessages.ts";
 
 import AsyncUtils from "@/utils/asyncUtils.ts";
 import RedisSingleton from "@/database/redisSingleton.ts";

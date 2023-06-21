@@ -10,7 +10,7 @@ import {
 // @deno-types="npm:@types/node"
 import process from "node:process";
 
-import otherMessages from "@/locale/otherMessages.ts";
+import otherMessages from "@/locales/otherMessages.ts";
 
 import adminPowerTrigger from "@/groupCommands/adminPowerTrigger/index.ts";
 import aidenMode from "@/groupCommands/aidenMode/index.ts";

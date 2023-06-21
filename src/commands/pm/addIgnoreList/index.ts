@@ -2,8 +2,8 @@ import { Composer } from "@/deps.ts";
 
 import ListsNames from "@/constants/listsNames.ts";
 
-import ignoreListMessages from "@/locale/ignoreListMessages.ts";
-import otherMessages from "@/locale/otherMessages.ts";
+import ignoreListMessages from "@/locales/ignoreListMessages.ts";
+import otherMessages from "@/locales/otherMessages.ts";
 
 import AsyncUtils from "@/utils/asyncUtils.ts";
 import RedisSingleton from "@/database/redisSingleton.ts";

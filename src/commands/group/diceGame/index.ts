@@ -1,6 +1,6 @@
 import { Composer } from "@/deps.ts";
 
-import diceGameMessages from "@/locale/diceGameMessages.ts";
+import diceGameMessages from "@/locales/diceGameMessages.ts";
 
 import AsyncUtils from "@/utils/asyncUtils.ts";
 import RedisSingleton from "@/database/redisSingleton.ts";
