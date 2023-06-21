@@ -3,7 +3,7 @@ import { Composer } from "@/deps.ts";
 import diceGameMessages from "@/locale/diceGameMessages.ts";
 
 import AsyncUtils from "@/utils/asyncUtils.ts";
-import RedisSingleton from "@/utils/redisSingleton.ts";
+import RedisSingleton from "@/database/redisSingleton.ts";
 import RegularUtils from "@/utils/regularUtils.ts";
 
 const diceGame = new Composer();

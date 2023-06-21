@@ -1,4 +1,4 @@
-import RedisSingleton from "@/utils/redisSingleton.ts";
+import RedisSingleton from "@/database/redisSingleton.ts";
 import RegularUtils from "@/utils/regularUtils.ts";
 
 function getDefaultAllowWord(currentStatus: boolean) {

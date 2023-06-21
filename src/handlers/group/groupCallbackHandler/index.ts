@@ -3,7 +3,7 @@ import { Composer } from "@/deps.ts";
 import otherMessages from "@/locale/otherMessages.ts";
 import stickerMessages from "@/locale/stickerMessages.ts";
 
-import RedisSingleton from "@/utils/redisSingleton.ts";
+import RedisSingleton from "@/database/redisSingleton.ts";
 import RegularUtils from "@/utils/regularUtils.ts";
 
 import { deleteLocaleChangingStatus } from "@/groupHandlers/groupCallbackHandler/helpers.ts";

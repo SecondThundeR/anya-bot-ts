@@ -5,7 +5,7 @@ import ListsNames from "@/constants/listsNames.ts";
 import stickerMessages from "@/locale/stickerMessages.ts";
 
 import AsyncUtils from "@/utils/asyncUtils.ts";
-import RedisSingleton from "@/utils/redisSingleton.ts";
+import RedisSingleton from "@/database/redisSingleton.ts";
 
 const messageLocaleReset = new Composer();
 

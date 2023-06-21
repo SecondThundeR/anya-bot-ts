@@ -46,7 +46,7 @@ import voiceAndVideoHandler from "@/groupHandlers/voiceAndVideoHandler/index.ts"
 import pmCallbackHandler from "@/pmHandlers/pmCallbackHandler/index.ts";
 
 import AsyncUtils from "@/utils/asyncUtils.ts";
-import RedisSingleton from "@/utils/redisSingleton.ts";
+import RedisSingleton from "@/database/redisSingleton.ts";
 import RegularUtils from "@/utils/regularUtils.ts";
 
 await dotenv({ export: true, allowEmptyValues: true });

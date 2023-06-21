@@ -4,7 +4,7 @@ import ListsNames from "@/constants/listsNames.ts";
 
 import ignoreListMessages from "@/locale/ignoreListMessages.ts";
 
-import RedisSingleton from "@/utils/redisSingleton.ts";
+import RedisSingleton from "@/database/redisSingleton.ts";
 import RegularUtils from "@/utils/regularUtils.ts";
 
 const getIgnoreList = new Composer();

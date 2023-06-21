@@ -5,7 +5,7 @@ import ListsNames from "@/constants/listsNames.ts";
 import whiteListMessages from "@/locale/whiteListMessages.ts";
 
 import AsyncUtils from "@/utils/asyncUtils.ts";
-import RedisSingleton from "@/utils/redisSingleton.ts";
+import RedisSingleton from "@/database/redisSingleton.ts";
 import RegularUtils from "@/utils/regularUtils.ts";
 
 async function sendNoAccessMessage(ctx: Context, chatID: number) {

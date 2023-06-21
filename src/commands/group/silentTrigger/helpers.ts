@@ -1,6 +1,6 @@
 import silentMessages from "@/locale/silentMessages.ts";
 
-import RedisSingleton from "@/utils/redisSingleton.ts";
+import RedisSingleton from "@/database/redisSingleton.ts";
 import RegularUtils from "@/utils/regularUtils.ts";
 
 function getDefaultSilentWord(currentStatus: boolean) {

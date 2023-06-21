@@ -1,4 +1,4 @@
-import RedisSingleton from "@/utils/redisSingleton.ts";
+import RedisSingleton from "@/database/redisSingleton.ts";
 
 export async function deleteLocaleChangingStatus(
     client: RedisSingleton,

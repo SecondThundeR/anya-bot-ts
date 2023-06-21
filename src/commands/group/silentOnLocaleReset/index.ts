@@ -5,7 +5,7 @@ import ListsNames from "@/constants/listsNames.ts";
 import silentMessages from "@/locale/silentMessages.ts";
 
 import AsyncUtils from "@/utils/asyncUtils.ts";
-import RedisSingleton from "@/utils/redisSingleton.ts";
+import RedisSingleton from "@/database/redisSingleton.ts";
 
 const silentOnLocaleReset = new Composer();
 

@@ -2,7 +2,7 @@ import { Context } from "@/deps.ts";
 
 import aidenPierceMessages from "@/locale/aidenPierceMessages.ts";
 
-import RedisSingleton from "@/utils/redisSingleton.ts";
+import RedisSingleton from "@/database/redisSingleton.ts";
 import RegularUtils from "@/utils/regularUtils.ts";
 
 function getAidenModeWord(currentStatus: boolean) {
