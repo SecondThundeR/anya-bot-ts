@@ -1,7 +1,5 @@
 import { createLazyClient, Redis } from "@/deps.ts";
 
-import type { ListsNamesType } from "@/data/listsNames.ts";
-
 interface ListsObject {
     [key: string]: string[];
 }
@@ -64,11 +62,11 @@ class RedisSingleton {
         ) as (string | null)[];
     }
 
-    public async getList(listName: ListsNamesType) {
+    public async getList(listName: string) {
         return await this.redisClient.lrange(listName, 0, -1);
     }
 
-    public async getLists(listNames: ListsNamesType[]) {
+    public async getLists(listNames: string[]) {
         const listsData: ListsObject = {};
         for (const listName of listNames) {
             listsData[listName] = await this.getList(listName);

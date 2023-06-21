@@ -1,7 +1,7 @@
 import { Api, Context, InlineKeyboard } from "@/deps.ts";
 import type { ChatFromGetChat } from "@/deps.ts";
 
-import ListsNames from "@/data/listsNames.ts";
+import ListsNames from "@/constants/listsNames.ts";
 
 import ignoreListMessages from "@/locale/ignoreListMessages.ts";
 import keyboardMessages from "@/locale/keyboardMessages.ts";

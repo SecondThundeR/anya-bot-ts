@@ -1,6 +1,6 @@
 import { Context } from "@/deps.ts";
 
-import ListsNames from "@/data/listsNames.ts";
+import ListsNames from "@/constants/listsNames.ts";
 
 import whiteListMessages from "@/locale/whiteListMessages.ts";
 

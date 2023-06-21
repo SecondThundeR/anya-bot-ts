@@ -1,7 +1,7 @@
 import { Composer } from "@/deps.ts";
 import { ChatMember, Message, Update } from "@/deps.ts";
 
-import ListsNames from "@/data/listsNames.ts";
+import ListsNames from "@/constants/listsNames.ts";
 
 import keyboardMessages from "@/locale/keyboardMessages.ts";
 import otherMessages from "@/locale/otherMessages.ts";

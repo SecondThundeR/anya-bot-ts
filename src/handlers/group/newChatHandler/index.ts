@@ -1,6 +1,6 @@
 import { Composer } from "@/deps.ts";
 
-import ListsNames from "@/data/listsNames.ts";
+import ListsNames from "@/constants/listsNames.ts";
 
 import otherMessages from "@/locale/otherMessages.ts";
 
