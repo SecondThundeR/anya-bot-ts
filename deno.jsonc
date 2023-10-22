@@ -1,10 +1,10 @@
 {
   "imports": {
-    "grammy/": "https://deno.land/x/grammy@v1.16.1/",
+    "grammy/": "https://deno.land/x/grammy@v1.19.1/",
     "grammy_runner/": "https://deno.land/x/grammy_runner@v2.0.3/",
     "grammy_conversations/": "https://deno.land/x/grammy_conversations@v1.1.2/",
-    "dotenv/": "https://deno.land/std@v0.192.0/dotenv/",
-    "redis/": "https://deno.land/x/redis@v0.30.0/",
+    "dotenv/": "https://deno.land/std@v0.204.0/dotenv/",
+    "redis/": "https://deno.land/x/redis@v0.31.0/",
     "@/": "./",
     "@/groupCommands/": "./src/commands/group/",
     "@/pmCommands/": "./src/commands/pm/",
@@ -23,9 +23,7 @@
     "dev": "deno run --allow-net --allow-read --allow-env --allow-write --watch bot.ts"
   },
   "lint": {
-    "files": {
-      "include": ["src/", "./bot.ts", "./deps.ts"]
-    },
+    "include": ["src/", "./bot.ts", "./deps.ts"],
     "rules": {
       "tags": ["recommended"],
       "include": ["ban-untagged-todo"],
@@ -33,11 +31,7 @@
     }
   },
   "fmt": {
-    "files": {
-      "include": ["src/", "./bot.ts", "./deps.ts"]
-    },
-    "options": {
-      "indentWidth": 4
-    }
+    "include": ["src/", "./bot.ts", "./deps.ts"],
+    "indentWidth": 4
   }
 }
