@@ -2,7 +2,7 @@ import { Composer } from "@/deps.ts";
 
 import SetsNames from "@/constants/setsNames.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import otherMessages from "@/locales/otherMessages.ts";
 
@@ -21,7 +21,7 @@ newChatHandler.on("msg:new_chat_members:me", async (ctx) => {
     if (isChatNotWhitelisted) {
         return await newChatJoinHandler(
             ctx,
-            await redisClient.isValueInSet(
+            await RedisClient.isValueInSet(
                 SetsNames.IGNORELIST,
                 chatID,
             ),

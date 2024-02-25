@@ -1,4 +1,4 @@
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import { stringToBoolean } from "@/utils/generalUtils.ts";
 
@@ -6,7 +6,7 @@ export async function getLocaleChangingStatus(
     chatID: number,
 ) {
     return stringToBoolean(
-        await redisClient.getValueFromConfig(
+        await RedisClient.getValueFromConfig(
             chatID,
             "isMessageLocaleChanging",
         ),
@@ -16,7 +16,7 @@ export async function getLocaleChangingStatus(
 export async function deleteLocaleChangingStatus(
     chatID: number,
 ) {
-    return await redisClient.removeFieldsFromConfig(
+    return await RedisClient.removeFieldsFromConfig(
         chatID,
         "isMessageLocaleChanging",
     );
@@ -25,7 +25,7 @@ export async function deleteLocaleChangingStatus(
 export async function setLocaleChangingStatus(
     chatID: number,
 ) {
-    return await redisClient.setConfigData(chatID, {
+    return await RedisClient.setConfigData(chatID, {
         isMessageLocaleChanging: "true",
     });
 }

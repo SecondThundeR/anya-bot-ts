@@ -1,7 +1,7 @@
 import { stringToBoolean } from "@/utils/generalUtils.ts";
 import { Composer } from "@/deps.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import { getChatID, getMessageID } from "@/utils/apiUtils.ts";
 
@@ -10,7 +10,7 @@ const noCustomEmoji = new Composer();
 noCustomEmoji.command("noemoji", async (ctx) => {
     const chatID = getChatID(ctx);
 
-    const strictEmojiRemoval = (await redisClient.getValueFromConfig(
+    const strictEmojiRemoval = (await RedisClient.getValueFromConfig(
         chatID,
         "strictEmojiRemoval",
     )) || null;
@@ -20,12 +20,12 @@ noCustomEmoji.command("noemoji", async (ctx) => {
     const newStrictEmojiRemovalBoolean = !strictEmojiRemovalBoolean;
 
     if (!newStrictEmojiRemovalBoolean) {
-        await redisClient.removeFieldsFromConfig(
+        await RedisClient.removeFieldsFromConfig(
             chatID,
             "strictEmojiRemoval",
         );
     } else {
-        await redisClient.setConfigData(chatID, {
+        await RedisClient.setConfigData(chatID, {
             strictEmojiRemoval: String(newStrictEmojiRemovalBoolean),
         });
     }

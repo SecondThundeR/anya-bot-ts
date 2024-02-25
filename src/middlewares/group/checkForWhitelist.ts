@@ -14,7 +14,7 @@ import { getCreatorLink, setPlaceholderData } from "@/utils/generalUtils.ts";
  */
 function isHelpCommandTriggered(ctx: Context) {
     const helpCommand = ctx.entities("bot_command").at(0);
-    return helpCommand !== undefined && helpCommand.text === "/help";
+    return helpCommand?.text === "/help";
 }
 
 /**
@@ -60,23 +60,13 @@ function isBotAddedInChat(ctx: Context) {
  * @param next Callback for continuation of middleware flow
  */
 async function checkForWhitelist(ctx: Context, next: NextFunction) {
-    // Case for addition in chat (To skip to certain handler)
-    if (isBotAddedInChat(ctx)) {
-        await next();
-        return;
-    }
-
-    if (await isChatWhitelisted(ctx)) {
-        await next();
-        return;
+    if (isBotAddedInChat(ctx) || await isChatWhitelisted(ctx)) {
+        return void await next();
     }
 
     if (isHelpCommandTriggered(ctx)) {
-        await sendPendingApprovalMessage(ctx);
-        return;
+        return void await sendPendingApprovalMessage(ctx);
     }
-
-    return;
 }
 
 export default checkForWhitelist;

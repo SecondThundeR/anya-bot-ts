@@ -1,19 +1,14 @@
 import {
     Bot,
-    conversations,
-    createConversation,
     dotenv,
     GrammyError,
     HttpError,
     run,
-    RunnerHandle,
     sequentialize,
     session,
 } from "@/deps.ts";
-// @deno-types="npm:@types/node"
-import process from "node:process";
 
-import importDatabaseConversation from "@/conversations/importDatabase.ts";
+await dotenv({ export: true, allowEmptyValues: true });
 
 import adminPowerTrigger from "@/groupCommands/adminPowerTrigger/index.ts";
 import aidenMode from "@/groupCommands/aidenMode/index.ts";
@@ -49,11 +44,11 @@ import newChatHandler from "@/groupHandlers/newChatHandler/index.ts";
 import premiumStickersHandler from "@/groupHandlers/premiumStickersHandler/index.ts";
 import voiceAndVideoHandler from "@/groupHandlers/voiceAndVideoHandler/index.ts";
 
+import { importFileHandler } from "@/pmHandlers/importFileHandler/index.ts";
 import pmCallbackHandler from "@/pmHandlers/pmCallbackHandler/index.ts";
 
-import redisClient from "@/database/redisClient.ts";
-
-import otherMessages from "@/locales/otherMessages.ts";
+import { RedisClient } from "@/database/redisClient.ts";
+import { RedisClientException } from "@/database/redisClientException.ts";
 
 import checkForAdminCommand from "@/middlewares/group/checkForAdminCommand.ts";
 import checkForWhitelist from "@/middlewares/group/checkForWhitelist.ts";
@@ -62,11 +57,16 @@ import checkForCreatorID from "@/middlewares/pm/checkForCreatorID.ts";
 
 import BotContext from "@/types/context.ts";
 
-import { getMessageID, getSessionKey } from "@/utils/apiUtils.ts";
+import { getSessionKey, sendErrorMessage } from "@/utils/apiUtils.ts";
 import { logBotInfo } from "@/utils/asyncUtils.ts";
-import { setPlaceholderData } from "@/utils/generalUtils.ts";
 
-await dotenv({ export: true, allowEmptyValues: true });
+RedisClient.init({
+    username: Deno.env.get("REDISUSER"),
+    password: Deno.env.get("REDISPASS"),
+    hostname: Deno.env.get("REDISHOST"),
+    port: Deno.env.get("REDISPORT"),
+    tableName: Deno.env.get("CHATS_TABLE_NAME"),
+});
 
 const BOT_TOKEN = Deno.env.get("BOT_TOKEN");
 if (!BOT_TOKEN) {
@@ -76,15 +76,10 @@ if (!BOT_TOKEN) {
 }
 
 const bot = new Bot<BotContext>(BOT_TOKEN);
-let runner: RunnerHandle | undefined;
 
-bot.use(session({
-    initial: () => ({}),
-    getSessionKey,
-}));
-bot.use(sequentialize(getSessionKey));
-bot.use(conversations());
-bot.use(createConversation(importDatabaseConversation, "import"));
+bot
+    .use(sequentialize(getSessionKey))
+    .use(session({ getSessionKey }));
 
 const pm = bot.filter((ctx) => ctx.chat?.type === "private");
 const group = bot.filter(
@@ -92,50 +87,49 @@ const group = bot.filter(
 );
 
 // Commands Middlewares
-group.use(checkForWhitelist);
-group.use(checkForAdminCommand);
-group.use(incrementCommandUsage);
+group.use(checkForWhitelist)
+    .use(checkForAdminCommand)
+    .use(incrementCommandUsage);
 pm.use(checkForCreatorID);
 
 // Group Commands
-group.use(adminPowerTrigger);
-group.use(aidenMode);
-group.use(aidenSilentTrigger);
-group.use(diceGame);
-group.use(helpGroupMessage);
-group.use(messageLocale);
-group.use(messageLocaleReset);
-group.use(noCustomEmoji);
-group.use(silentOffLocale);
-group.use(silentOffLocaleReset);
-group.use(silentOnLocale);
-group.use(silentOnLocaleReset);
-group.use(silentTrigger);
-
-// Group Handlers
-group.use(groupCallbackHandler);
-group.use(customEmojisHandler);
-group.use(inlineNicknameGenerator);
-group.use(newChatHandler);
-group.use(premiumStickersHandler);
-group.use(voiceAndVideoHandler);
+group.use(adminPowerTrigger)
+    .use(aidenMode)
+    .use(aidenSilentTrigger)
+    .use(diceGame)
+    .use(helpGroupMessage)
+    .use(messageLocale)
+    .use(messageLocaleReset)
+    .use(noCustomEmoji)
+    .use(silentOffLocale)
+    .use(silentOffLocaleReset)
+    .use(silentOnLocale)
+    .use(silentOnLocaleReset)
+    .use(silentTrigger)
+    // Group Handlers
+    .use(groupCallbackHandler)
+    .use(customEmojisHandler)
+    .use(inlineNicknameGenerator)
+    .use(newChatHandler)
+    .use(premiumStickersHandler)
+    .use(voiceAndVideoHandler);
 
 // PM Commands
-pm.use(addIgnoreList);
-pm.use(addWhiteList);
-pm.use(exportDatabase);
-pm.use(getCommandsUsage);
-pm.use(getIgnoreList);
-pm.use(getWhiteList);
-pm.use(helpPMMessage);
-pm.use(importDatabase);
-pm.use(removeIgnoreList);
-pm.use(removeWhiteList);
-pm.use(startMessage);
-pm.use(uptimeCommand);
-
-// PM Handlers
-pm.use(pmCallbackHandler);
+pm.use(addIgnoreList)
+    .use(addWhiteList)
+    .use(exportDatabase)
+    .use(getCommandsUsage)
+    .use(getIgnoreList)
+    .use(getWhiteList)
+    .use(helpPMMessage)
+    .use(importDatabase)
+    .use(removeIgnoreList)
+    .use(removeWhiteList)
+    .use(startMessage)
+    .use(uptimeCommand)
+    // PM Handlers
+    .use(pmCallbackHandler)
+    .use(importFileHandler);
 
 bot.catch(async (err) => {
     const { ctx, error, ctx: { message } } = err;
@@ -143,6 +137,11 @@ bot.catch(async (err) => {
     console.error(
         `Error while handling update: ${JSON.stringify(ctx.update, null, 4)}`,
     );
+
+    if (error instanceof RedisClientException) {
+        console.error(error.message);
+        Deno.exit(727);
+    }
 
     if (error instanceof GrammyError) {
         console.error("Error in request:", error.description);
@@ -155,36 +154,28 @@ bot.catch(async (err) => {
     }
 
     if (message) {
-        await bot.api.sendMessage(
-            message?.chat.id,
-            setPlaceholderData(otherMessages.unknownError, {
-                error: String(error),
-            }),
-            {
-                reply_to_message_id: getMessageID(message),
-                parse_mode: "HTML",
-            },
-        );
+        await sendErrorMessage(bot.api, message, error);
     }
+
     console.error("Unknown error occurred:", error);
 });
 
-const stopOnTerm = async () => {
-    if (runner?.isRunning()) {
+const runner = run(bot);
+
+const stopRunner = async () => {
+    if (runner.isRunning()) {
         await runner.stop();
-        await redisClient.quitClient();
-        return true;
     }
-    return false;
+    await RedisClient.quitClient();
+    Deno.exit();
 };
 
-process.once("SIGINT", stopOnTerm);
-process.once("SIGTERM", stopOnTerm);
+Deno.addSignalListener("SIGINT", stopRunner);
+Deno.addSignalListener("SIGTERM", stopRunner);
 
 try {
-    runner = run(bot);
     await logBotInfo(bot.api);
 } catch (e) {
     console.log(e);
-    await redisClient.quitClient();
+    await RedisClient.quitClient();
 }

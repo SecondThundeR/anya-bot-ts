@@ -1,6 +1,6 @@
 import { Composer } from "@/deps.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import { getChatID, isBotCanDelete } from "@/utils/apiUtils.ts";
 import { isGroupAdmin } from "@/utils/asyncUtils.ts";
@@ -18,7 +18,7 @@ customEmojisHandler.on(
     async (ctx) => {
         const chatID = getChatID(ctx);
         const botData = await ctx.getChatMember(ctx.me.id);
-        const isAdminPowerEnabled = await redisClient
+        const isAdminPowerEnabled = await RedisClient
             .getValueFromConfig(
                 chatID,
                 "adminPower",
@@ -33,7 +33,7 @@ customEmojisHandler.on(
             return;
         }
 
-        const strictEmojiRemovalRule = await redisClient
+        const strictEmojiRemovalRule = await RedisClient
             .getValueFromConfig(
                 chatID,
                 "strictEmojiRemoval",

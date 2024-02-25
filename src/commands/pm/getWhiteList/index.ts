@@ -2,7 +2,7 @@ import { Composer } from "@/deps.ts";
 
 import SetsNames from "@/constants/setsNames.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import whiteListMessages from "@/locales/whiteListMessages.ts";
 
@@ -13,7 +13,7 @@ import { idsToCodeBlocks } from "@/utils/generalUtils.ts";
 const getWhiteList = new Composer();
 
 getWhiteList.command("getwl", async (ctx) => {
-    const whiteListIDs = await redisClient.getSetValues(
+    const whiteListIDs = await RedisClient.getSetValues(
         SetsNames.WHITELIST,
     );
 

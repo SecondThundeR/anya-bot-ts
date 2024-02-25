@@ -2,14 +2,14 @@ import { Composer } from "@/deps.ts";
 
 import SetsNames from "@/constants/setsNames.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import ignoreListMessages from "@/locales/ignoreListMessages.ts";
 
 const getIgnoreList = new Composer();
 
 getIgnoreList.command("getil", async (ctx) => {
-    const ignoreListIDs = await redisClient.getSetValues(
+    const ignoreListIDs = await RedisClient.getSetValues(
         SetsNames.IGNORELIST,
     );
 

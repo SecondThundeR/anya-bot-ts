@@ -3,7 +3,7 @@ import type { ChatFromGetChat } from "@/deps.ts";
 
 import SetsNames from "@/constants/setsNames.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import ignoreListMessages from "@/locales/ignoreListMessages.ts";
 import keyboardMessages from "@/locales/keyboardMessages.ts";
@@ -26,6 +26,15 @@ import {
     stringToBoolean,
     verifyStickerMessageLocale,
 } from "@/utils/generalUtils.ts";
+
+type UpdateCommandStatusOptions = {
+    ctx: Context;
+    hashName: string;
+    statusLocale: {
+        enabled: string;
+        disabled: string;
+    };
+};
 
 export async function logBotInfo(api: Api) {
     const creatorID = Deno.env.get("CREATOR_ID");
@@ -114,7 +123,7 @@ export async function extractContextData(
 export async function incrementCommandUsage(
     commandName: string,
 ) {
-    await redisClient.incrementFieldByValue(
+    await RedisClient.incrementFieldByValue(
         "commandsUsage",
         commandName,
         1,
@@ -138,7 +147,7 @@ export async function resetLocaleHandler(
         return await ctx.deleteMessage();
     }
 
-    await redisClient.removeFieldsFromConfig(
+    await RedisClient.removeFieldsFromConfig(
         chatID,
         ...fieldsArray,
     );
@@ -147,7 +156,7 @@ export async function resetLocaleHandler(
 }
 
 export async function isChatWhitelisted(ctx: Context) {
-    return await redisClient.isValueInSet(
+    return await RedisClient.isValueInSet(
         SetsNames.WHITELIST,
         getChatID(ctx),
     );
@@ -163,7 +172,7 @@ export async function generateStickerMessageLocale(
     ctx: Context,
     chatID: number | string,
 ) {
-    const [customText, stickerMessageMention] = await redisClient
+    const [customText, stickerMessageMention] = await RedisClient
         .getValuesFromConfig(
             chatID,
             "stickerMessageLocale",
@@ -242,8 +251,8 @@ export async function newChatJoinHandler(
         ? getUserMention(userInfo)
         : undefined;
     const messageText = getWhiteListLocale(
-        userMention,
         `${chatLinkMessage} (<code>${chatID}</code>)`,
+        userMention,
     );
     const keyboard = new InlineKeyboard()
         .text(keyboardMessages.buttonYes, `${chatID}|accept`)
@@ -287,31 +296,28 @@ export async function leaveFromIgnoredChat(
     await ctx.api.leaveChat(chatID);
 }
 
-export async function updateCommandStatus(
-    ctx: Context,
-    hashName: string,
-    statusLocale: {
-        enabled: string;
-        disabled: string;
-    },
-) {
+export async function updateCommandStatus({
+    ctx,
+    hashName,
+    statusLocale: { disabled, enabled },
+}: UpdateCommandStatusOptions) {
     const chatID = getChatID(ctx);
 
-    const isEnabledString = await redisClient.getValueFromConfig(
+    const isEnabledString = await RedisClient.getValueFromConfig(
         chatID,
         hashName,
     );
     const isEnabledReverse = !stringToBoolean(isEnabledString);
 
-    if (!isEnabledReverse) {
-        await redisClient.removeFieldsFromConfig(chatID, hashName);
-    } else {
-        await redisClient.setConfigData(chatID, {
+    if (isEnabledReverse) {
+        await RedisClient.setConfigData(chatID, {
             [hashName]: String(isEnabledReverse),
         });
+    } else {
+        await RedisClient.removeFieldsFromConfig(chatID, hashName);
     }
 
-    return isEnabledReverse ? statusLocale.enabled : statusLocale.disabled;
+    return isEnabledReverse ? enabled : disabled;
 }
 
 export async function getBotInChatInfo(ctx: Context, chatID: string | number) {

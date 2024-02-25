@@ -2,7 +2,7 @@ import { Composer } from "@/deps.ts";
 
 import SetsNames from "@/constants/setsNames.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import {
     getChatID,
@@ -21,14 +21,14 @@ const premiumStickersHandler = new Composer();
 premiumStickersHandler.on("message:sticker", async (ctx) => {
     const chatID = getChatID(ctx);
     const botData = await ctx.getChatMember(ctx.me.id);
-    const isAdminPowerEnabled = await redisClient.getValueFromConfig(
+    const isAdminPowerEnabled = await RedisClient.getValueFromConfig(
         chatID,
         "adminPower",
         "false",
     );
 
     if (
-        !(await redisClient.isValueInSet(SetsNames.WHITELIST, chatID)) ||
+        !(await RedisClient.isValueInSet(SetsNames.WHITELIST, chatID)) ||
         !isPremiumSticker(ctx) ||
         !isBotCanDelete(botData) ||
         ((await isGroupAdmin(ctx)) &&
@@ -40,7 +40,7 @@ premiumStickersHandler.on("message:sticker", async (ctx) => {
     const deleteStatus = await deleteUserMessage(ctx);
     if (deleteStatus) return;
 
-    const silentStatus = await redisClient.getValueFromConfig(
+    const silentStatus = await RedisClient.getValueFromConfig(
         chatID,
         "isSilent",
         "false",

@@ -1,6 +1,6 @@
 import { Composer } from "@/deps.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import aidenPierceMessages from "@/locales/aidenPierceMessages.ts";
 
@@ -14,11 +14,11 @@ voiceAndVideoHandler.on(
     ["message:voice", "message:video_note"],
     async (ctx) => {
         const chatID = getChatID(ctx);
-        const [aidenPierceMode, aidenPierceSilent] = await redisClient
+        const [aidenPierceMode, aidenPierceSilent] = await RedisClient
             .getValuesFromConfig(chatID, "aidenMode", "isAidenSilent");
 
         const isAdminPowerEnabled = stringToBoolean(
-            await redisClient.getValueFromConfig(
+            await RedisClient.getValueFromConfig(
                 chatID,
                 "adminPower",
                 "false",

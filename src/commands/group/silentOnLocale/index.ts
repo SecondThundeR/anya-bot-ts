@@ -1,6 +1,6 @@
 import { Composer } from "@/deps.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import otherMessages from "@/locales/otherMessages.ts";
 import silentMessages from "@/locales/silentMessages.ts";
@@ -18,7 +18,7 @@ silentOnLocale.command("silentonlocale", async (ctx) => {
         return await ctx.reply(otherMessages.stringIsEmpty);
     }
 
-    await redisClient.setConfigData(chatID, {
+    await RedisClient.setConfigData(chatID, {
         silentOnLocale: newLocaleString,
     });
 

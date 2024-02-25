@@ -1,7 +1,7 @@
 /**
  * Names of commands, that can be called by admins
  */
-const AdminCommands = [
+const ADMIN_COMMANDS = [
     "/adminpower",
     "/aidenmode",
     "/aidensilent",
@@ -16,4 +16,4 @@ const AdminCommands = [
     "/silent",
 ] as const;
 
-export default AdminCommands;
+export default ADMIN_COMMANDS;

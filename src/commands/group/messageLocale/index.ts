@@ -6,7 +6,7 @@ import {
     setLocaleChangingStatus,
 } from "@/groupCommands/messageLocale/helpers.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import otherMessages from "@/locales/otherMessages.ts";
 import stickerMessages from "@/locales/stickerMessages.ts";
@@ -50,14 +50,14 @@ messageLocale.command("messagelocale", async (ctx) => {
     }
 
     const userID = getUserID(ctx);
-    const keyboard = getStickerMessageKeyboard(userID, chatID);
+    const keyboard = getStickerMessageKeyboard(chatID, userID);
 
     const message = await ctx.reply(stickerMessages.mentionQuestion, {
         reply_markup: keyboard,
         reply_to_message_id: getMessageID(ctx.update.message),
     });
 
-    await redisClient.setConfigData(chatID, {
+    await RedisClient.setConfigData(chatID, {
         stickerMessageLocale: newLocaleString,
     });
 
@@ -76,7 +76,7 @@ messageLocale.command("messagelocale", async (ctx) => {
     }
 
     await deleteLocaleChangingStatus(chatID);
-    await redisClient.removeFieldsFromConfig(
+    await RedisClient.removeFieldsFromConfig(
         chatID,
         "stickerMessageLocale",
         "stickerMessageMention",

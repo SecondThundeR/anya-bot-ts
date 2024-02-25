@@ -1,6 +1,6 @@
 import { Composer } from "@/deps.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import otherMessages from "@/locales/otherMessages.ts";
 import stickerMessages from "@/locales/stickerMessages.ts";
@@ -28,7 +28,7 @@ groupCallbackHandler.on("callback_query:data", async (ctx) => {
         });
     }
 
-    await redisClient.removeFieldsFromConfig(
+    await RedisClient.removeFieldsFromConfig(
         chatID,
         "isMessageLocaleChanging",
     );
@@ -38,7 +38,7 @@ groupCallbackHandler.on("callback_query:data", async (ctx) => {
 
     const mentionModeBoolean = mentionMode === "yes";
 
-    await redisClient.setConfigData(chatID, {
+    await RedisClient.setConfigData(chatID, {
         stickerMessageMention: String(mentionModeBoolean),
     });
 

@@ -1,7 +1,12 @@
+import { NICKNAME_CHARS } from "@/constants/nicknameChars.ts";
+
 import ignoreListMessages from "@/locales/ignoreListMessages.ts";
 import otherMessages from "@/locales/otherMessages.ts";
 import whiteListMessages from "@/locales/whiteListMessages.ts";
 import stickerMessages from "@/locales/stickerMessages.ts";
+
+const { unknownUser, noCreatorLink } = otherMessages;
+const { newChatInfo } = whiteListMessages;
 
 /**
  * Converts boolean string to regular boolean
@@ -9,7 +14,8 @@ import stickerMessages from "@/locales/stickerMessages.ts";
  * @returns False if string contains null or "false", True otherwise
  */
 export function stringToBoolean(str: string | null) {
-    return str === null ? false : str === "true";
+    if (!str) return false;
+    return str === "true";
 }
 
 /**
@@ -24,9 +30,11 @@ export function stringToBoolean(str: string | null) {
 export function getStickerMessageLocale(
     text: string,
     isMention: string | null,
-    userMention: string | undefined = undefined,
+    userMention?: string,
 ) {
-    return stringToBoolean(isMention) ? `${userMention}, ${text}` : text;
+    const isMentionEnabled = stringToBoolean(isMention);
+    if (isMentionEnabled) return `${userMention}, ${text}`;
+    return text;
 }
 
 /**
@@ -36,21 +44,28 @@ export function getStickerMessageLocale(
  * @returns Formatted chat link
  */
 export function getChatLink(chatLink?: string) {
-    return chatLink !== undefined ? `@${chatLink}` : undefined;
+    if (!chatLink) return;
+    return `@${chatLink}`;
 }
 
+/**
+ * Returns formatted string for whitelist approval mesasge
+ *
+ * @param chatData Formatted chat data with name and ID
+ * @param inviteUser User mention string
+ * @returns String with info on who invited bot and where
+ */
 export function getWhiteListLocale(
-    inviteUser: string | undefined,
     chatData: string,
+    inviteUser?: string,
 ) {
-    if (!inviteUser) inviteUser = otherMessages.unknownUser;
-    return setPlaceholderData(
-        whiteListMessages.newChatInfo,
-        {
-            user: inviteUser,
-            chat: chatData,
-        },
-    );
+    if (!inviteUser) {
+        return getWhiteListLocale(unknownUser, chatData);
+    }
+    return setPlaceholderData(newChatInfo, {
+        user: inviteUser,
+        chat: chatData,
+    });
 }
 
 export function getWhiteListResponseLocale(
@@ -63,13 +78,14 @@ export function getWhiteListResponseLocale(
 }
 
 export function verifyLocaleWord(word: string | null, defaultWord: string) {
-    return word === null || word === "" ? defaultWord : word;
+    if (!word) return defaultWord;
+    return word;
 }
 
 export function verifyStickerMessageLocale(
     customText: string | null,
     stickerMessageMention: string | null,
-): [string, string | null] {
+) {
     const verifiedStickerMessage = verifyLocaleWord(
         customText,
         stickerMessages.messageDefault,
@@ -78,7 +94,7 @@ export function verifyStickerMessageLocale(
         verifiedStickerMessage === stickerMessages.messageDefault
             ? "true"
             : stickerMessageMention;
-    return [verifiedStickerMessage, mentionStatus];
+    return [verifiedStickerMessage, mentionStatus] as const;
 }
 
 export function setPlaceholderData(
@@ -97,16 +113,15 @@ export function setPlaceholderData(
     );
 }
 
-export function generateNickname(nicknameLength: number | undefined = 8) {
-    const chars = "abcdefghijklmnopqrstuvwxyz".split("");
-    return Array.from(
-        { length: nicknameLength },
-        () => chars[Math.floor(Math.random() * chars.length)],
-    ).join("");
+export function generateNickname(length = 8) {
+    const generateCallback = () =>
+        NICKNAME_CHARS[Math.floor(Math.random() * NICKNAME_CHARS.length)];
+
+    return Array.from({ length }, generateCallback).join("");
 }
 
 export function getCreatorLink() {
-    return Deno.env.get("CREATOR_LINK") || "no link :c";
+    return Deno.env.get("CREATOR_LINK") || noCreatorLink;
 }
 
 /**
@@ -120,6 +135,16 @@ export function createCommandsUsageMessage(
     usageData: string[],
     usageMessage: string,
 ) {
+    // return usageData.map((value, index) => {
+    //     if (index % 2 === 0) {
+    //         const commandUsage = {
+    //             name: value,
+    //             count: usageData[index + 1],
+    //         };
+    //         return setPlaceholderData(usageMessage, commandUsage);
+    //     }
+    //     return "";
+    // }).join("");
     return usageData.reduce(
         (acc: string[], _curr: string, i: number, arr: string[]): string[] => {
             if (i % 2 === 0) {

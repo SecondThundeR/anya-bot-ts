@@ -1,62 +1,64 @@
-import { Bulk, createLazyClient, Redis, RedisValue } from "@/deps.ts";
+import { createLazyClient } from "@/deps.ts";
+import type { Bulk, Redis, RedisValue } from "@/deps.ts";
 
-const KEY_TYPES = {
-    set: "set",
-    hash: "hash",
-} as const;
+import { DEFAULT_OPTIONS } from "@/constants/database/defaultOptions.ts";
+import { KEY_TYPES } from "@/constants/database/keyTypes.ts";
 
-export type DB_DATA_TYPE = string[] | Record<string, string>;
+import { RedisClientException } from "@/database/redisClientException.ts";
+
+import type {
+    RedisClientData,
+    RedisClientInitOptions,
+} from "@/types/database.ts";
 
 /**
- * Custom Singleton wrapper of Redis client
+ * Custom wrapper of Redis client
  *
  * Provides helper functions to simplify work with bot DB
  */
-class RedisClient {
-    private static instance: RedisClient;
-    private readonly redisClient: Redis;
-
-    private redisUser = Deno.env.get("REDISUSER");
-    private redisPassword = Deno.env.get("REDISPASS");
-    private redisHost = Deno.env.get("REDISHOST") || "127.0.0.1";
-    private redisPort = Deno.env.get("REDISPORT") || "6379";
-    private configTableName = Deno.env.get("CONFIG_TABLE") ||
-        "example_config";
+export class RedisClient {
+    private static client: Redis;
+    private static configTableName: string;
 
     /**
-     * Creates new lazy Redis client
+     * Creates new singleton instance of lazy Redis client
      *
      * If bot's configuration doesn't have database credentials,
      * the connection will be configured to a database on localhost
      */
-    private constructor() {
-        this.redisClient = createLazyClient({
-            username: this.redisUser,
-            password: this.redisPassword,
-            hostname: this.redisHost,
-            port: parseInt(this.redisPort),
+    public static init(options: RedisClientInitOptions) {
+        if (RedisClient.client) {
+            console.warn("Can't re-init client as it already initialized");
+            return;
+        }
+
+        RedisClient.client = createLazyClient({
+            username: options.username,
+            password: options.password,
+            hostname: options.hostname ?? DEFAULT_OPTIONS.hostname,
+            port: parseInt(options.port ?? DEFAULT_OPTIONS.port),
         });
+        RedisClient.configTableName = options.tableName ??
+            DEFAULT_OPTIONS.configTableName;
     }
 
     /**
-     * Returns instance of Redis сlient.
-     * When the function is called for the first time,
-     * the instance field is initialized
-     *
-     * @returns Instance of Redis сlient
+     * Checks if client is initializated before usage
      */
-    public static getInstance() {
-        if (!RedisClient.instance) {
-            RedisClient.instance = new RedisClient();
+    private static checkInitialization() {
+        if (!RedisClient.client) {
+            throw new RedisClientException(
+                "Attempt to use RedisClient without initialization!",
+            );
         }
-        return RedisClient.instance;
     }
 
     /**
      * Call `quit()` method on active Redis client
      */
-    public async quitClient() {
-        await this.redisClient.quit();
+    public static async quitClient() {
+        RedisClient.checkInitialization();
+        await RedisClient.client.quit();
     }
 
     /**
@@ -66,8 +68,9 @@ class RedisClient {
      * @param value Value to check in set
      * @returns True if value belongs to a set, False otherwise
      */
-    public async isValueInSet(key: string, value: RedisValue) {
-        return await this.redisClient.sismember(key, value) === 1;
+    public static async isValueInSet(key: string, value: RedisValue) {
+        RedisClient.checkInitialization();
+        return await RedisClient.client.sismember(key, value) === 1;
     }
 
     /**
@@ -77,8 +80,9 @@ class RedisClient {
      * @param value Value to check in set
      * @returns True if value doesn't belong to a set, False otherwise
      */
-    public async isValueNotInSet(key: string, value: RedisValue) {
-        return !(await this.isValueInSet(key, value));
+    public static async isValueNotInSet(key: string, value: RedisValue) {
+        RedisClient.checkInitialization();
+        return !(await RedisClient.isValueInSet(key, value));
     }
 
     /**
@@ -92,13 +96,14 @@ class RedisClient {
      * If nothing passed, initialized with empty string
      * @returns Value from config hash or fallback value
      */
-    public async getValueFromConfig(
+    public static async getValueFromConfig(
         chatID: string | number,
         field: string,
         fallback: Bulk = "",
     ) {
-        const hashValue = await this.redisClient.hget(
-            `${this.configTableName}:${chatID}`,
+        RedisClient.checkInitialization();
+        const hashValue = await RedisClient.client.hget(
+            `${RedisClient.configTableName}:${chatID}`,
             field,
         );
         return hashValue || fallback;
@@ -112,12 +117,13 @@ class RedisClient {
      * @param fields Names of fields to get values from
      * @returns Array of values from config hash
      */
-    public async getValuesFromConfig(
+    public static async getValuesFromConfig(
         chatID: number | string,
         ...fields: string[]
     ) {
-        return await this.redisClient.hmget(
-            `${this.configTableName}:${chatID}`,
+        RedisClient.checkInitialization();
+        return await RedisClient.client.hmget(
+            `${RedisClient.configTableName}:${chatID}`,
             ...fields,
         );
     }
@@ -128,8 +134,9 @@ class RedisClient {
      * @param key Name of hash to get values
      * @returns Array of values of all fields in hash
      */
-    public async getAllValuesFromHash(key: string) {
-        return await this.redisClient.hgetall(key);
+    public static async getAllValuesFromHash(key: string) {
+        RedisClient.checkInitialization();
+        return await RedisClient.client.hgetall(key);
     }
 
     /**
@@ -138,8 +145,9 @@ class RedisClient {
      * @param key Name of set to get values
      * @returns Array of values in a set
      */
-    public async getSetValues(key: string) {
-        return await this.redisClient.smembers(key);
+    public static async getSetValues(key: string) {
+        RedisClient.checkInitialization();
+        return await RedisClient.client.smembers(key);
     }
 
     /**
@@ -148,8 +156,9 @@ class RedisClient {
      * @param key Name of set to add values to
      * @param values Values to add to set
      */
-    public async addValuesToSet(key: string, ...values: RedisValue[]) {
-        await this.redisClient.sadd(key, ...values);
+    public static async addValuesToSet(key: string, ...values: RedisValue[]) {
+        RedisClient.checkInitialization();
+        await RedisClient.client.sadd(key, ...values);
     }
 
     /**
@@ -158,12 +167,13 @@ class RedisClient {
      * @param chatID ID of chat's config hash
      * @param values Object with values to set/update in config
      */
-    public async setConfigData(
+    public static async setConfigData(
         chatID: string | number,
         values: Record<string, RedisValue>,
     ) {
-        await this.redisClient.hset(
-            `${this.configTableName}:${chatID}`,
+        RedisClient.checkInitialization();
+        await RedisClient.client.hset(
+            `${RedisClient.configTableName}:${chatID}`,
             values,
         );
     }
@@ -175,12 +185,13 @@ class RedisClient {
      * @param field Field name of hash to increment
      * @param increment Value to increment field by
      */
-    public async incrementFieldByValue(
+    public static async incrementFieldByValue(
         key: string,
         field: string,
         increment: number,
     ) {
-        await this.redisClient.hincrby(key, field, increment);
+        RedisClient.checkInitialization();
+        await RedisClient.client.hincrby(key, field, increment);
     }
 
     /**
@@ -189,12 +200,13 @@ class RedisClient {
      * @param chatID ID of chat's config hash
      * @param fields Names of fields to remove
      */
-    public async removeFieldsFromConfig(
+    public static async removeFieldsFromConfig(
         chatID: number | string,
         ...fields: string[]
     ) {
-        await this.redisClient.hdel(
-            `${this.configTableName}:${chatID}`,
+        RedisClient.checkInitialization();
+        await RedisClient.client.hdel(
+            `${RedisClient.configTableName}:${chatID}`,
             ...fields,
         );
     }
@@ -205,8 +217,12 @@ class RedisClient {
      * @param key Name of set to remove values from
      * @param values Values to remove from set
      */
-    public async removeItemsFromSet(key: string, ...values: RedisValue[]) {
-        await this.redisClient.srem(key, ...values);
+    public static async removeItemsFromSet(
+        key: string,
+        ...values: RedisValue[]
+    ) {
+        RedisClient.checkInitialization();
+        await RedisClient.client.srem(key, ...values);
     }
 
     /**
@@ -214,17 +230,20 @@ class RedisClient {
      *
      * @param importData Dictionary object with DB data
      */
-    public async importDatabase(importData: Record<string, DB_DATA_TYPE>) {
+    public static async importDatabase(
+        importData: Record<string, RedisClientData>,
+    ) {
+        RedisClient.checkInitialization();
         for (const [key, value] of Object.entries(importData)) {
             if (Array.isArray(value)) {
-                await this.importSet(key, value);
+                await RedisClient.importSet(key, value);
             }
             if (
                 typeof value === "object" &&
                 !Array.isArray(value) &&
                 value !== null
             ) {
-                await this.importHash(key, value);
+                await RedisClient.importHash(key, value);
             }
         }
     }
@@ -234,18 +253,19 @@ class RedisClient {
      *
      * @returns JSON string with DB values
      */
-    public async exportDatabase() {
-        const exportMap = new Map<string, DB_DATA_TYPE>();
-        const keys = await this.redisClient.keys("*");
+    public static async exportDatabase() {
+        RedisClient.checkInitialization();
+        const exportMap = new Map<string, RedisClientData>();
+        const keys = await RedisClient.client.keys("*");
 
         for (const key of keys) {
-            const keyType = await this.redisClient.type(key);
+            const keyType = await RedisClient.client.type(key);
             switch (keyType) {
                 case KEY_TYPES.set:
-                    exportMap.set(key, await this.exportSet(key));
+                    exportMap.set(key, await RedisClient.exportSet(key));
                     break;
                 case KEY_TYPES.hash:
-                    exportMap.set(key, await this.exportHash(key));
+                    exportMap.set(key, await RedisClient.exportHash(key));
                     break;
                 default:
                     console.error(`Hit unsupported key type. Got: ${keyType}`);
@@ -263,11 +283,11 @@ class RedisClient {
      * @param key Set key string
      * @param values Values for set importing
      */
-    private async importSet(key: string, values: string[]) {
-        if (await this.redisClient.exists(key) === 1) {
-            await this.redisClient.del(key);
+    private static async importSet(key: string, values: string[]) {
+        if (await RedisClient.client.exists(key) === 1) {
+            await RedisClient.client.del(key);
         }
-        await this.addValuesToSet(key, ...values);
+        await RedisClient.addValuesToSet(key, ...values);
     }
 
     /**
@@ -276,8 +296,8 @@ class RedisClient {
      * @param key Set key string
      * @returns Set values for passed key
      */
-    private async exportSet(key: string) {
-        return await this.getSetValues(key);
+    private static async exportSet(key: string) {
+        return await RedisClient.getSetValues(key);
     }
 
     /**
@@ -287,11 +307,14 @@ class RedisClient {
      * @param key Hash key string
      * @param values Values for hash importing
      */
-    private async importHash(key: string, hashData: Record<string, string>) {
-        if (await this.redisClient.exists(key) === 1) {
-            await this.redisClient.del(key);
+    private static async importHash(
+        key: string,
+        hashData: Record<string, string>,
+    ) {
+        if (await RedisClient.client.exists(key) === 1) {
+            await RedisClient.client.del(key);
         }
-        await this.redisClient.hset(key, hashData);
+        await RedisClient.client.hset(key, hashData);
     }
 
     /**
@@ -300,8 +323,8 @@ class RedisClient {
      * @param key Hash key string
      * @returns Dictionary with hash values for passed key
      */
-    private async exportHash(key: string) {
-        const hashData = await this.getAllValuesFromHash(key);
+    private static async exportHash(key: string) {
+        const hashData = await RedisClient.getAllValuesFromHash(key);
         const exportRecord: Record<string, string> = {};
 
         for (let i = 0; i < hashData.length; i += 2) {
@@ -313,7 +336,3 @@ class RedisClient {
         return exportRecord;
     }
 }
-
-const redisClient = RedisClient.getInstance();
-
-export default redisClient;

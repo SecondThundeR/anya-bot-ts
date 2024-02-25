@@ -1,6 +1,6 @@
 import silentMessages from "@/locales/silentMessages.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import { stringToBoolean, verifyLocaleWord } from "@/utils/generalUtils.ts";
 
@@ -18,18 +18,16 @@ async function changeSilentStatusInDB(
     chatID: number,
     silentStatus: boolean,
 ) {
-    const client = redisClient;
     if (!silentStatus) {
-        return await client.removeFieldsFromConfig(chatID, "isSilent");
+        return await RedisClient.removeFieldsFromConfig(chatID, "isSilent");
     }
-    await client.setConfigData(chatID, { isSilent: String(silentStatus) });
+    await RedisClient.setConfigData(chatID, { isSilent: String(silentStatus) });
 }
 
 export async function updateSilentData(
     chatID: number,
 ) {
-    const client = redisClient;
-    const [isSilentString, silentOnLocale, silentOffLocale] = await client
+    const [isSilentString, silentOnLocale, silentOffLocale] = await RedisClient
         .getValuesFromConfig(
             chatID,
             "isSilent",

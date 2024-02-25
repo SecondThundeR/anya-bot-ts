@@ -1,8 +1,12 @@
 import { Context, NextFunction } from "@/deps.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import REGULAR_COMMANDS from "@/constants/regularCommands.ts";
 
-function extractCommandName(currentCommand: string) {
+import { RedisClient } from "@/database/redisClient.ts";
+
+function extractCommandName(currentCommand?: string) {
+    if (!currentCommand) return;
+
     return currentCommand
         .substring(1)
         .split("@") // In case: /help@someusername_bot
@@ -17,11 +21,15 @@ function extractCommandName(currentCommand: string) {
  */
 async function incrementCommandUsage(ctx: Context, next: NextFunction) {
     const currentCommand = ctx.entities("bot_command").at(0);
+    const extractedCommandName = extractCommandName(currentCommand?.text);
 
-    if (currentCommand !== undefined) {
-        await redisClient.incrementFieldByValue(
+    if (
+        extractedCommandName &&
+        REGULAR_COMMANDS.includes(`/${extractedCommandName}`)
+    ) {
+        await RedisClient.incrementFieldByValue(
             "commandsUsage",
-            extractCommandName(currentCommand.text),
+            extractedCommandName,
             1,
         );
     }

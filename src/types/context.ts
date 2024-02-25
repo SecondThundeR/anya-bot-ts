@@ -1,5 +1,8 @@
-import { Context, ConversationFlavor } from "@/deps.ts";
+import { type Context, type SessionFlavor } from "@/deps.ts";
 
-type BotContext = Context & ConversationFlavor;
+// deno-lint-ignore no-empty-interface
+interface SessionData {}
+
+type BotContext = Context & SessionFlavor<SessionData>;
 
 export default BotContext;

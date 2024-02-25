@@ -2,7 +2,7 @@ import { Composer } from "@/deps.ts";
 
 import SetsNames from "@/constants/setsNames.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import ignoreListMessages from "@/locales/ignoreListMessages.ts";
 import otherMessages from "@/locales/otherMessages.ts";
@@ -16,7 +16,7 @@ removeIgnoreList.command("remil", async (ctx) => {
     }
 
     if (
-        await redisClient.isValueNotInSet(
+        await RedisClient.isValueNotInSet(
             SetsNames.IGNORELIST,
             chatID,
         )
@@ -24,7 +24,7 @@ removeIgnoreList.command("remil", async (ctx) => {
         return await ctx.reply(ignoreListMessages.alreadyRemoved);
     }
 
-    await redisClient.removeItemsFromSet(
+    await RedisClient.removeItemsFromSet(
         SetsNames.IGNORELIST,
         chatID,
     );

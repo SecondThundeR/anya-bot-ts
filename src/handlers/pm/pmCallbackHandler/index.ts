@@ -2,7 +2,7 @@ import { ChatMember, Composer } from "@/deps.ts";
 
 import SetsNames from "@/constants/setsNames.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import keyboardMessages from "@/locales/keyboardMessages.ts";
 import otherMessages from "@/locales/otherMessages.ts";
@@ -54,9 +54,9 @@ pmCallbackHandler.on("callback_query:data", async (ctx) => {
 
     if (
         isIgnoringChat &&
-        await redisClient.isValueNotInSet(SetsNames.IGNORELIST, chatID)
+        await RedisClient.isValueNotInSet(SetsNames.IGNORELIST, chatID)
     ) {
-        await redisClient.addValuesToSet(
+        await RedisClient.addValuesToSet(
             SetsNames.IGNORELIST,
             chatID,
         );
@@ -65,9 +65,9 @@ pmCallbackHandler.on("callback_query:data", async (ctx) => {
 
     if (
         isAcceptingChat &&
-        await redisClient.isValueNotInSet(SetsNames.WHITELIST, chatID)
+        await RedisClient.isValueNotInSet(SetsNames.WHITELIST, chatID)
     ) {
-        await redisClient.addValuesToSet(
+        await RedisClient.addValuesToSet(
             SetsNames.WHITELIST,
             chatID,
         );

@@ -2,7 +2,7 @@ import { Composer } from "@/deps.ts";
 
 import SetsNames from "@/constants/setsNames.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import otherMessages from "@/locales/otherMessages.ts";
 import whiteListMessages from "@/locales/whiteListMessages.ts";
@@ -19,7 +19,7 @@ removeWhiteList.command(["remwl", "silentremwl"], async (ctx) => {
     }
 
     if (
-        await redisClient.isValueNotInSet(
+        await RedisClient.isValueNotInSet(
             SetsNames.WHITELIST,
             chatID,
         )
@@ -27,7 +27,7 @@ removeWhiteList.command(["remwl", "silentremwl"], async (ctx) => {
         return await ctx.reply(whiteListMessages.alreadyRemoved);
     }
 
-    await redisClient.removeItemsFromSet(
+    await RedisClient.removeItemsFromSet(
         SetsNames.WHITELIST,
         chatID,
     );

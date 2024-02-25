@@ -1,15 +1,13 @@
 {
   "imports": {
-    "grammy/": "https://deno.land/x/grammy@v1.19.1/",
+    "grammy/": "https://deno.land/x/grammy@v1.21.1/",
     "grammy_runner/": "https://deno.land/x/grammy_runner@v2.0.3/",
-    "grammy_conversations/": "https://deno.land/x/grammy_conversations@v1.1.2/",
-    "dotenv/": "https://deno.land/std@v0.204.0/dotenv/",
-    "redis/": "https://deno.land/x/redis@v0.31.0/",
+    "dotenv/": "https://deno.land/std@v0.217.0/dotenv/",
+    "redis/": "https://deno.land/x/redis@v0.32.1/",
     "@/": "./",
     "@/groupCommands/": "./src/commands/group/",
     "@/pmCommands/": "./src/commands/pm/",
     "@/constants/": "./src/constants/",
-    "@/conversations/": "./src/conversations/",
     "@/database/": "./src/database/",
     "@/groupHandlers/": "./src/handlers/group/",
     "@/pmHandlers/": "./src/handlers/pm/",
@@ -32,6 +30,7 @@
   },
   "fmt": {
     "include": ["src/", "./bot.ts", "./deps.ts"],
+    "exclude": [".vscode/", "deno.*"],
     "indentWidth": 4
   }
 }

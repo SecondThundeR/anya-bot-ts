@@ -1,6 +1,6 @@
 import { Composer } from "@/deps.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import cmdUsageMessages from "@/locales/cmdUsageMessages.ts";
 
@@ -11,7 +11,7 @@ const MIN_COMMAND_USAGE_LENGTH = 2;
 const getCommandsUsage = new Composer();
 
 getCommandsUsage.command("getcmdusage", async (ctx) => {
-    const commandUsageData = await redisClient.getAllValuesFromHash(
+    const commandUsageData = await RedisClient.getAllValuesFromHash(
         "commandsUsage",
     );
 

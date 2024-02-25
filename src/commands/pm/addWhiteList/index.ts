@@ -2,7 +2,7 @@ import { Composer } from "@/deps.ts";
 
 import SetsNames from "@/constants/setsNames.ts";
 
-import redisClient from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
 
 import otherMessages from "@/locales/otherMessages.ts";
 import whiteListMessages from "@/locales/whiteListMessages.ts";
@@ -23,7 +23,7 @@ addWhiteList.command("addwl", async (ctx) => {
     }
 
     if (
-        await redisClient.isValueInSet(
+        await RedisClient.isValueInSet(
             SetsNames.WHITELIST,
             chatID,
         )
@@ -31,14 +31,14 @@ addWhiteList.command("addwl", async (ctx) => {
         return await ctx.reply(whiteListMessages.alreadyAdded);
     }
 
-    await redisClient.addValuesToSet(SetsNames.WHITELIST, chatID);
+    await RedisClient.addValuesToSet(SetsNames.WHITELIST, chatID);
 
-    const isChatIgnored = await redisClient.isValueInSet(
+    const isChatIgnored = await RedisClient.isValueInSet(
         SetsNames.IGNORELIST,
         chatID,
     );
     if (isChatIgnored) {
-        await redisClient.removeItemsFromSet(SetsNames.IGNORELIST, chatID);
+        await RedisClient.removeItemsFromSet(SetsNames.IGNORELIST, chatID);
     }
 
     await ctx.reply(

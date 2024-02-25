@@ -1,15 +1,18 @@
 import {
+    Api,
     ChatFromGetChat,
     ChatMember,
     Context,
     InlineKeyboard,
     Message,
+    Update,
     User,
 } from "@/deps.ts";
 
 import keyboardMessages from "@/locales/keyboardMessages.ts";
+import otherMessages from "@/locales/otherMessages.ts";
 
-import { getChatLink } from "@/utils/generalUtils.ts";
+import { getChatLink, setPlaceholderData } from "@/utils/generalUtils.ts";
 
 /**
  * Returns the user ID as the session key
@@ -17,7 +20,7 @@ import { getChatLink } from "@/utils/generalUtils.ts";
  * @param ctx Context object to get user ID
  * @returns Converted user ID to string
  */
-export function getSessionKey(ctx: Context) {
+export function getSessionKey(ctx: Omit<Context, "session">) {
     return ctx.from?.id.toString();
 }
 
@@ -75,9 +78,10 @@ export function getUserID(ctx: Context) {
  * @returns Object with chat's title and username
  */
 export function getChatInfo(
-    ctx: Context,
+    ctx?: Context,
+    message?: Message & Update.NonChannel,
 ) {
-    const chat = ctx.update.message?.chat;
+    const chat = ctx ? ctx.update.message?.chat : message?.chat;
     let title: string | undefined;
     let username: string | undefined;
 
@@ -160,8 +164,8 @@ export function getUserMention(user: User) {
  * @returns Inline keyboard with configured buttons
  */
 export function getStickerMessageKeyboard(
-    userID: string | number,
     chatID: string | number,
+    userID?: string | number,
 ) {
     return new InlineKeyboard()
         .text(keyboardMessages.buttonYes, `${userID}|${chatID}|yes`)
@@ -193,4 +197,38 @@ export function chatsInfoToString(chats: ChatFromGetChat[]) {
 
         return `${!link ? title : link} (<code>${chatID}</code>)`;
     }).join("\n");
+}
+
+export async function sendErrorMessage(
+    api: Api,
+    message: Message & Update.NonChannel,
+    error: unknown,
+) {
+    const creatorID = Deno.env.get("CREATOR_ID");
+
+    if (!creatorID) {
+        return await api.sendMessage(
+            message?.chat.id,
+            setPlaceholderData(otherMessages.unknownError, {
+                error: String(error),
+            }),
+            {
+                reply_to_message_id: getMessageID(message),
+                parse_mode: "HTML",
+            },
+        );
+    }
+
+    const chatInfo = getChatInfo(undefined, message);
+    await api.sendMessage(
+        creatorID,
+        setPlaceholderData(otherMessages.unknownErrorForCreator, {
+            chatName: chatInfo.username ?? chatInfo.title ?? "Нет названия",
+            chatID: String(message.chat.id),
+            error: String(error),
+        }),
+        {
+            parse_mode: "HTML",
+        },
+    );
 }
