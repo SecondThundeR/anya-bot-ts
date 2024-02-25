@@ -23,7 +23,6 @@ Some random TypeScript bot with interesting features based on the grammY library
 ### Local
 
 1. Create a new bot and get a bot token
-   > [!TIP]
    > Note: Don't forget to disable [privacy mode](https://core.telegram.org/bots#privacy-mode) for your bot.
    >
    > For more information about how this does not violate the privacy of users conversations, read the [FAQ section](#faq)
@@ -41,10 +40,8 @@ Some random TypeScript bot with interesting features based on the grammY library
 
 1. Create a new bot and get a bot token
 2. Create a new Redis database and get: Username, Password, Host and Port
-    > [!TIP]
     > How to create a Redis database, create a user and get the necessary data to connect will not be written here
 3. Refer to [Fly for Dockerfile documentation](https://fly.io/docs/languages-and-frameworks/dockerfile/) for creating app, setting up secrets and deploying
-    > [!TIP]
     > Which secrets need to be set can be found below in Heroku section, step 3
 4. Wait for `Started as @...` message in console and/or message in PM from bot
 5. Bot is ready to go!
@@ -53,7 +50,6 @@ Some random TypeScript bot with interesting features based on the grammY library
 
 1. Create a new bot and get a bot token
 2. Create a new Redis database and get: Username, Password, Host and Port
-    > [!TIP]
     > How to create a Redis database, create a user and get the necessary data to connect will not be written here
 3. Create a new pipeline in Heroku, the application in it and set neccessary config vars in the settings:
     - `BOT_TOKEN` - bot token
