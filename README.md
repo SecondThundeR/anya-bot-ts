@@ -1,7 +1,11 @@
 # anya-bot-ts
 
+> [!WARNING]
+> The bot is in maintenance mode. New features will most likely not appear. Expected termination of the project (including complete shutdown) ~end of 2024
+
 Some random TypeScript bot with interesting features based on the grammY library
 
+> [!NOTE]
 > This bot was created as an additional tool to fight against premium Telegram stickers and emoji (Because they sucks)
 >
 > Live instance of bot: [@antipremiumbullshit_bot](https://t.me/antipremiumbullshit_bot)
@@ -19,6 +23,7 @@ Some random TypeScript bot with interesting features based on the grammY library
 ### Local
 
 1. Create a new bot and get a bot token
+   > [!TIP]
    > Note: Don't forget to disable [privacy mode](https://core.telegram.org/bots#privacy-mode) for your bot.
    >
    > For more information about how this does not violate the privacy of users conversations, read the [FAQ section](#faq)
@@ -36,8 +41,10 @@ Some random TypeScript bot with interesting features based on the grammY library
 
 1. Create a new bot and get a bot token
 2. Create a new Redis database and get: Username, Password, Host and Port
+    > [!TIP]
     > How to create a Redis database, create a user and get the necessary data to connect will not be written here
 3. Refer to [Fly for Dockerfile documentation](https://fly.io/docs/languages-and-frameworks/dockerfile/) for creating app, setting up secrets and deploying
+    > [!TIP]
     > Which secrets need to be set can be found below in Heroku section, step 3
 4. Wait for `Started as @...` message in console and/or message in PM from bot
 5. Bot is ready to go!
@@ -46,6 +53,7 @@ Some random TypeScript bot with interesting features based on the grammY library
 
 1. Create a new bot and get a bot token
 2. Create a new Redis database and get: Username, Password, Host and Port
+    > [!TIP]
     > How to create a Redis database, create a user and get the necessary data to connect will not be written here
 3. Create a new pipeline in Heroku, the application in it and set neccessary config vars in the settings:
     - `BOT_TOKEN` - bot token
@@ -63,6 +71,7 @@ Some random TypeScript bot with interesting features based on the grammY library
 
 While doing step 3, refer to [Heroku Docker Docs](https://devcenter.heroku.com/articles/build-docker-images-heroku-yml#getting-started) for converting the stack into a container
 
+> [!TIP]
 > If something doesn't work, check the application logs in Heroku or locally and try googling the problem. If nothing helps, open an Issue with a detailed description of the problem
 
 ## Bot commands
