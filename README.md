@@ -1,7 +1,7 @@
 # anya-bot-ts
 
 > [!WARNING]
-> The bot is in maintenance mode. New features will most likely not appear. Expected termination of the project (including complete shutdown) ~end of 2024
+> The bot is in maintenance mode. New features will most likely not appear
 
 Some random TypeScript bot with interesting features based on the grammY library
 
