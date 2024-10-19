@@ -39,8 +39,11 @@ type UpdateCommandStatusOptions = {
 export async function logBotInfo(api: Api) {
     const creatorID = Deno.env.get("CREATOR_ID");
     const botInfo = await api.getMe();
+    const { deno, typescript, v8 } = Deno.version;
 
-    console.log(`Started as ${botInfo.first_name} (@${botInfo.username})`);
+    console.log(
+        `Started as ${botInfo.first_name} (@${botInfo.username})\nRunning on Deno ${deno} (TS: ${typescript}; V8: ${v8})`,
+    );
 
     if (!creatorID) return;
     await api.sendMessage(

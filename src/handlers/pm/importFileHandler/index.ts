@@ -1,6 +1,7 @@
 import { Composer } from "@/deps.ts";
 
-import { DB_DATA_TYPE, RedisClient } from "@/database/redisClient.ts";
+import { RedisClient } from "@/database/redisClient.ts";
+import { RedisClientData } from "@/types/database.ts";
 
 export const importFileHandler = new Composer();
 
@@ -19,7 +20,7 @@ importFileHandler.on("message:file", async (ctx) => {
     }/${fileData.file_path}`;
 
     const fileResponse = await fetch(fileURL);
-    const dataJSON: Record<string, DB_DATA_TYPE> = await fileResponse.json();
+    const dataJSON: Record<string, RedisClientData> = await fileResponse.json();
     await RedisClient.importDatabase(dataJSON);
 
     await ctx.reply("Успешно импортировано!");

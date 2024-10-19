@@ -2,6 +2,6 @@ FROM denoland/deno:alpine
 
 WORKDIR /app
 
-COPY . .
+ADD . .
 
 CMD ["deno", "task", "start"]

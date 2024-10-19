@@ -1,14 +1,13 @@
+import "@std/dotenv/load";
+
 import {
     Bot,
-    dotenv,
     GrammyError,
     HttpError,
     run,
     sequentialize,
     session,
 } from "@/deps.ts";
-
-await dotenv({ export: true, allowEmptyValues: true });
 
 import adminPowerTrigger from "@/groupCommands/adminPowerTrigger/index.ts";
 import aidenMode from "@/groupCommands/aidenMode/index.ts";
@@ -31,7 +30,6 @@ import getCommandsUsage from "@/pmCommands/getCommandsUsage/index.ts";
 import getIgnoreList from "@/pmCommands/getIgnoreList/index.ts";
 import getWhiteList from "@/pmCommands/getWhiteList/index.ts";
 import helpPMMessage from "@/pmCommands/helpPMMessage/index.ts";
-import importDatabase from "@/pmCommands/importDatabase/index.ts";
 import removeIgnoreList from "@/pmCommands/removeIgnoreList/index.ts";
 import removeWhiteList from "@/pmCommands/removeWhiteList/index.ts";
 import startMessage from "@/pmCommands/startMessage/index.ts";
@@ -60,6 +58,14 @@ import BotContext from "@/types/context.ts";
 import { getSessionKey, sendErrorMessage } from "@/utils/apiUtils.ts";
 import { logBotInfo } from "@/utils/asyncUtils.ts";
 
+const BOT_TOKEN = Deno.env.get("BOT_TOKEN");
+if (!BOT_TOKEN) {
+    console.error(
+        "Token for bot wasn't provided. Please set the BOT_TOKEN environment variable.",
+    );
+    Deno.exit(1);
+}
+
 RedisClient.init({
     username: Deno.env.get("REDISUSER"),
     password: Deno.env.get("REDISPASS"),
@@ -68,32 +74,24 @@ RedisClient.init({
     tableName: Deno.env.get("CHATS_TABLE_NAME"),
 });
 
-const BOT_TOKEN = Deno.env.get("BOT_TOKEN");
-if (!BOT_TOKEN) {
-    throw new Error(
-        "Token for bot wasn't provided. Please set the BOT_TOKEN environment variable.",
-    );
-}
-
 const bot = new Bot<BotContext>(BOT_TOKEN);
 
 bot
     .use(sequentialize(getSessionKey))
     .use(session({ getSessionKey }));
 
-const pm = bot.filter((ctx) => ctx.chat?.type === "private");
+const pm = bot.filter((ctx) => ctx.chat?.type === "private")
+    .use(checkForCreatorID);
 const group = bot.filter(
-    (ctx) => ctx.chat?.type !== "private" && ctx.chat?.type !== "channel",
-);
-
-// Commands Middlewares
-group.use(checkForWhitelist)
+    (ctx) => ["group", "supergroup"].includes(ctx.chat?.type ?? ""),
+)
+    .use(checkForWhitelist)
     .use(checkForAdminCommand)
     .use(incrementCommandUsage);
-pm.use(checkForCreatorID);
 
 // Group Commands
-group.use(adminPowerTrigger)
+group
+    .use(adminPowerTrigger)
     .use(aidenMode)
     .use(aidenSilentTrigger)
     .use(diceGame)
@@ -115,14 +113,14 @@ group.use(adminPowerTrigger)
     .use(voiceAndVideoHandler);
 
 // PM Commands
-pm.use(addIgnoreList)
+pm
+    .use(addIgnoreList)
     .use(addWhiteList)
     .use(exportDatabase)
     .use(getCommandsUsage)
     .use(getIgnoreList)
     .use(getWhiteList)
     .use(helpPMMessage)
-    .use(importDatabase)
     .use(removeIgnoreList)
     .use(removeWhiteList)
     .use(startMessage)
@@ -140,17 +138,15 @@ bot.catch(async (err) => {
 
     if (error instanceof RedisClientException) {
         console.error(error.message);
-        Deno.exit(727);
+        Deno.exit(1);
     }
 
     if (error instanceof GrammyError) {
-        console.error("Error in request:", error.description);
-        return;
+        return console.error("Error in request:", error.description);
     }
 
     if (error instanceof HttpError) {
-        console.error("Could not contact Telegram:", error);
-        return;
+        return console.error("Could not contact Telegram:", error);
     }
 
     if (message) {
@@ -163,15 +159,18 @@ bot.catch(async (err) => {
 const runner = run(bot);
 
 const stopRunner = async () => {
-    if (runner.isRunning()) {
-        await runner.stop();
-    }
+    runner.isRunning() && await runner.stop();
     await RedisClient.quitClient();
     Deno.exit();
 };
 
 Deno.addSignalListener("SIGINT", stopRunner);
 Deno.addSignalListener("SIGTERM", stopRunner);
+
+addEventListener("error", (event) => {
+    console.log("Caught unhandled event:", event.message);
+    event.preventDefault();
+});
 
 try {
     await logBotInfo(bot.api);

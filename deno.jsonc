@@ -1,9 +1,9 @@
 {
   "imports": {
-    "grammy/": "https://deno.land/x/grammy@v1.21.1/",
+    "grammy/": "https://deno.land/x/grammy@v1.30.0/",
     "grammy_runner/": "https://deno.land/x/grammy_runner@v2.0.3/",
-    "dotenv/": "https://deno.land/std@v0.217.0/dotenv/",
-    "redis/": "https://deno.land/x/redis@v0.32.1/",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.2",
+    "redis/": "https://deno.land/x/redis@v0.33.0/",
     "@/": "./",
     "@/groupCommands/": "./src/commands/group/",
     "@/pmCommands/": "./src/commands/pm/",
@@ -17,8 +17,8 @@
     "@/utils/": "./src/utils/"
   },
   "tasks": {
-    "start": "deno run --allow-net --allow-read --allow-env --allow-write bot.ts",
-    "dev": "deno run --allow-net --allow-read --allow-env --allow-write --watch bot.ts"
+    "start": "deno run --allow-net --allow-read --allow-env --allow-write --allow-import bot.ts",
+    "dev": "DEBUG=\"grammy*\" deno run --allow-net --allow-read --allow-env --allow-write --allow-import --watch bot.ts"
   },
   "lint": {
     "include": ["src/", "./bot.ts", "./deps.ts"],
@@ -30,7 +30,6 @@
   },
   "fmt": {
     "include": ["src/", "./bot.ts", "./deps.ts"],
-    "exclude": [".vscode/", "deno.*"],
     "indentWidth": 4
   }
 }
