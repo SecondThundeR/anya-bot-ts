@@ -1,9 +1,9 @@
 {
   "imports": {
-    "grammy/": "https://deno.land/x/grammy@v1.30.0/",
+    "grammy/": "https://deno.land/x/grammy@v1.36.1/",
     "grammy_runner/": "https://deno.land/x/grammy_runner@v2.0.3/",
-    "@std/dotenv": "jsr:@std/dotenv@^0.225.2",
-    "redis/": "https://deno.land/x/redis@v0.33.0/",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.4",
+    "redis/": "https://deno.land/x/redis@v0.40.0/",
     "@/": "./",
     "@/groupCommands/": "./src/commands/group/",
     "@/pmCommands/": "./src/commands/pm/",
