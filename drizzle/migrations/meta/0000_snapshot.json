@@ -1,0 +1,147 @@
+{
+  "id": "2f5e2458-66b0-4ce2-976b-f40d18a5ea37",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.chats": {
+      "name": "chats",
+      "schema": "",
+      "columns": {
+        "chat_id": {
+          "name": "chat_id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "list_status": {
+          "name": "list_status",
+          "type": "chat_list_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "admin_power": {
+          "name": "admin_power",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "aiden_mode": {
+          "name": "aiden_mode",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "is_aiden_silent": {
+          "name": "is_aiden_silent",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "is_silent": {
+          "name": "is_silent",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "strict_emoji_removal": {
+          "name": "strict_emoji_removal",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "is_message_locale_changing": {
+          "name": "is_message_locale_changing",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "sticker_message_mention": {
+          "name": "sticker_message_mention",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "sticker_message_locale": {
+          "name": "sticker_message_locale",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "silent_on_locale": {
+          "name": "silent_on_locale",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "silent_off_locale": {
+          "name": "silent_off_locale",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.commands_usage": {
+      "name": "commands_usage",
+      "schema": "",
+      "columns": {
+        "command": {
+          "name": "command",
+          "type": "varchar(64)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "count": {
+          "name": "count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.chat_list_status": {
+      "name": "chat_list_status",
+      "schema": "public",
+      "values": [
+        "whitelisted",
+        "ignored"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
