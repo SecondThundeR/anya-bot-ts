@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "lib": ["ESNext"],
+        "target": "ESNext",
+        "module": "NodeNext",
+        "moduleDetection": "force",
+        "moduleResolution": "nodenext",
+        "allowImportingTsExtensions": true,
+        "rewriteRelativeImportExtensions": true,
+        "erasableSyntaxOnly": true,
+        "isolatedModules": true,
+        "verbatimModuleSyntax": true,
+        "noEmit": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "types": ["node"],
+        "paths": {
+            "#root/*": ["./src/*"],
+            "#drizzle/*": ["./drizzle/*"]
+        }
+    },
+    "include": [
+        "src/**/*",
+        "drizzle/**/*",
+        "scripts/**/*",
+        "drizzle.config.ts",
+        "tsdown.config.ts",
+        "env.d.ts"
+    ]
+}

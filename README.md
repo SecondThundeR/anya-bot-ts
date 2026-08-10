@@ -5,141 +5,109 @@
 
 Some random TypeScript bot with interesting features based on the grammY library
 
-> [!NOTE]
-> This bot was created as an additional tool to fight against premium Telegram stickers and emoji (Because they sucks)
->
-> Live instance of bot: [@antipremiumbullshit_bot](https://t.me/antipremiumbullshit_bot)
+A Telegram moderation bot for group chats: it removes premium stickers, custom
+emoji, voice and video messages according to per-chat settings, and answers
+with configurable wording. Groups are opt-in — the bot only works where an
+admin has whitelisted it.
 
-## Features
+Built with [grammY](https://grammy.dev), [Hono](https://hono.dev),
+[Drizzle ORM](https://orm.drizzle.team) and PostgreSQL.
 
-- **Removes premium stickers/emojis (Can be disabled/enabled with special command)**
-- **Removes voice/video messages (Can be disabled/enabled with special command)**
-- Handy white/ignore lists configuration from DM
-- Locale configuration via commands
-- and more... _(maybe)_
+Live instance of bot: [@antipremiumbullshit_bot](https://t.me/antipremiumbullshit_bot)
 
-## Setup
+## Requirements
 
-### Local
+- Node.js 24 (see `.nvmrc`)
+- pnpm 11
+- PostgreSQL 18
+- `postgresql-client` — `/export` and the import flow shell out to `pg_dump`
+  and `pg_restore`. The Docker image installs it; a local machine needs it on
+  `PATH` for those two commands only.
 
-1. Create a new bot and get a bot token
-   > Note: Don't forget to disable [privacy mode](https://core.telegram.org/bots#privacy-mode) for your bot.
-   >
-   > For more information about how this does not violate the privacy of users conversations, read the [FAQ section](#faq)
-2. Install `redis-cli` and `deno`
-3. Clone this repository
-4. Open an `.env` file in the root of the folder and change variables into it:
-    - `BOT_TOKEN` - bot token
-    - `CREATOR_ID` - your ID for working with the bot whitelist/ignored list from the DM
-5. Run `deno task dev`
-    > If you want to get all debug data, run `export DEBUG="grammy*"` before launching bot
-6. Wait for `Started as @...` message and/or message in PM from bot
-7. Bot is ready to go!
+## Getting started
 
-### Fly
+```bash
+pnpm install
+cp .env.example .env   # then fill in BOT_TOKEN, DATABASE_URL and ADMIN_IDS
+pnpm db:migrate
+pnpm dev
+```
 
-1. Create a new bot and get a bot token
-2. Create a new Redis database and get: Username, Password, Host and Port
-    > How to create a Redis database, create a user and get the necessary data to connect will not be written here
-3. Refer to [Fly for Dockerfile documentation](https://fly.io/docs/languages-and-frameworks/dockerfile/) for creating app, setting up secrets and deploying
-    > Which secrets need to be set can be found below in Heroku section, step 3
-4. Wait for `Started as @...` message in console and/or message in PM from bot
-5. Bot is ready to go!
+## Configuration
 
-### Heroku
+All configuration comes from the environment; `.env` is loaded automatically
+in development. See `.env.example` for the full list.
 
-1. Create a new bot and get a bot token
-2. Create a new Redis database and get: Username, Password, Host and Port
-    > How to create a Redis database, create a user and get the necessary data to connect will not be written here
-3. Create a new pipeline in Heroku, the application in it and set neccessary config vars in the settings:
-    - `BOT_TOKEN` - bot token
-    - `CREATOR_ID` - your ID for working with the bot whitelist/ignored list from the DM (better to pass, as bot won't work correctly without it)
-    - `CHATS_TABLE_NAME` - name of table with data in Redis DB
-    - `REDISUSER` - name of Redis DB user
-    - `REDISPASS` - password of Redis DB user
-    - `REDISHOST` - endpoint of Redis DB
-    - `REDISPORT` - port of Redis DB endpoint
-4. Push sources on Heroku _(or set up auto-deployment)_ and wait for build
-5. Wait for `Started as @...` message in console and/or message in PM from bot
-6. Bot is ready to go!
+| Variable | Required | Description |
+|---|---|---|
+| `BOT_TOKEN` | yes | Telegram bot token |
+| `DATABASE_URL` | yes | PostgreSQL connection URL |
+| `ADMIN_IDS` | — | JSON array of user IDs allowed to run admin commands in PM, e.g. `[123, 456]` |
+| `BOT_MODE` | yes | `polling` or `webhook` |
+| `BOT_ALLOWED_UPDATES` | — | JSON array of update types, empty for the defaults |
+| `LOG_LEVEL` | — | `trace` … `silent`, defaults to `info` |
+| `USE_DEBUG` | — | `true` enables pretty logs and per-update tracing |
 
-#### Note about Heroku
+Webhook mode additionally needs `BOT_WEBHOOK` (public URL ending in
+`/webhook`), `BOT_WEBHOOK_SECRET` (12+ characters, e.g.
+`openssl rand --hex 32`), and optionally `SERVER_HOST` / `SERVER_PORT`.
 
-While doing step 3, refer to [Heroku Docker Docs](https://devcenter.heroku.com/articles/build-docker-images-heroku-yml#getting-started) for converting the stack into a container
+In polling mode no HTTP server is started. In webhook mode Hono serves
+`POST /webhook` plus `GET /` as a health check.
 
-> [!TIP]
-> If something doesn't work, check the application logs in Heroku or locally and try googling the problem. If nothing helps, open an Issue with a detailed description of the problem
+## Commands
 
-## Bot commands
+**In groups** (admins only, except `/dice`): `/help`, `/silent`, `/aidenmode`,
+`/aidensilent`, `/adminpower`, `/noemoji`, `/dice`, and the wording commands
+`/messagelocale`, `/silentonlocale`, `/silentofflocale` with their
+`…reset` counterparts.
 
-**Group commands:**
+**In private chat** (only for `ADMIN_IDS`): `/start`, `/help`, `/addwl`,
+`/remwl`, `/silentremwl`, `/getwl`, `/addil`, `/remil`, `/getil`,
+`/getcmdusage`, `/export`, `/uptime`, `/setcommands`.
 
-- `help` - send help message
-- `silent` - manage bot silent mode
-- `aidenmode` - enables "Aiden Pierce" mode _(Removes voice/video messages)_
-- `aidensilent` - manage "Aiden Pierce" silent mode
-- `noemoji` - triggers emoji strictness removal
-- `adminpower` - triggers ignoring of restricted messages from admins
-- `silentonlocale` - change message when silent mode is enabled
-- `silentonlocalereset` - reset message when silent mode is enabled
-- `silentofflocale` - change message when silent mode is disabled
-- `silentofflocalereset` - reset message when silent mode is disabled
-- `messagelocale` - change message when bot removes stickers
-- `messagelocalereset` - reset message when bot removes stickers
+`/export` sends a `pg_dump` archive. Sending that `.dump` file back to the bot
+starts a restore, which asks for confirmation first — it replaces the entire
+database.
 
-**DM commands:**
+## Development
 
-- `help` - send DM help message
-- `addwl` - add group ID to white list
-- `remwl` - remove group ID from white list
-- `silentremwl` - remove group ID from white list without notification
-- `getwl` - get all groups info from white list
-- `addil` - add group ID to ignore list
-- `remil` - remove group ID from ignore list
-- `getil` - get all groups ID from ignore list
-- `getcmdusage` - get counters of commands usage
-- `import` - import database entries to the related Redis instance
-- `export` - export database entries from the related Redis instance
-- `uptime` - get current uptime of bot
+```bash
+pnpm dev         # watch mode
+pnpm typecheck   # tsc
+pnpm lint        # biome check
+pnpm lint:write  # biome check --write
+pnpm test        # node --test
+pnpm build       # tsdown -> dist/main.mjs
+```
 
-## Bot locale configuration
+Tests are plain `node:test` files next to the code they cover. They never
+reach a database, but importing the bot's modules constructs a postgres-js
+client, so `DATABASE_URL` has to be set — any syntactically valid URL will do,
+since the client connects lazily.
 
-The entire locale strings are now stored in the `src/locales`. Some strings can be changed per chat using the commands above with `locale` substring in it.
+## Database
 
-## Changelog
+Schema lives in `drizzle/schema.ts`. Per-chat settings are stored as a sparse
+JSONB `config` column: a missing key means "use the default", so a new setting
+needs no migration.
 
-The project now has a separate file [CHANGELOG.md](https://github.com/SecondThundeR/anya-bot-ts/blob/main/CHANGELOG.md). Check it for details
+```bash
+pnpm db:generate   # generate a migration from schema changes
+pnpm db:migrate    # apply pending migrations
+```
 
-## FAQ
+## Deployment
 
-> Q: How white/ignore lists are working?
+The `Dockerfile` builds the bundle and ships it with `postgresql-client`.
+Migrations are not run by the entrypoint — run `pnpm db:migrate` as a
+pre-deploy step.
 
-When the bot is added to an unknown group, you will be prompted
-to add the group to the whitelist, decline the offer to add,
-or add it to the ignore list. The ignore list is used to prevent
-the bot from sending you information about future additions to the
-group that  you have set to the ignore list. In the case of a simple
-rejection, the bot will not work in the new chat until you add it
-to the whitelist
-
-> Q: Why were these lists added in the first place?
-
-During the tests, it became clear that with limited resources
-_(small database memory, low system configuration, etc.)_,
-the best solution was to limit the number of chats, for
-less load on the infrastructure of the bot. If you want,
-whitelist can be cut out of the code, perhaps later will
-be created a separate branch for this, but not for sure
-
-> Q: Is the privacy of conversations with the privacy mode disabled violated?
-
-No, it is not violated. The advantage of this bot is that it:
-
-1. Does not log messages received from the Telegram API
-2. Processes only stickers, emojis and voice/video messages,
-thanks to a convenient filter provided by the grammY library.
-If you want to make sure of this, look at the folder with [handlers](https://github.com/SecondThundeR/anya-bot-ts/tree/main/src/handlers)
+The image ships `dist/` and `drizzle/`, but not `src/`, and `pnpm db:migrate`
+runs `drizzle/migrate.ts` from source. So `drizzle/` must stay self-contained:
+importing `#root/*` from there resolves to `src/`, which only exists at build
+time. A lint rule in `biome.json` enforces this.
 
 ## License
 
-This repository is licensed under [MIT License](https://github.com/SecondThundeR/anya-bot-ts/blob/main/LICENSE)
+MIT — see [LICENSE](LICENSE)
