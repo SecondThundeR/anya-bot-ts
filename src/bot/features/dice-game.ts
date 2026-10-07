@@ -1,10 +1,10 @@
+import { setTimeout } from "node:timers/promises";
 import { Composer } from "grammy";
 
 import type { Context } from "#root/bot/context.js";
 import { getUserMention } from "#root/bot/helpers/api.js";
 import { escapeHtml, parseDiceCommand } from "#root/bot/helpers/general.js";
 import { logHandle } from "#root/bot/helpers/logging.js";
-import { asyncTimeout } from "#root/bot/helpers/time.js";
 
 // This value is average animation time without issues
 // (e.g. network/api errors, etc.)
@@ -54,7 +54,7 @@ feature.command("dice", logHandle("command-dice"), async (ctx) => {
     } = diceMessage;
     if (diceValue !== diceNumber) return;
 
-    await asyncTimeout(DICE_ANIMATION_TIME_MS);
+    await setTimeout(DICE_ANIMATION_TIME_MS);
 
     const userMention = getUserMention(ctx.msg.from);
     await ctx.reply(`${userMention}, ${diceText}`);

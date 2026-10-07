@@ -6,7 +6,7 @@ import {
 } from "#drizzle/queries/chats.js";
 import type { Context } from "#root/bot/context.js";
 import { isAdmin } from "#root/bot/filter/is-admin.js";
-import { isBotInChat, sendMessageByChatID } from "#root/bot/helpers/chat.js";
+import { isBotInChat } from "#root/bot/helpers/chat.js";
 import { logHandle } from "#root/bot/helpers/logging.js";
 
 const composer = new Composer<Context>();
@@ -35,8 +35,7 @@ feature.command(
         if (isInStealthMode) return;
 
         if (await isBotInChat(ctx, chatID)) {
-            await sendMessageByChatID(
-                ctx,
+            await ctx.api.sendMessage(
                 chatID,
                 ctx.t("whiteListMessages.accessRevoked"),
             );

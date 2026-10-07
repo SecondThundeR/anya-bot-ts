@@ -1,4 +1,5 @@
 import { Composer } from "grammy";
+import type { ChatMember } from "grammy/types";
 
 import {
     getChatListStatus,
@@ -7,10 +8,6 @@ import {
 import type { Context } from "#root/bot/context.js";
 import { isAdmin } from "#root/bot/filter/is-admin.js";
 import { isBotCanDelete } from "#root/bot/helpers/api.js";
-import {
-    getBotInChatInfo,
-    sendMessageByChatID,
-} from "#root/bot/helpers/chat.js";
 import { logHandle } from "#root/bot/helpers/logging.js";
 
 const composer = new Composer<Context>();
@@ -40,22 +37,18 @@ feature.command("addwl", logHandle("command-addwl"), async (ctx) => {
 
     // getChatMember answers both questions at once: it fails when the bot is
     // not in the chat, and otherwise carries the permissions
-    let botData: Awaited<ReturnType<typeof getBotInChatInfo>>;
+    let botData: ChatMember;
     try {
-        botData = await getBotInChatInfo(ctx, chatID);
+        botData = await ctx.api.getChatMember(chatID, ctx.me.id);
     } catch {
         return;
     }
 
-    await sendMessageByChatID(
-        ctx,
-        chatID,
-        ctx.t("whiteListMessages.accessGranted"),
-    );
+    await ctx.api.sendMessage(chatID, ctx.t("whiteListMessages.accessGranted"));
 
     if (isBotCanDelete(botData)) return;
 
-    await sendMessageByChatID(ctx, chatID, ctx.t("otherMessages.botAdminHint"));
+    await ctx.api.sendMessage(chatID, ctx.t("otherMessages.botAdminHint"));
 });
 
 export { composer as addWhiteListFeature };

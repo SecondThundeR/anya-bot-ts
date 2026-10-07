@@ -12,11 +12,7 @@ import {
     getMessageID,
     isBotCanDelete,
 } from "#root/bot/helpers/api.js";
-import {
-    getBotInChatInfo,
-    leaveFromIgnoredChat,
-    sendMessageByChatID,
-} from "#root/bot/helpers/chat.js";
+import { leaveFromIgnoredChat } from "#root/bot/helpers/chat.js";
 import { getWhiteListResponseLocale } from "#root/bot/helpers/general.js";
 import { logHandle } from "#root/bot/helpers/logging.js";
 
@@ -55,7 +51,7 @@ feature.on(
         let botData: ChatMember;
 
         try {
-            botData = await getBotInChatInfo(ctx, chatID);
+            botData = await ctx.api.getChatMember(chatID, ctx.me.id);
         } catch {
             return await ctx.reply(
                 ctx.t("keyboardMessages.keyboardError"),
@@ -72,8 +68,7 @@ feature.on(
 
         if (isAcceptingChat && listStatus !== "whitelisted") {
             await setChatListStatus(chatID, "whitelisted");
-            await sendMessageByChatID(
-                ctx,
+            await ctx.api.sendMessage(
                 chatID,
                 ctx.t("whiteListMessages.accessGranted"),
             );

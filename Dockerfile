@@ -1,11 +1,7 @@
-FROM node:24.19.0-slim AS base
+FROM node:24.21.0-slim AS base
 WORKDIR /usr/src/app
-ENV PNPM_HOME="/pnpm"
-ENV COREPACK_HOME="/pnpm/corepack"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
 COPY package.json ./
-RUN corepack prepare --activate && chmod -R a+rX "$COREPACK_HOME"
+RUN npm install --global "$(node --print "require('./package.json').packageManager")"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \

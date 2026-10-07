@@ -2,12 +2,6 @@ import process from "node:process";
 
 import type { Context } from "#root/bot/context.js";
 
-export async function asyncTimeout(ms: number) {
-    return await new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
-}
-
 /**
  * Returns time number as string
  *

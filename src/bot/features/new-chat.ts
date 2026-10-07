@@ -3,10 +3,7 @@ import { Composer } from "grammy";
 import { getChatListStatus } from "#drizzle/queries/chats.js";
 import type { Context } from "#root/bot/context.js";
 import { getChatID, isBotCanDelete } from "#root/bot/helpers/api.js";
-import {
-    getBotInChatInfo,
-    newChatJoinHandler,
-} from "#root/bot/helpers/chat.js";
+import { newChatJoinHandler } from "#root/bot/helpers/chat.js";
 import { logHandle } from "#root/bot/helpers/logging.js";
 
 const composer = new Composer<Context>();
@@ -23,7 +20,7 @@ feature.on(
             return await newChatJoinHandler(ctx, listStatus === "ignored");
         }
 
-        const botData = await getBotInChatInfo(ctx, chatID);
+        const botData = await ctx.api.getChatMember(chatID, ctx.me.id);
         const isBotIsntAdmin = !isBotCanDelete(botData);
         const greetingMsg = `${ctx.t("otherMessages.botGreeting")} ${
             isBotIsntAdmin

@@ -18,7 +18,7 @@ Live instance of bot: [@antipremiumbullshit_bot](https://t.me/antipremiumbullshi
 ## Requirements
 
 - Node.js 24 (see `.nvmrc`)
-- pnpm 11
+- pnpm 12
 - PostgreSQL 18
 - `postgresql-client` — `/export` and the import flow shell out to `pg_dump`
   and `pg_restore`. The Docker image installs it; a local machine needs it on
@@ -110,4 +110,4 @@ time. A lint rule in `biome.json` enforces this.
 
 ## License
 
-MIT — see [LICENSE](LICENSE)
+MIT — see [LICENSE](LICENSE).

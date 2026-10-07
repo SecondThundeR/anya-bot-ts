@@ -199,14 +199,6 @@ export async function newChatJoinHandler(ctx: Context, isIgnored: boolean) {
     );
 }
 
-export async function sendMessageByChatID(
-    ctx: Context,
-    chatID: string | number,
-    messageText: string,
-) {
-    await ctx.api.sendMessage(chatID, messageText);
-}
-
 export async function leaveFromIgnoredChat(
     ctx: Context,
     chatID: string | number,
@@ -225,8 +217,4 @@ export async function updateCommandStatus({
     const isEnabled = await toggleChatConfigFlag(chatID, hashName);
 
     return isEnabled ? enabled : disabled;
-}
-
-export async function getBotInChatInfo(ctx: Context, chatID: string | number) {
-    return await ctx.api.getChatMember(chatID, ctx.me.id);
 }

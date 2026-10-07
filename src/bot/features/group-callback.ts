@@ -3,7 +3,6 @@ import { Composer } from "grammy";
 import { updateChatConfig } from "#drizzle/queries/chats.js";
 import type { Context } from "#root/bot/context.js";
 import { getCallbackData, isBotCanDelete } from "#root/bot/helpers/api.js";
-import { getBotInChatInfo } from "#root/bot/helpers/chat.js";
 import { parseStickerMentionCallback } from "#root/bot/helpers/general.js";
 import { logHandle } from "#root/bot/helpers/logging.js";
 import { takeMentionAnswerWait } from "#root/bot/store/pending-mention-answers.js";
@@ -46,7 +45,7 @@ feature.on(
             stickerMessageMention: isMentionMode,
         });
 
-        const botData = await getBotInChatInfo(ctx, chatID);
+        const botData = await ctx.api.getChatMember(chatID, ctx.me.id);
         if (isBotCanDelete(botData)) await ctx.deleteMessage();
 
         await ctx.answerCallbackQuery();

@@ -10,4 +10,3 @@ const pendingRestores = createPendingStore<string>();
 
 export const startRestore = pendingRestores.start;
 export const takeRestore = pendingRestores.take;
-export const isRestorePending = pendingRestores.has;
