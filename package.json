@@ -46,10 +46,10 @@
         "valibot": "1.5.0"
     },
     "devDependencies": {
-        "@biomejs/biome": "2.5.15",
+        "@biomejs/biome": "2.6.2",
         "@types/node": "26.6.5",
         "drizzle-kit": "0.31.11",
-        "tsdown": "0.23.1",
+        "tsdown": "0.23.2",
         "typescript": "7.0.2"
     }
 }
