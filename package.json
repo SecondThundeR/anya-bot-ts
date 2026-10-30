@@ -7,9 +7,9 @@
     "module": "src/main.ts",
     "author": "SecondThundeR",
     "license": "MIT",
-    "packageManager": "pnpm@12.14.0",
+    "packageManager": "pnpm@12.16.1",
     "engines": {
-        "node": ">=24.22.0"
+        "node": ">=24.22.2"
     },
     "imports": {
         "#root/*.js": "./src/*.ts",
@@ -39,17 +39,17 @@
         "@hono/node-server": "2.1.5",
         "drizzle-orm": "0.45.4",
         "grammy": "1.46.0",
-        "hono": "4.13.13",
+        "hono": "4.13.14",
         "pino": "10.4.0",
         "pino-pretty": "13.2.0",
         "postgres": "3.4.9",
         "valibot": "1.5.0"
     },
     "devDependencies": {
-        "@biomejs/biome": "2.5.15",
-        "@types/node": "26.6.5",
+        "@biomejs/biome": "2.6.4",
+        "@types/node": "26.6.6",
         "drizzle-kit": "0.31.11",
-        "tsdown": "0.23.1",
+        "tsdown": "0.23.3",
         "typescript": "7.0.2"
     }
 }
